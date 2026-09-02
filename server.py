@@ -2718,11 +2718,13 @@ def serve_static(path):
 
 
 # ==============================================================================
-# Server Entrypoint
+# Server Entrypoint & Gunicorn Production Initialization
 # ==============================================================================
 
+# Automatically initialize database schema & seeding on import (for Gunicorn WSGI)
+init_database()
+
 if __name__ == '__main__':
-    init_database()
     port = int(os.environ.get('PORT', 5055))
     print(f"\n=======================================================")
     print(f" Victoria International College Server Running!")
