@@ -6,6 +6,8 @@ const translations = {
     topbar_address: "7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8",
     topbar_registered: "Registered under Ontario Career Colleges Act, 2005",
     lang_btn: "中文",
+    logo_brand_main: "Victoria College",
+    logo_brand_sub: "of Business, Healthcare, Technology, & Trades",
 
     // Navigation
     nav_home: "Home",
@@ -232,6 +234,8 @@ const translations = {
     topbar_address: "7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8",
     topbar_registered: "依据安省《2005年私立职业学院法》合规注册认证",
     lang_btn: "English",
+    logo_brand_main: "维多利亚职业学院",
+    logo_brand_sub: "工商 • 护理 • 科技 • 技工职业培训",
 
     // Navigation
     nav_home: "首页",
