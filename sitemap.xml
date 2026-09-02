@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:geo="http://www.google.com/geo/schemas/sitemap/1.0">
+  <!-- Core Institutional Pages -->
+  <url>
+    <loc>https://viccollege.ca/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://viccollege.ca/#programs</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://viccollege.ca/#financial-aid</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://viccollege.ca/#about</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://viccollege.ca/#consultation</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <!-- Active SEO & GEO Articles (Hidden articles are excluded) -->
+  <url>
+    <loc>https://viccollege.ca/article.html?slug=bjo-osap-difference-toronto-gta</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <geo:geo>
+      <geo:lat>43.6532</geo:lat>
+      <geo:long>-79.3832</geo:long>
+    </geo:geo>
+    <!-- GEO Target: Toronto & GTA, Ontario -->
+  </url>
+  <url>
+    <loc>https://viccollege.ca/article.html?slug=full-stack-web-developer-careers-markham-toronto</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <geo:geo>
+      <geo:lat>43.8561</geo:lat>
+      <geo:long>-79.337</geo:long>
+    </geo:geo>
+    <!-- GEO Target: Markham & GTA, Ontario -->
+  </url>
+  <url>
+    <loc>https://viccollege.ca/article.html?slug=psw-training-grant-toronto-north-york</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <geo:geo>
+      <geo:lat>43.7758</geo:lat>
+      <geo:long>-79.3458</geo:long>
+    </geo:geo>
+    <!-- GEO Target: Toronto & North York, Ontario -->
+  </url>
+</urlset>

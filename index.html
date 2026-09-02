@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Victoria International College of Business &amp; Technology</title>
+  <meta name="description" content="Secure A High-Paying Second Career Without Spending Your Own Money. Highest grant amounts available, check with us.">
+  <link rel="icon" href="images/favicon.gif" sizes="32x32">
+  
+  <!-- Original Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header class="vic-main-header">
+    <div class="container nav-wrapper">
+      <!-- Site Logo -->
+      <a href="#home" class="logo-section" aria-label="Victoria International College Home">
+        <img class="logo-img" src="images/vic_logo.png" alt="Victoria International College">
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="main-nav-list">
+        <div class="main-nav-item">
+          <a href="#home" class="main-nav-link" data-i18n="nav_home">Home</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="#about" class="main-nav-link" data-i18n="nav_about">About</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="#programs" class="main-nav-link" data-i18n="nav_programs">Programs <i class="fa-solid fa-angle-down" style="font-size: 11px;"></i></a>
+          <div class="nav-dropdown">
+            <a href="#psw" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a>
+            <a href="#fullstack" data-i18n="prog_tech_title">Full Stack Web Technician</a>
+            <a href="#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
+            <a href="#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a>
+            <a href="#acupuncture" data-i18n="prog_acu_title">Acupuncture (Non-Vocational)</a>
+            <a href="#electrician" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
+          </div>
+        </div>
+        <div class="main-nav-item">
+          <a href="#financial-aid" class="main-nav-link" data-i18n="nav_aid">Financial Aid</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="#articles" class="main-nav-link" data-i18n="nav_articles">Career Insights</a>
+        </div>
+      </nav>
+
+      <!-- Social Icons & Lang Switcher -->
+      <div class="nav-social-icons">
+        <a href="https://www.instagram.com/vic.college/?utm_medium=copy_link" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=100078023242504" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i></a>
+        <button type="button" class="lang-switcher-vic js-lang-toggle desktop-only" style="margin-left: 10px;" aria-label="Toggle language">
+          <i class="fa-solid fa-globe"></i>
+          <span class="lang-label" data-i18n="lang_btn">中文</span>
+          <span class="lang-badge lang-current">EN</span>
+        </button>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button type="button" class="mobile-toggle-btn" aria-label="Open navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-drawer-overlay"></div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer">
+    <div class="mobile-drawer-header">
+      <div class="logo-text">
+        <h1 style="font-size: 1rem; font-family: var(--font-serif);">VICTORIA COLLEGE</h1>
+      </div>
+      <button type="button" class="mobile-drawer-close" aria-label="Close navigation menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <button type="button" class="lang-switcher-vic js-lang-toggle" style="width: 100%; justify-content: center;" aria-label="Toggle language">
+        <i class="fa-solid fa-globe"></i>
+        <span class="lang-label" data-i18n="lang_btn">中文</span>
+        <span class="lang-badge lang-current">EN</span>
+      </button>
+    </div>
+
+    <nav class="mobile-nav-links">
+      <a href="#home" data-i18n="nav_home">Home</a>
+      <a href="#about" data-i18n="nav_about">About</a>
+      <a href="#programs" data-i18n="nav_programs">Programs</a>
+      <a href="#financial-aid" data-i18n="nav_aid">Financial Aid</a>
+      <a href="#articles" data-i18n="nav_articles">Career Insights</a>
+      <a href="#consultation" data-i18n="nav_consultation_btn">Book Consultation</a>
+    </nav>
+  </div>
+
+  <!-- Hero Banner (home_banner.jpg) -->
+  <section id="home" class="hero-banner-vic">
+    <div class="hero-banner-overlay"></div>
+    <div class="container hero-banner-content">
+      <h1 class="hero-headline-text" data-i18n="hero_title_1">Job ready training for careers in-demand</h1>
+      <p class="hero-subtext" data-i18n="hero_subtitle">Secure A High-Paying Second Career Without Spending Your Own Money. Highest grant amounts available, check with us.</p>
+      <a href="#consultation" class="btn-vic-red" data-i18n="hero_cta_book">Begin your future today, book consultation</a>
+    </div>
+  </section>
+
+  <!-- Hero Floating 3-Card Strip (Healthcare, Business, Technology) -->
+  <section class="hero-strip-section">
+    <div class="container">
+      <div class="hero-strip-box">
+        <div class="strip-item">
+          <div class="strip-icon"><i class="fa-solid fa-heartbeat"></i></div>
+          <h3 class="strip-title" data-i18n="cat_health_title">Healthcare program</h3>
+          <p class="strip-desc" data-i18n="cat_health_desc">NACC PSW certified training with direct nursing home &amp; clinical practicum placements.</p>
+        </div>
+        <div class="strip-item">
+          <div class="strip-icon"><i class="fa-solid fa-briefcase"></i></div>
+          <h3 class="strip-title" data-i18n="cat_biz_title">Business program</h3>
+          <p class="strip-desc" data-i18n="cat_biz_desc">Computerized accounting, Canadian taxation, Sage 50, and certified payroll administration.</p>
+        </div>
+        <div class="strip-item">
+          <div class="strip-icon"><i class="fa-solid fa-desktop"></i></div>
+          <h3 class="strip-title" data-i18n="cat_tech_title">Technology Program</h3>
+          <p class="strip-desc" data-i18n="cat_tech_desc">Full stack web development, Java Spring, React, Cloud AWS &amp; enterprise systems.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- In-Person PSW Job Fair Banner -->
+  <section class="job-fair-banner">
+    <div class="job-fair-overlay"></div>
+    <div class="container job-fair-content">
+      <h2 class="job-fair-title" data-i18n="banner_title">IN-PERSON PSW JOB FAIR</h2>
+      <p class="job-fair-subtitle" data-i18n="banner_desc">Connect with employers, find jobs</p>
+      <p class="job-fair-meta"><span data-i18n="banner_date">Friday, 12 May | 10:00AM – 12:00PM</span> &nbsp;•&nbsp; <span data-i18n="banner_location">306 Consumers Rd. North York</span></p>
+      <a href="#consultation" class="btn-vic-red" data-i18n="banner_btn">Secure Your Spot</a>
+    </div>
+  </section>
+
+  <!-- 3 Value Props Strip (Complimentary Assistant, Meet Career Needs, Internship) -->
+  <section class="value-props-section">
+    <div class="container">
+      <div class="value-props-box">
+        <div class="value-prop-col">
+          <div class="value-prop-icon"><i class="fa-solid fa-compass"></i></div>
+          <h3 class="value-prop-title" data-i18n="why_1_title">Complimentary Assistant</h3>
+          <p class="value-prop-desc" data-i18n="why_1_desc">Complimentary assistance in applying for federal aid</p>
+        </div>
+        <div class="value-prop-col">
+          <div class="value-prop-icon"><i class="fa-solid fa-user-gear"></i></div>
+          <h3 class="value-prop-title" data-i18n="why_2_title">Meet Your Career Needs</h3>
+          <p class="value-prop-desc" data-i18n="why_2_desc">Meet all your career requirements with 6 top programs</p>
+        </div>
+        <div class="value-prop-col">
+          <div class="value-prop-icon"><i class="fa-solid fa-handshake"></i></div>
+          <h3 class="value-prop-title" data-i18n="why_3_title">internship opportunities</h3>
+          <p class="value-prop-desc" data-i18n="why_3_desc">Get valuable experience with internships at successful companies</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Programs 2-Column Alternating Showcase (Exact Original Layout) -->
+  <section id="programs" class="program-showcase-section">
+    <div class="container">
+
+      <!-- Program 1: PSW (Image Left, Info Right) -->
+      <div id="psw" class="program-row">
+        <div class="program-img-wrapper">
+          <img src="images/psw.jpg" alt="Personal Support Worker PSW">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_psw_desc">Personal Support Worker Certificate Program contains in class lectures and practicum training. Upon graduating, students will not only have their PSW certificate but also a CPR &amp; First Aid certificate.</p>
+          <p class="program-text">The goal of the Personal Support Worker Program is to help individuals master the required personal and occupational qualities needed to care for people living at home and in long-term care facilities. Students will learn to identify and respond to the physical and emotional needs of clients/consumers.</p>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="psw">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 2: Full Stack (Info Left, Image Right) -->
+      <div id="fullstack" class="program-row reverse-layout">
+        <div class="program-img-wrapper">
+          <img src="images/fullstack.jpg" alt="Full Stack Web Technician">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_tech_title">Full Stack Web Technician</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_tech_desc">This diploma program contains theoretical concepts with practical lab work to ensure graduates have a solid foundation in the following areas: programming fundamentals, system testing, web programming, design concepts, networks, server and database programming.</p>
+          <ul class="program-bullet-list">
+            <li>Core Java</li>
+            <li>Advanced Java</li>
+            <li>Network Programming</li>
+            <li>HTML/CSS/JavaScript</li>
+            <li>SpringBoot</li>
+            <li>Mybatis</li>
+            <li>Spring/Spring MVC</li>
+            <li>MySQL</li>
+            <li>React/Nodejs/webpack</li>
+            <li>Spring Cloud</li>
+            <li>Netty</li>
+            <li>AWS</li>
+            <li>Design Pattern</li>
+          </ul>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="tech">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 3: Accounting (Image Left, Info Right) -->
+      <div id="accounting" class="program-row">
+        <div class="program-img-wrapper">
+          <img src="images/accounting.jpg" alt="Computerized Accounting">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_acc_title">Accounting, Tax and Payroll</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_acc_desc">The program consists of 30 weeks of intensive instructor led hands on training and practical exercises under the supervision of industry-experienced instructors.</p>
+          <p class="program-text">Our Computerized Accounting program provides students with solid knowledge and skills to work as a bookkeeper, an accounting assistant, or accounts receivable/ accounts payable clerk, and proficiencies appropriate for careers in accounting and payroll administration.</p>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="accounting">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 4: Early Childcare Assistant (Info Left, Image Right) -->
+      <div id="eca" class="program-row reverse-layout">
+        <div class="program-img-wrapper">
+          <img src="images/eca.jpg" alt="Early Childcare Assistant ECA">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_eca_title">Early Childcare Assistant</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_eca_desc">We provide our students with the opportunity for personal growth and success by providing an intimate and friendly learning environment that emphasizes academic &amp; professional excellence. Subjects included in the program:</p>
+          <ul class="program-bullet-list">
+            <li>Interpersonal Communication</li>
+            <li>Health, Safety and Nutrition</li>
+            <li>Child Development</li>
+            <li>Customer Service</li>
+            <li>Operations</li>
+            <li>Creative Expression</li>
+            <li>Field Placement</li>
+          </ul>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="eca">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 5: Acupuncture (Image Left, Info Right) -->
+      <div id="acupuncture" class="program-row">
+        <div class="program-img-wrapper">
+          <img src="images/acupuncture.jpg" alt="Acupuncture Program">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_acu_title">Acupuncture</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_acu_desc">Acupuncture program is a Non-Vocational Program. This program does not require approval under the Ontario Career Colleges Act, 2005.</p>
+          <p class="program-text">Our Acupuncture program is designed for individuals seeking personal interest learning, wellness knowledge, or complementary health education. This program provides foundational theory, traditional concepts, and practical demonstrations for personal enrichment.</p>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="acupuncture">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 6: Electrician (Info Left, Image Right) -->
+      <div id="electrician" class="program-row reverse-layout">
+        <div class="program-img-wrapper">
+          <img src="images/electrician.jpg" alt="Electrician Training">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_elec_title">Electrician (Construction &amp; Maintenance)</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_elec_desc">Becoming an Electrician in Ontario — Series Classes</p>
+          <ul class="program-bullet-list" style="grid-template-columns: 1fr;">
+            <li>Instructor: working in one of the biggest electrician contractors in Ontario with 20+ years</li>
+            <li>Placement in government projects and get real and valuable experiences</li>
+            <li>1 v 1 hands-on teaching in official recognized Apprenticeship Base and get solid techniques in a short time</li>
+            <li>Exclusive opportunity to be referred to a job after class completion</li>
+          </ul>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="electrician">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Join Our Free Class Section -->
+  <section class="free-class-section">
+    <div class="free-class-overlay"></div>
+    <div class="container free-class-content">
+      <h2 class="free-class-title">Join Our <span class="highlight-gold">Free</span> Class</h2>
+      <p class="free-class-subtitle">Jump-start your career today with free consultations and demo classes</p>
+      <div class="vic-divider vic-divider-center"></div>
+
+      <!-- MetForm -->
+      <div class="metform-box">
+        <form id="free-class-form" onsubmit="event.preventDefault(); alert(currentLanguage === 'zh' ? '预约成功！顾问将尽快与您联系。' : 'Sign up successful! Our advisor will contact you soon.');">
+          <div class="metform-grid">
+            <input type="text" class="metform-input" placeholder="Name*" required>
+            <input type="email" class="metform-input" placeholder="Email*" required>
+            <input type="tel" class="metform-input" placeholder="Phone" required>
+          </div>
+          <button type="submit" class="metform-submit-btn">Sign up</button>
+          <p class="metform-privacy-note">* Your information will be kept private and confidential.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Financial Aid Section (#financial-aid) -->
+  <section id="financial-aid" class="financial-aid-section-vic">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="sub-badge-red" data-i18n="aid_badge">Government Assistance</span>
+        <h2 class="section-headline-serif" data-i18n="aid_title">Study With Zero Financial Burden</h2>
+        <div class="vic-divider vic-divider-center"></div>
+        <p class="section-subtitle-center" data-i18n="aid_subtitle">Did you know you could qualify for government funding of up to $28,000+ for tuition and living allowances?</p>
+      </div>
+
+      <div class="aid-cards-grid">
+        <div class="aid-card">
+          <div class="aid-card-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+          <h3 class="aid-card-title" data-i18n="aid_card1_title">Better Jobs Ontario (Second Career)</h3>
+          <p class="aid-card-desc" data-i18n="aid_card1_desc">Government grant program providing laid-off workers, gig workers, and low-income individuals funding for tuition, books, transportation, and basic living support.</p>
+        </div>
+
+        <div class="aid-card featured">
+          <div class="aid-badge-tag">100% Free Guidance</div>
+          <div class="aid-card-icon"><i class="fa-solid fa-file-signature"></i></div>
+          <h3 class="aid-card-title" data-i18n="aid_card2_title">100% Free Application Assistance</h3>
+          <p class="aid-card-desc" data-i18n="aid_card2_desc">Our experienced educational counselors guide you through eligibility assessment, resume preparation, research documentation, and submission step-by-step.</p>
+        </div>
+
+        <div class="aid-card">
+          <div class="aid-card-icon"><i class="fa-solid fa-credit-card"></i></div>
+          <h3 class="aid-card-title" data-i18n="aid_card3_title">Flexible Payment &amp; Institutional Aid</h3>
+          <p class="aid-card-desc" data-i18n="aid_card3_desc">Interest-free monthly installment plans and institutional scholarships available for students not eligible for government grants.</p>
+        </div>
+      </div>
+
+      <div class="aid-cta-wrapper">
+        <a href="#consultation" class="btn-vic-red js-check-aid-cta" data-i18n="aid_cta_btn">Check Your Funding Eligibility</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us & Leadership Section (#about) -->
+  <section id="about" class="about-leadership-section-vic">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="sub-badge-red" data-i18n="lead_badge">Leadership &amp; Mission</span>
+        <h2 class="section-headline-serif" data-i18n="lead_title">Empowering Immigrants &amp; Students Since 2005</h2>
+        <div class="vic-divider vic-divider-center"></div>
+      </div>
+
+      <div class="leadership-grid">
+        <div class="leadership-img-col">
+          <img src="images/president_maria_sun.jpg" alt="President Maria Sun" class="leadership-portrait">
+          <div class="leadership-caption">
+            <h3 data-i18n="lead_name">President Maria Sun</h3>
+            <p data-i18n="lead_role">President of Victoria Education Group • Dean of Victoria International College</p>
+          </div>
+        </div>
+
+        <div class="leadership-text-col">
+          <ul class="leadership-points-list">
+            <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="lead_point1">Over 22 years of dedicated leadership in Canadian higher education &amp; career coaching.</span></li>
+            <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="lead_point2">Chief Secretary of Canadian Youth Union &amp; Canadian Women's Service Centre.</span></li>
+            <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="lead_point3">Helped tens of thousands of new immigrants land professional careers and adapt to Canadian life.</span></li>
+            <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="lead_point4">A proud mother who successfully guided her daughter to Harvard University.</span></li>
+          </ul>
+
+          <div class="leadership-quote-box">
+            <i class="fa-solid fa-quote-left quote-icon"></i>
+            <p data-i18n="lead_quote">“Our mission is not just granting diplomas, but opening genuine career doors, building confidence, and securing high-paying futures for every student.”</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campuses & Locations Grid inside About -->
+      <div class="about-campuses-box">
+        <h3 class="campuses-header-title" data-i18n="campus_title">Our Campuses &amp; Contact</h3>
+        <p class="campuses-header-sub" data-i18n="campus_sub">Convenient locations in the Greater Toronto Area with modern lab facilities.</p>
+        
+        <div class="campus-cards-grid">
+          <div class="campus-card">
+            <div class="campus-card-header">
+              <i class="fa-solid fa-building-columns"></i>
+              <h4 data-i18n="campus_markham">Markham Campus (Main)</h4>
+            </div>
+            <p class="campus-address"><i class="fa-solid fa-location-dot"></i> <span data-i18n="campus_markham_addr">7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8</span></p>
+            <p class="campus-phone"><i class="fa-solid fa-phone"></i> <a href="tel:416-665-6668">416-665-6668</a></p>
+            <p class="campus-hours"><i class="fa-solid fa-clock"></i> <span data-i18n="campus_hours">Monday – Saturday: 9:00 AM – 6:00 PM</span></p>
+          </div>
+
+          <div class="campus-card">
+            <div class="campus-card-header">
+              <i class="fa-solid fa-school"></i>
+              <h4 data-i18n="campus_nyork">North York Campus</h4>
+            </div>
+            <p class="campus-address"><i class="fa-solid fa-location-dot"></i> <span data-i18n="campus_nyork_addr">306 Consumers Rd., North York, ON M2J 1P8</span></p>
+            <p class="campus-phone"><i class="fa-solid fa-phone"></i> <a href="tel:416-665-6668">416-665-6668</a></p>
+            <p class="campus-hours"><i class="fa-solid fa-clock"></i> <span data-i18n="campus_hours">Monday – Saturday: 9:00 AM – 6:00 PM</span></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- What Our Students Say (Testimonials) -->
+  <section class="students-say-section">
+    <div class="container">
+      <h2 class="section-headline-serif">What <span class="highlight-crimson" data-i18n="test_badge">Our Students</span> Say</h2>
+      <div class="vic-divider vic-divider-center"></div>
+
+      <div class="testimonial-box-vic">
+        <div class="test-quote-sign"><i class="fa-solid fa-quote-left"></i></div>
+        <p id="student-quote" class="test-body-text" data-i18n="test_1_text">“I am a PSW student at Victoria International College. The teachers are very helpful and professional. They are not only helping me with the language and skills, but also assisting me to get a great placement job in a nursing home. And finally I got a job with this employer.”</p>
+        <div class="test-author-info">
+          <span id="student-name" data-i18n="test_1_author">Ms. May</span>
+          <span id="student-title" class="test-author-title" style="margin-left: 10px;" data-i18n="test_1_prog">PSW</span>
+        </div>
+      </div>
+
+      <div class="test-slider-nav">
+        <button type="button" class="test-nav-arrow" id="test-prev" aria-label="Previous Testimonial"><i class="fa-solid fa-chevron-left"></i></button>
+        <button type="button" class="test-nav-arrow" id="test-next" aria-label="Next Testimonial"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: SEO & GEO Career Insights & News (Active Articles Only) -->
+  <section id="articles" class="articles-section" style="padding: 70px 0; background: #FAF9F6; border-top: 1px solid #ECECEC;">
+    <div class="container">
+      <div class="section-title-wrap" style="text-align: center; margin-bottom: 40px;">
+        <span style="display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--vic-red); letter-spacing: 1.5px; margin-bottom: 8px;" data-i18n="articles_badge">
+          LOCAL CAREER INSIGHTS &amp; GUIDES
+        </span>
+        <h2 style="font-size: 2.2rem; font-family: var(--font-serif); color: var(--vic-dark); margin: 0 0 12px;" data-i18n="articles_main_title">
+          Toronto &amp; Markham Career News &amp; Funding Guides
+        </h2>
+        <p style="max-width: 680px; margin: 0 auto; color: #666; font-size: 15px; line-height: 1.6;" data-i18n="articles_subtitle">
+          Expert analysis on high-demand healthcare, technology, and business careers across the GTA, Ontario grant updates, and certification roadmaps.
+        </p>
+      </div>
+
+      <!-- Articles Grid Container -->
+      <div id="public-articles-grid" class="articles-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        <!-- Loaded dynamically from /api/articles -->
+        <div style="text-align: center; padding: 40px; grid-column: 1 / -1; color: #888;">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+          <p>Loading latest career insights...</p>
+        </div>
+      </div>
+
+      <!-- Sitemap / SEO Link -->
+      <div style="text-align: center; margin-top: 35px; font-size: 13.5px; color: #666;">
+        <span>Looking for all indexed programs and local training guides?</span>
+        <a href="/sitemap.xml" target="_blank" style="color: var(--vic-red); font-weight: 600; margin-left: 5px; text-decoration: none;">
+          <i class="fa-solid fa-sitemap"></i> View XML Sitemap
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Free Consultation Section (#consultation) -->
+  <section id="consultation" class="free-consultation-section">
+    <div class="consult-overlay"></div>
+    <div class="container consult-inner">
+      <h2 class="consult-title-serif" data-i18n="aid_badge">free consultation</h2>
+      <p class="consult-subtitle" data-i18n="form_section_subtitle">Join us for a free virtual consultation to jump-start your career today!</p>
+
+      <div class="consult-form-box">
+        <form id="consultation-form">
+          <div class="consult-field-group">
+            <label for="consult-name" data-i18n="form_name_label">Name*</label>
+            <input type="text" id="consult-name" class="consult-input-style" placeholder="Name*" data-i18n-ph="form_name_placeholder" required>
+          </div>
+          <div class="consult-field-group">
+            <label for="consult-email" data-i18n="form_email_label">Email*</label>
+            <input type="email" id="consult-email" class="consult-input-style" placeholder="Email*" data-i18n-ph="form_email_placeholder" required>
+          </div>
+          <div class="consult-field-group">
+            <label for="consult-phone" data-i18n="form_phone_label">Phone</label>
+            <input type="tel" id="consult-phone" class="consult-input-style" placeholder="Phone" data-i18n-ph="form_phone_placeholder" required>
+          </div>
+          <div class="consult-field-group">
+            <label for="consult-program" data-i18n="form_program_label">Program of Interest</label>
+            <select id="consult-program" class="consult-input-style">
+              <option value="" data-i18n="form_program_select">-- Select a Program --</option>
+              <option value="psw" data-i18n="prog_psw_title">NACC Personal Support Worker (PSW)</option>
+              <option value="tech" data-i18n="prog_tech_title">Full Stack Web Technician</option>
+              <option value="accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</option>
+              <option value="eca" data-i18n="prog_eca_title">Early Childcare Assistant</option>
+              <option value="acupuncture" data-i18n="prog_acu_title">Acupuncture</option>
+              <option value="electrician" data-i18n="prog_elec_title">Electrician 309A / 442A</option>
+            </select>
+          </div>
+          <div class="consult-field-group" style="display: flex; align-items: center; gap: 8px; margin: 10px 0 16px;">
+            <input type="checkbox" id="consult-grant-check" style="width: 18px; height: 18px; accent-color: var(--vic-red); cursor: pointer;">
+            <label for="consult-grant-check" style="font-size: 13.5px; cursor: pointer; color: var(--vic-dark);" data-i18n="form_aid_checkbox">I want a free evaluation for Better Jobs Ontario / Government Grant eligibility</label>
+          </div>
+
+          <button type="submit" class="btn-book-now" data-i18n="form_submit_btn">BOOK NOW</button>
+          <p style="font-size: 13px; color: #777; margin-top: 14px; text-align: center;" data-i18n="form_privacy_note">* Your information will be kept private and confidential.</p>
+        </form>
+
+        <div id="consultation-success" style="display: none; padding: 20px; background: #e8f5e9; border: 1px solid #a5d6a7; color: #2e7d32; text-align: center; margin-top: 15px;">
+          <h3 data-i18n="form_success_title">Thank You!</h3>
+          <p data-i18n="form_success_msg">Our admissions advisor will contact you within 24 business hours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (Exact viccollege.com Footer Layout) -->
+  <footer class="vic-site-footer">
+    <div class="container">
+      <div class="footer-columns-grid">
+        
+        <!-- Column 1: Logo & About -->
+        <div class="footer-col">
+          <div class="footer-logo-row">
+            <img class="footer-logo-img" src="images/vic_logo.png" alt="Victoria College">
+            <span class="footer-brand-name">VICTORIA<br>INTERNATIONAL COLLEGE<br><span style="font-size:12px; color:#888;">OF BUSINESS &amp; TECHNOLOGY</span></span>
+          </div>
+          <p class="footer-reg-statement" data-i18n="footer_desc">Registered as a career college under the <i>Ontario Career Colleges Act, 2005</i>.</p>
+          <div class="footer-socials">
+            <a href="https://www.facebook.com/VictoriaCollegeVICBT" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/vic.college/?utm_medium=copy_link" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <!-- Column 2: Programs -->
+        <div class="footer-col">
+          <h3 data-i18n="footer_col_programs">Programs</h3>
+          <p style="font-size: 13px; color: #888; margin-bottom: 12px;">Approved as a vocational program under the <i>Ontario Career Colleges Act, 2005</i></p>
+          <ul class="footer-prog-list">
+            <li><a href="#psw" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a></li>
+            <li><a href="#fullstack" data-i18n="prog_tech_title">Full Stack Web Technician</a></li>
+            <li><a href="#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
+            <li><a href="#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Contact -->
+        <div class="footer-col">
+          <h3 data-i18n="campus_title">Contact</h3>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <a href="tel:416-665-6668">416-665-6668</a>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span data-i18n="topbar_address">7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-envelope"></i>
+            <a href="mailto:info@viccollege.com">info@viccollege.com</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom-bar">
+        <span data-i18n="footer_copyright">Copyright © 2026 VICTORIA INTERNATIONAL COLLEGE OF BUSINESS &amp; TECHNOLOGY</span>
+        <div class="footer-policy-links">
+          <a href="#" data-i18n="footer_policy_privacy">Privacy Policy</a>
+          <a href="#" data-i18n="footer_policy_kpi">KPI Audit Requirements</a>
+          <a href="#" data-i18n="footer_policy_sexual">Sexual Violence Policy</a>
+          <a href="#" data-i18n="footer_policy_complaint">Students Complaint Procedure</a>
+          <a href="#" data-i18n="footer_policy_disability">Academic Accommodation Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Program Details Modal -->
+  <div id="program-modal" class="modal-backdrop-vic">
+    <div class="modal-box-vic">
+      <button type="button" class="modal-close-vic" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header-vic">
+        <span id="modal-prog-badge" style="font-size: 13px; font-weight: 700; color: var(--vic-red); text-transform: uppercase;">Certificate Program</span>
+        <h2 id="modal-prog-title" style="font-family: var(--font-serif); font-size: 28px; color: var(--vic-dark); margin-top: 5px;">Program Title</h2>
+      </div>
+      <div class="modal-body-vic">
+        <div style="background: var(--vic-bg-canvas); padding: 12px 18px; margin-bottom: 20px; font-size: 14px;">
+          <strong>Duration:</strong> <span id="modal-prog-duration">30 Weeks</span> &nbsp;|&nbsp; 
+          <strong>Credential:</strong> <span id="modal-prog-credential">Diploma</span>
+        </div>
+
+        <h4 style="font-size: 18px; color: var(--vic-dark); margin-bottom: 8px;">Program Overview</h4>
+        <p id="modal-prog-overview" style="font-size: 15px; color: #555; margin-bottom: 20px; line-height: 1.6;"></p>
+
+        <h4 style="font-size: 18px; color: var(--vic-dark); margin-bottom: 8px;">Curriculum &amp; Modules</h4>
+        <ul id="modal-prog-modules" style="margin-bottom: 20px;"></ul>
+
+        <h4 style="font-size: 18px; color: var(--vic-dark); margin-bottom: 8px;">Career Opportunities</h4>
+        <p id="modal-prog-careers" style="font-size: 15px; color: #555; margin-bottom: 20px;"></p>
+
+        <h4 style="font-size: 18px; color: var(--vic-dark); margin-bottom: 8px;">Career Outcomes &amp; Wages</h4>
+        <p id="modal-prog-outcomes" style="font-size: 15px; color: #555; margin-bottom: 24px;"></p>
+
+        <button type="button" id="modal-book-cta" class="btn-vic-red" style="width: 100%; text-align: center;">Book Consultation for this Program</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Public Article Reader Modal -->
+  <div id="modal-public-article" class="modal-backdrop-vic">
+    <div class="modal-box-vic" style="max-width: 800px; max-height: 88vh; overflow-y: auto;">
+      <button type="button" class="modal-close-vic js-close-public-art-modal" aria-label="Close article"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+        <span class="geo-badge-pill" id="pub-modal-geo"><i class="fa-solid fa-location-dot"></i> Toronto &amp; GTA</span>
+        <span id="pub-modal-category" style="font-size: 11px; font-weight: 700; text-transform: uppercase; background: #F1F5F9; color: #475569; padding: 3px 8px; border-radius: 6px;">CATEGORY</span>
+        <span id="pub-modal-date" style="font-size: 12px; color: #888;">2026</span>
+      </div>
+
+      <h2 id="pub-modal-title" style="font-size: 1.8rem; font-family: var(--font-serif); color: #111827; margin: 0 0 16px; line-height: 1.3;">Article Title</h2>
+
+      <div id="pub-modal-summary" style="background: #F8FAFC; border-left: 4px solid var(--vic-red); padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 24px; font-size: 14.5px; color: #334155; line-height: 1.6;"></div>
+
+      <div id="pub-modal-body" class="article-content-html" style="font-size: 15px; line-height: 1.7; color: #374151;"></div>
+
+      <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-top: 1px solid #E5E7EB; padding-top: 20px;">
+        <a id="pub-modal-direct-link" href="#" target="_blank" class="btn-admin-secondary" style="font-size: 13px; text-decoration: none; padding: 8px 14px; border: 1px solid #CBD5E1; border-radius: 6px; color: #334155;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Full Article Page
+        </a>
+        <a href="#consultation" class="btn-vic-red js-close-public-art-modal" style="font-size: 13px; text-decoration: none; padding: 8px 18px;">
+          <i class="fa-solid fa-calendar-check"></i> Book Consultation
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ai-chatbot.js"></script>
+</body>
+</html>
