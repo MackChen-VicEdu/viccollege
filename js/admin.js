@@ -36,7 +36,7 @@
         const res = await fetch('/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await res.json();
+        const data = await this.safeJson(res);
 
         if (data.authenticated && data.user && data.user.role === 'admin') {
           currentAdminUser = data.user;
@@ -892,7 +892,7 @@
         const res = await fetch(`/api/admin/homepage/sections?${queryParams.toString()}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await res.json();
+        const data = await this.safeJson(res);
         if (!res.ok) {
           throw new Error(data.error || `HTTP ${res.status}: Failed to load sections`);
         }
@@ -1848,6 +1848,19 @@
         if (stats) stats.textContent = `Total Indexed URLs: ${countMatches}`;
       } catch (err) {
         pre.textContent = 'Error loading sitemap.xml: ' + err.message;
+      }
+    },
+
+    async safeJson(res) {
+      const text = await res.text();
+      if (!text || !text.trim()) return {};
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        if (text.startsWith('<!doctype') || text.startsWith('<html') || text.includes('<!DOCTYPE')) {
+          throw new Error(`Server returned HTML page instead of API JSON (HTTP ${res.status}). Verify you are connected to http://localhost:5055.`);
+        }
+        throw new Error(`Invalid server response: ${text.substring(0, 120)}`);
       }
     },
 

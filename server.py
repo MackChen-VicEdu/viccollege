@@ -3189,6 +3189,8 @@ def serve_article(slug=None):
 
 @app.route('/<path:path>')
 def serve_static(path):
+    if path.startswith('api/'):
+        return jsonify({'error': f'API endpoint /{path} not found.'}), 404
     if os.path.exists(os.path.join(BASE_DIR, path)):
         return send_from_directory(BASE_DIR, path)
     return send_from_directory(BASE_DIR, 'index.html')
