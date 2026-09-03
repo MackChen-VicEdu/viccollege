@@ -880,6 +880,11 @@
 
       try {
         const token = window.VicAuth.getToken();
+        if (!token) {
+          if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:25px; color:#6b7280;">🔒 Please sign in as an administrator to load and edit homepage sections.</td></tr>`;
+          return;
+        }
+
         const queryParams = new URLSearchParams();
         if (search) queryParams.set('search', search);
         if (category && category !== 'all') queryParams.set('category', category);
@@ -888,12 +893,25 @@
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
-        if (res.ok && data.sections) {
+        if (!res.ok) {
+          throw new Error(data.error || `HTTP ${res.status}: Failed to load sections`);
+        }
+        if (data.sections) {
           allHomepageSections = data.sections;
           this.renderHomepageSectionsTable(data.sections);
         }
       } catch (e) {
-        if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center;">Failed to load homepage sections</td></tr>`;
+        if (tbody) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" style="color: #dc2626; text-align: center; padding: 25px;">
+                <div style="font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-triangle-exclamation"></i> Error: ${this.escapeHtml(e.message)}</div>
+                <div style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">Make sure you are logged in at <a href="/admin.html" style="color: #2563eb;">http://localhost:5055/admin.html</a></div>
+                <button type="button" class="btn-admin-secondary" style="font-size: 12px; padding: 4px 12px;" onclick="AdminApp.loadHomepageSections()"><i class="fa-solid fa-rotate-right"></i> Retry Loading</button>
+              </td>
+            </tr>
+          `;
+        }
       }
     },
 
