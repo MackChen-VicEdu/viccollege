@@ -60,39 +60,59 @@
     },
 
     async login(email, password) {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Login failed');
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Login failed');
+        }
+        this.setToken(data.token);
+        currentUser = data.user;
+        this.renderUserUI();
+        this.closeAuthModal();
+        this.showToast(`Welcome back, ${currentUser.name}!`, 'success');
+        return data;
+      } catch (err) {
+        if (window.location.protocol === 'file:') {
+          throw new Error('You are viewing this page as a local file (file://). Please open http://localhost:5055 in your browser to log in.');
+        }
+        if (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch')) {
+          throw new Error('Cannot connect to server. Please verify you are browsing at http://localhost:5055 (or your deployed URL).');
+        }
+        throw err;
       }
-      this.setToken(data.token);
-      currentUser = data.user;
-      this.renderUserUI();
-      this.closeAuthModal();
-      this.showToast(`Welcome back, ${currentUser.name}!`, 'success');
-      return data;
     },
 
     async register(name, email, password) {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Registration failed');
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Registration failed');
+        }
+        this.setToken(data.token);
+        currentUser = data.user;
+        this.renderUserUI();
+        this.closeAuthModal();
+        this.showToast(`Welcome to Victoria College, ${currentUser.name}!`, 'success');
+        return data;
+      } catch (err) {
+        if (window.location.protocol === 'file:') {
+          throw new Error('You are viewing this page as a local file (file://). Please open http://localhost:5055 in your browser.');
+        }
+        if (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch')) {
+          throw new Error('Cannot connect to server. Please verify you are browsing at http://localhost:5055.');
+        }
+        throw err;
       }
-      this.setToken(data.token);
-      currentUser = data.user;
-      this.renderUserUI();
-      this.closeAuthModal();
-      this.showToast(`Welcome to Victoria College, ${currentUser.name}!`, 'success');
-      return data;
     },
 
     async loginWithGoogle(mockEmail, mockName) {

@@ -48,6 +48,17 @@ def close_db(error):
     if db is not None:
         db.close()
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+    return response
+
+@app.route('/api/<path:dummy>', methods=['OPTIONS'])
+def options_handler(dummy):
+    return Response(status=204)
+
 AUTH_SALT = os.environ.get('AUTH_SALT', 'vic_college_salt_2026')
 
 def hash_password(password: str) -> str:
