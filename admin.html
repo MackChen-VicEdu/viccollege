@@ -93,6 +93,11 @@
           <i class="fa-solid fa-book-open"></i>
           <span>Knowledge Base</span>
         </button>
+        <button type="button" class="admin-tab-btn" data-tab="homepage-sections">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Home Page Content (CMS)</span>
+          <span style="font-size: 10px; background: #2563eb; color: #fff; padding: 2px 6px; border-radius: 8px; font-weight: 700; margin-left: 4px;">CMS</span>
+        </button>
         <button type="button" class="admin-tab-btn" data-tab="seo-articles">
           <i class="fa-solid fa-newspaper"></i>
           <span>SEO &amp; GEO Articles</span>
@@ -130,6 +135,13 @@
             <div class="stat-info">
               <span class="stat-label">SEO &amp; GEO Articles</span>
               <h3 id="stat-total-articles">--</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Home Page Sections</span>
+              <h3 id="stat-homepage-sections">--</h3>
             </div>
           </div>
           <div class="stat-card">
@@ -306,6 +318,65 @@
               <tbody id="kb-tbody">
                 <tr>
                   <td colspan="6" style="text-align: center; padding: 30px;">Loading knowledge articles...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab: Home Page Content & Section Management (CMS) -->
+      <section id="tab-homepage-sections" class="admin-tab-content">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2 class="card-title"><i class="fa-solid fa-layer-group" style="color: #2563eb;"></i> Home Page Content &amp; Sections (CMS)</h2>
+              <p class="card-desc">Add, edit, reorder, and toggle visibility for all sections and content blocks on the live home page.</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn-admin-primary" id="btn-add-homepage-section" style="background: #2563eb;">
+                <i class="fa-solid fa-plus"></i> Add New Section
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Bar -->
+          <div class="table-actions-bar">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="sec-search-input" placeholder="Search sections by name, key, or title...">
+            </div>
+            <div class="filter-group">
+              <select id="sec-category-filter">
+                <option value="all">All Categories</option>
+                <option value="hero">Hero Banner</option>
+                <option value="banner">Event Banners</option>
+                <option value="programs">Programs &amp; Pathways</option>
+                <option value="about">About &amp; Leadership</option>
+                <option value="admissions">Admissions &amp; Workshops</option>
+                <option value="aid">Financial Aid</option>
+                <option value="campuses">Campuses</option>
+                <option value="custom">Custom Blocks</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Sections Table -->
+          <div class="table-responsive">
+            <table class="admin-table" id="homepage-sections-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px; text-align: center;">Order</th>
+                  <th style="width: 130px;">Section Key</th>
+                  <th style="width: 210px;">Section Name &amp; Category</th>
+                  <th>Title Preview (EN / 中文)</th>
+                  <th style="width: 120px; text-align: center;">Status</th>
+                  <th style="width: 170px; text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="homepage-sections-tbody">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 30px;">Loading homepage sections...</td>
                 </tr>
               </tbody>
             </table>
@@ -730,6 +801,135 @@
       <div id="kb-test-results-container" style="display: none;">
         <!-- Filled dynamically by js/admin.js -->
       </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Homepage Section CMS Modal -->
+  <div id="modal-section-editor" class="vic-auth-modal-backdrop">
+    <div class="vic-auth-modal-box" style="max-width: 840px; max-height: 90vh; overflow-y: auto;">
+      <button type="button" class="vic-auth-close js-close-sec-modal"><i class="fa-solid fa-xmark"></i></button>
+      <div class="vic-auth-modal-header">
+        <h3 id="sec-modal-title"><i class="fa-solid fa-pen-to-square" style="color: #2563eb;"></i> Edit Home Page Section</h3>
+        <p>Modify text, headings, badges, call-to-action buttons, and order directly on the home page.</p>
+      </div>
+
+      <form id="form-admin-sec-editor" class="admin-modal-form">
+        <input type="hidden" id="sec-edit-id" value="">
+
+        <!-- Basic Configuration -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="auth-input-group">
+            <label for="sec-input-name">Section Administrative Name*</label>
+            <input type="text" id="sec-input-name" required placeholder="e.g. Hero Banner &amp; Headline">
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-key">Section Key (Unique ID / HTML Anchor)*</label>
+            <input type="text" id="sec-input-key" required placeholder="e.g. hero, job_fair, special_event">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+          <div class="auth-input-group">
+            <label for="sec-input-category">Category*</label>
+            <select id="sec-input-category" required>
+              <option value="hero">Hero Banner</option>
+              <option value="banner">Event Banner</option>
+              <option value="programs">Programs &amp; Pathways</option>
+              <option value="about">About &amp; Leadership</option>
+              <option value="admissions">Admissions &amp; Workshops</option>
+              <option value="aid">Financial Aid</option>
+              <option value="campuses">Campuses</option>
+              <option value="custom">Custom Content Block</option>
+            </select>
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-order">Display Order Index</label>
+            <input type="number" id="sec-input-order" value="1" min="0" max="999" required>
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-status">Visibility Status*</label>
+            <select id="sec-input-status" required>
+              <option value="1">🟢 Active (Visible on Live Home Page)</option>
+              <option value="0">🔒 Hidden (Draft / Inactive)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Bilingual Tabs Switcher -->
+        <div class="cms-bilingual-tabs" style="display: flex; gap: 10px; margin: 18px 0 14px; border-bottom: 2px solid #E5E7EB; padding-bottom: 8px;">
+          <button type="button" class="cms-lang-tab-btn active" data-lang="en" style="padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 13.5px; cursor: pointer; border: none; background: #2563eb; color: #fff;">
+            🇬🇧 English Content
+          </button>
+          <button type="button" class="cms-lang-tab-btn" data-lang="zh" style="padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 13.5px; cursor: pointer; border: 1px solid #D1D5DB; background: #F3F4F6; color: #374151;">
+            🇨🇳 中文内容 (Chinese)
+          </button>
+        </div>
+
+        <!-- English Fields Tab -->
+        <div id="cms-fields-en" class="cms-lang-pane">
+          <div class="auth-input-group">
+            <label for="sec-input-title-en">Headline / Main Title (English)</label>
+            <input type="text" id="sec-input-title-en" placeholder="e.g. Job ready training for careers in-demand">
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-subtitle-en">Subtitle / Subheading (English)</label>
+            <input type="text" id="sec-input-subtitle-en" placeholder="e.g. Secure A High-Paying Second Career...">
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-badge-en">Category Badge / Pill Tag (English)</label>
+            <input type="text" id="sec-input-badge-en" placeholder="e.g. 22+ YEARS OF EXCELLENCE">
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-content-en">Body Content / Description (English, Rich HTML supported)</label>
+            <textarea id="sec-input-content-en" rows="5" placeholder="Enter paragraph text or HTML for this section..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 13px; line-height: 1.5;"></textarea>
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-cta-en">Button / CTA Text (English)</label>
+            <input type="text" id="sec-input-cta-en" placeholder="e.g. Begin your future today, book consultation">
+          </div>
+        </div>
+
+        <!-- Chinese Fields Tab -->
+        <div id="cms-fields-zh" class="cms-lang-pane" style="display: none;">
+          <div class="auth-input-group">
+            <label for="sec-input-title-zh">主标题 / Headline (中文)</label>
+            <input type="text" id="sec-input-title-zh" placeholder="例如：高薪紧缺职业培训 助您开启辉煌未来">
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-subtitle-zh">副标题 / Subtitle (中文)</label>
+            <input type="text" id="sec-input-subtitle-zh" placeholder="例如：零自费开启高薪第二职业，最高可获政府 $28,000+ 免费学费与生活补贴...">
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-badge-zh">标签徽章 / Pill Tag (中文)</label>
+            <input type="text" id="sec-input-badge-zh" placeholder="例如：安省正规注册私立职业学院 • 22年办学">
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-content-zh">正文描述 / Body Content (中文，支持 HTML 标签)</label>
+            <textarea id="sec-input-content-zh" rows="5" placeholder="输入段落文字或 HTML..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 13px; line-height: 1.5;"></textarea>
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-cta-zh">行动按钮文字 / CTA Text (中文)</label>
+            <input type="text" id="sec-input-cta-zh" placeholder="例如：立即预约 1对1 免费职业规划与评估">
+          </div>
+        </div>
+
+        <!-- Global Media & Link Settings -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #E5E7EB;">
+          <div class="auth-input-group">
+            <label for="sec-input-cta-link">CTA Button Target Link / Anchor</label>
+            <input type="text" id="sec-input-cta-link" placeholder="e.g. #consultation, #programs, or URL">
+          </div>
+          <div class="auth-input-group">
+            <label for="sec-input-image">Background / Illustration Image URL</label>
+            <input type="text" id="sec-input-image" placeholder="e.g. images/home_banner.jpg, images/job-fair.png">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn-admin-secondary js-close-sec-modal">Cancel</button>
+          <button type="submit" class="btn-admin-primary" id="sec-modal-submit-btn" style="background: #2563eb;">Save Section Changes</button>
+        </div>
+      </form>
     </div>
   </div>
 

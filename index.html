@@ -104,7 +104,7 @@
   </div>
 
   <!-- Hero Banner (home_banner.jpg) -->
-  <section id="home" class="hero-banner-vic">
+  <section id="home" class="hero-banner-vic" data-section-key="hero">
     <div class="hero-banner-overlay"></div>
     <div class="container hero-banner-content">
       <h1 class="hero-headline-text" data-i18n="hero_title_1">Job ready training for careers in-demand</h1>
@@ -114,7 +114,7 @@
   </section>
 
   <!-- Hero Floating 3-Card Strip (Healthcare, Business, Technology) -->
-  <section class="hero-strip-section">
+  <section class="hero-strip-section" data-section-key="hero_strip">
     <div class="container">
       <div class="hero-strip-box">
         <div class="strip-item">
@@ -137,7 +137,7 @@
   </section>
 
   <!-- In-Person PSW Job Fair Banner -->
-  <section class="job-fair-banner">
+  <section class="job-fair-banner" data-section-key="job_fair">
     <div class="job-fair-overlay"></div>
     <div class="container job-fair-content">
       <h2 class="job-fair-title" data-i18n="banner_title">IN-PERSON PSW JOB FAIR</h2>
@@ -148,7 +148,7 @@
   </section>
 
   <!-- 3 Value Props Strip (Complimentary Assistant, Meet Career Needs, Internship) -->
-  <section class="value-props-section">
+  <section class="value-props-section" data-section-key="value_props">
     <div class="container">
       <div class="value-props-box">
         <div class="value-prop-col">
@@ -307,7 +307,8 @@
   </section>
 
   <!-- Join Our Free Class Section -->
-  <section class="free-class-section">
+  <!-- Join Our Free Class Section -->
+  <section class="free-class-section" data-section-key="free_class">
     <div class="free-class-overlay"></div>
     <div class="container free-class-content">
       <h2 class="free-class-title">Join Our <span class="highlight-gold">Free</span> Class</h2>
@@ -330,7 +331,7 @@
   </section>
 
   <!-- Financial Aid Section (#financial-aid) -->
-  <section id="financial-aid" class="financial-aid-section-vic">
+  <section id="financial-aid" class="financial-aid-section-vic" data-section-key="financial_aid">
     <div class="container">
       <div class="section-title-wrap">
         <span class="sub-badge-red" data-i18n="aid_badge">Government Assistance</span>
@@ -367,7 +368,7 @@
   </section>
 
   <!-- About Us & Leadership Section (#about) -->
-  <section id="about" class="about-leadership-section-vic">
+  <section id="about" class="about-leadership-section-vic" data-section-key="president_msg">
     <div class="container">
       <div class="section-title-wrap">
         <span class="sub-badge-red" data-i18n="lead_badge">Leadership &amp; Mission</span>
@@ -400,7 +401,7 @@
       </div>
 
       <!-- Campuses & Locations Grid inside About -->
-      <div class="about-campuses-box">
+      <div class="about-campuses-box" data-section-key="campuses">
         <h3 class="campuses-header-title" data-i18n="campus_title">Our Campuses &amp; Contact</h3>
         <p class="campuses-header-sub" data-i18n="campus_sub">Convenient locations in the Greater Toronto Area with modern lab facilities.</p>
         
@@ -429,6 +430,9 @@
 
     </div>
   </section>
+
+  <!-- Container for Newly Added Custom Dynamic Sections -->
+  <div id="dynamic-custom-sections"></div>
 
   <!-- What Our Students Say (Testimonials) -->
   <section class="students-say-section">

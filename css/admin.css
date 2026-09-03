@@ -1235,3 +1235,41 @@
   font-style: italic;
 }
 
+/* Dynamic Homepage CMS Section Styles */
+.cms-bilingual-tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid #E5E7EB;
+  padding-bottom: 8px;
+}
+
+.cms-lang-tab-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-order-move {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4b5563;
+  font-size: 12px;
+  padding: 2px 4px;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.btn-order-move:hover:not(:disabled) {
+  color: #2563eb;
+  transform: scale(1.2);
+}
+
+.btn-order-move:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+
