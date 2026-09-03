@@ -798,14 +798,19 @@ function applyDynamicHomepageSections(sections, lang) {
       // Inline Edit Controls for Admin
       if (isAdmin) {
         let editBtn = el.querySelector('.vic-inline-edit-btn');
+        const targetUrl = `/admin.html?edit_sec=${sec.id}#tab-homepage-sections`;
         if (!editBtn) {
           editBtn = document.createElement('a');
           editBtn.className = 'vic-inline-edit-btn';
-          editBtn.href = '/admin#homepage-sections';
+          editBtn.href = targetUrl;
           editBtn.target = '_blank';
-          editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Section: "${sec.section_name}"`;
+          editBtn.title = `Click to edit "${sec.section_name}" in Admin CMS`;
+          editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit "${sec.section_name}"`;
           el.style.position = 'relative';
           el.appendChild(editBtn);
+        } else {
+          editBtn.href = targetUrl;
+          editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit "${sec.section_name}"`;
         }
       }
     } else if (sec.category === 'custom' || !el) {
@@ -827,7 +832,7 @@ function applyDynamicHomepageSections(sections, lang) {
               </div>
             ` : ''}
           </div>
-          ${isAdmin ? `<a href="/admin#homepage-sections" target="_blank" class="vic-inline-edit-btn" style="position: absolute; top: 10px; right: 15px;"><i class="fa-solid fa-pen-to-square"></i> Edit Custom Section</a>` : ''}
+          ${isAdmin ? `<a href="/admin.html?edit_sec=${sec.id}#tab-homepage-sections" target="_blank" class="vic-inline-edit-btn" style="position: absolute; top: 10px; right: 15px;"><i class="fa-solid fa-pen-to-square"></i> Edit "${sec.section_name || 'Custom Section'}"</a>` : ''}
         </section>
       `;
     }

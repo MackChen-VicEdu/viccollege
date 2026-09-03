@@ -69,10 +69,22 @@
           this.loadStats();
           this.loadUsers();
           this.loadKnowledge();
-          this.loadHomepageSections();
+          await this.loadHomepageSections();
           this.loadSEOArticles();
           this.loadAISettings();
           this.loadChatLogs();
+
+          // Check URL query parameters or hash to jump straight to a section editor
+          const urlParams = new URLSearchParams(window.location.search);
+          const editSecId = urlParams.get('edit_sec') || (window.location.hash.startsWith('#edit-sec-') ? window.location.hash.replace('#edit-sec-', '') : null);
+          const targetTab = urlParams.get('tab') || (window.location.hash && !window.location.hash.startsWith('#edit-sec-') ? window.location.hash.replace('#', '').replace('tab-', '') : null);
+
+          if (editSecId) {
+            this.switchTab('homepage-sections');
+            await this.openSectionEditor(editSecId);
+          } else if (targetTab && document.getElementById(`tab-${targetTab}`)) {
+            this.switchTab(targetTab);
+          }
         } else {
           if (loginGuard) loginGuard.style.display = 'block';
           if (dashboardView) dashboardView.style.display = 'none';
@@ -86,24 +98,27 @@
       }
     },
 
+    switchTab(tabId) {
+      document.querySelectorAll('.admin-tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tabId);
+      });
+      document.querySelectorAll('.admin-tab-content').forEach(c => {
+        c.classList.toggle('active', c.id === `tab-${tabId}`);
+      });
+
+      if (tabId === 'overview') this.loadStats();
+      if (tabId === 'users') this.loadUsers();
+      if (tabId === 'knowledge') this.loadKnowledge();
+      if (tabId === 'homepage-sections') this.loadHomepageSections();
+      if (tabId === 'seo-articles') this.loadSEOArticles();
+      if (tabId === 'ai-settings') this.loadAISettings();
+      if (tabId === 'chat-logs') this.loadChatLogs();
+    },
+
     bindTabNavigation() {
       document.querySelectorAll('.admin-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const tabId = btn.dataset.tab;
-          document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-
-          btn.classList.add('active');
-          const target = document.getElementById(`tab-${tabId}`);
-          if (target) target.classList.add('active');
-
-          if (tabId === 'overview') this.loadStats();
-          if (tabId === 'users') this.loadUsers();
-          if (tabId === 'knowledge') this.loadKnowledge();
-          if (tabId === 'homepage-sections') this.loadHomepageSections();
-          if (tabId === 'seo-articles') this.loadSEOArticles();
-          if (tabId === 'ai-settings') this.loadAISettings();
-          if (tabId === 'chat-logs') this.loadChatLogs();
+          this.switchTab(btn.dataset.tab);
         });
       });
     },
@@ -1031,9 +1046,29 @@
       });
     },
 
-    openSectionEditor(secId) {
-      const sec = allHomepageSections.find(s => s.id === secId);
-      if (!sec) return;
+    async openSectionEditor(secId) {
+      const parsedId = parseInt(secId);
+      let sec = allHomepageSections.find(s => s.id === parsedId || s.section_key === String(secId).trim());
+
+      if (!sec && !isNaN(parsedId)) {
+        try {
+          const token = window.VicAuth.getToken();
+          const res = await fetch(`/api/admin/homepage/sections/${parsedId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await this.safeJson(res);
+          if (res.ok && data.section) {
+            sec = data.section;
+          }
+        } catch (e) {
+          console.warn('Could not fetch section directly:', e);
+        }
+      }
+
+      if (!sec) {
+        this.showToast(`Section #${secId} not found in database.`, 'warning');
+        return;
+      }
 
       const modal = document.getElementById('modal-section-editor');
       if (!modal) return;
