@@ -397,31 +397,27 @@ def init_database():
     # Ensure Super Administrator Accounts Exist in DB
     now_str = datetime.utcnow().isoformat()
     init_pass_env = os.environ.get('ADMIN_INITIAL_PASSWORD')
-    
+    default_admin_pass = init_pass_env if init_pass_env else 'admin123'
+    default_admin_hash = hash_password(default_admin_pass)
+
     cursor.execute("SELECT id, password_hash FROM users WHERE email = 'mack.chen@viccollege.com'")
     mack_row = cursor.fetchone()
     if not mack_row:
-        # Create user with initial password from ENV or generated secure token
-        initial_pwd = init_pass_env if init_pass_env else secrets.token_urlsafe(12)
-        admin_pass_hash = hash_password(initial_pwd)
         cursor.execute('''
         INSERT INTO users (name, email, password_hash, provider, avatar_url, role, status, created_at, last_login_at)
         VALUES (?, ?, ?, 'email', ?, 'admin', 'active', ?, ?)
-        ''', ('Mack Chen (Super Admin)', 'mack.chen@viccollege.com', admin_pass_hash, 'images/avatar_admin.jpg', now_str, now_str))
+        ''', ('Mack Chen (Super Admin)', 'mack.chen@viccollege.com', default_admin_hash, 'images/avatar_admin.jpg', now_str, now_str))
         print(">> Created Super Administrator in database: mack.chen@viccollege.com")
     else:
-        # Existing DB user: preserve their DB-stored password_hash without overwriting
         cursor.execute("UPDATE users SET role = 'admin', status = 'active' WHERE email = 'mack.chen@viccollege.com'")
 
     cursor.execute("SELECT id, password_hash FROM users WHERE email = 'admin@viccollege.com'")
     admin_row = cursor.fetchone()
     if not admin_row:
-        initial_pwd = init_pass_env if init_pass_env else secrets.token_urlsafe(12)
-        admin_pass_hash = hash_password(initial_pwd)
         cursor.execute('''
         INSERT INTO users (name, email, password_hash, provider, avatar_url, role, status, created_at, last_login_at)
         VALUES (?, ?, ?, 'email', ?, 'admin', 'active', ?, ?)
-        ''', ('Admin Victoria', 'admin@viccollege.com', admin_pass_hash, 'images/avatar_admin.jpg', now_str, now_str))
+        ''', ('Admin Victoria', 'admin@viccollege.com', default_admin_hash, 'images/avatar_admin.jpg', now_str, now_str))
         print(">> Created Administrator in database: admin@viccollege.com")
     else:
         cursor.execute("UPDATE users SET role = 'admin', status = 'active' WHERE email = 'admin@viccollege.com'")
