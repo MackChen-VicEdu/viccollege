@@ -164,15 +164,18 @@
 
       // 3. Add User Modal
       const openAddModalBtn = document.querySelector('.js-open-add-user-modal');
-      const closeAddModalBtn = document.querySelector('.js-close-add-user-modal');
+      const closeAddModalBtns = document.querySelectorAll('.js-close-add-user-modal');
       const addModal = document.getElementById('modal-add-user');
 
       if (openAddModalBtn && addModal) {
         openAddModalBtn.onclick = () => addModal.classList.add('active');
       }
-      if (closeAddModalBtn && addModal) {
-        closeAddModalBtn.onclick = () => addModal.classList.remove('active');
-      }
+      closeAddModalBtns.forEach(btn => {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          if (addModal) addModal.classList.remove('active');
+        };
+      });
 
       const addUserForm = document.getElementById('form-admin-add-user');
       if (addUserForm) {
@@ -193,7 +196,7 @@
               },
               body: JSON.stringify({ name, email, password, role })
             });
-            const data = await res.json();
+            const data = await this.safeJson(res);
             if (!res.ok) throw new Error(data.error || 'Failed to create user');
 
             this.showToast('User account created successfully!', 'success');
@@ -209,7 +212,7 @@
 
       // 3b. Knowledge Base Modal & Filters
       const openAddKbBtn = document.querySelector('.js-open-add-kb-modal');
-      const closeKbModalBtn = document.querySelector('.js-close-kb-modal');
+      const closeKbModalBtns = document.querySelectorAll('.js-close-kb-modal');
       const kbModal = document.getElementById('modal-kb-editor');
       const kbForm = document.getElementById('form-admin-kb-editor');
 
@@ -223,9 +226,12 @@
         };
       }
 
-      if (closeKbModalBtn && kbModal) {
-        closeKbModalBtn.onclick = () => kbModal.classList.remove('active');
-      }
+      closeKbModalBtns.forEach(btn => {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          if (kbModal) kbModal.classList.remove('active');
+        };
+      });
 
       if (kbForm) {
         kbForm.addEventListener('submit', async (e) => {
@@ -250,7 +256,7 @@
               },
               body: JSON.stringify({ title, category, priority, keywords, content })
             });
-            const data = await res.json();
+            const data = await this.safeJson(res);
             if (!res.ok) throw new Error(data.error || 'Failed to save knowledge article');
 
             this.showToast(data.message || 'Knowledge article saved successfully!', 'success');
@@ -275,7 +281,7 @@
 
       // 3bb. Homepage Section CMS Modal & Event Listeners
       const openAddSecBtn = document.getElementById('btn-add-homepage-section');
-      const closeSecModalBtn = document.querySelector('.js-close-sec-modal');
+      const closeSecModalBtns = document.querySelectorAll('.js-close-sec-modal');
       const secModal = document.getElementById('modal-section-editor');
       const secForm = document.getElementById('form-admin-sec-editor');
 
@@ -292,9 +298,28 @@
         };
       }
 
-      if (closeSecModalBtn && secModal) {
-        closeSecModalBtn.onclick = () => secModal.classList.remove('active');
-      }
+      closeSecModalBtns.forEach(btn => {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          if (secModal) secModal.classList.remove('active');
+        };
+      });
+
+      // Universal Backdrop click to close modals
+      document.querySelectorAll('.vic-auth-modal-backdrop').forEach(modalBackdrop => {
+        modalBackdrop.addEventListener('click', (e) => {
+          if (e.target === modalBackdrop) {
+            modalBackdrop.classList.remove('active');
+          }
+        });
+      });
+
+      // Escape key to close active modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.vic-auth-modal-backdrop.active').forEach(m => m.classList.remove('active'));
+        }
+      });
 
       // Bilingual tabs in CMS modal
       document.querySelectorAll('.cms-lang-tab-btn').forEach(btn => {
@@ -590,16 +615,19 @@
       }
 
       const inspectSitemapBtn = document.querySelector('.js-inspect-sitemap');
-      const closeSitemapModalBtn = document.querySelector('.js-close-sitemap-modal');
+      const closeSitemapModalBtns = document.querySelectorAll('.js-close-sitemap-modal');
       const sitemapModal = document.getElementById('modal-sitemap-viewer');
       const copyXmlBtn = document.querySelector('.js-copy-xml-btn');
 
       if (inspectSitemapBtn) {
         inspectSitemapBtn.onclick = () => this.inspectSitemap();
       }
-      if (closeSitemapModalBtn && sitemapModal) {
-        closeSitemapModalBtn.onclick = () => sitemapModal.classList.remove('active');
-      }
+      closeSitemapModalBtns.forEach(btn => {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          if (sitemapModal) sitemapModal.classList.remove('active');
+        };
+      });
       if (copyXmlBtn) {
         copyXmlBtn.onclick = () => {
           const xmlPre = document.getElementById('sitemap-xml-pre');
