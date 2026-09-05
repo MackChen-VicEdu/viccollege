@@ -779,7 +779,6 @@ function renderDynamicPrograms(lang = currentLanguage) {
       <div id="${escapeAppHtml(prog.slug)}" class="${rowClass}">
         <div class="program-img-wrapper">
           <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
-          <div class="vic-watermark-tag">VIC COLLEGE</div>
         </div>
         <div class="program-info-col">
           <h2 class="program-heading">${escapeAppHtml(title)}</h2>
