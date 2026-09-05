@@ -38,11 +38,11 @@
           <a href="#programs" class="main-nav-link" data-i18n="nav_programs">Programs <i class="fa-solid fa-angle-down" style="font-size: 11px;"></i></a>
           <div class="nav-dropdown">
             <a href="#psw" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a>
-            <a href="#fullstack" data-i18n="prog_tech_title">Full Stack Web Technician</a>
             <a href="#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
             <a href="#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a>
             <a href="#acupuncture" data-i18n="prog_acu_title">Acupuncture (Non-Vocational)</a>
             <a href="#electrician" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
+            <a href="#fullstack" data-i18n="prog_tech_title">Full Stack Web Technician</a>
           </div>
         </div>
         <div class="main-nav-item">
@@ -191,7 +191,88 @@
         </div>
       </div>
 
-      <!-- Program 2: Full Stack (Info Left, Image Right) -->
+      <!-- Program 2: Accounting (Info Left, Image Right) -->
+      <div id="accounting" class="program-row reverse-layout">
+        <div class="program-img-wrapper">
+          <img src="images/accounting.jpg" alt="Computerized Accounting">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_acc_title">Accounting, Tax and Payroll</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_acc_desc">The program consists of 30 weeks of intensive instructor led hands on training and practical exercises under the supervision of industry-experienced instructors.</p>
+          <p class="program-text">Our Computerized Accounting program provides students with solid knowledge and skills to work as a bookkeeper, an accounting assistant, or accounts receivable/ accounts payable clerk, and proficiencies appropriate for careers in accounting and payroll administration.</p>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="accounting">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 3: Early Childcare Assistant (Image Left, Info Right) -->
+      <div id="eca" class="program-row">
+        <div class="program-img-wrapper">
+          <img src="images/eca.jpg" alt="Early Childcare Assistant ECA">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_eca_title">Early Childcare Assistant</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_eca_desc">We provide our students with the opportunity for personal growth and success by providing an intimate and friendly learning environment that emphasizes academic &amp; professional excellence. Subjects included in the program:</p>
+          <ul class="program-bullet-list">
+            <li>Interpersonal Communication</li>
+            <li>Health, Safety and Nutrition</li>
+            <li>Child Development</li>
+            <li>Customer Service</li>
+            <li>Operations</li>
+            <li>Creative Expression</li>
+            <li>Field Placement</li>
+          </ul>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="eca">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 4: Acupuncture (Info Left, Image Right) -->
+      <div id="acupuncture" class="program-row reverse-layout">
+        <div class="program-img-wrapper">
+          <img src="images/acupuncture.jpg" alt="Acupuncture Program">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_acu_title">Acupuncture</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_acu_desc">Acupuncture program is a Non-Vocational Program. This program does not require approval under the Ontario Career Colleges Act, 2005.</p>
+          <p class="program-text">Our Acupuncture program is designed for individuals seeking personal interest learning, wellness knowledge, or complementary health education. This program provides foundational theory, traditional concepts, and practical demonstrations for personal enrichment.</p>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="acupuncture">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 5: Electrician (Image Left, Info Right) -->
+      <div id="electrician" class="program-row">
+        <div class="program-img-wrapper">
+          <img src="images/electrician.jpg" alt="Electrician Training">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading" data-i18n="prog_elec_title">Electrician (Construction &amp; Maintenance)</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text" data-i18n="prog_elec_desc">Becoming an Electrician in Ontario — Series Classes</p>
+          <ul class="program-bullet-list" style="grid-template-columns: 1fr;">
+            <li>Instructor: working in one of the biggest electrician contractors in Ontario with 20+ years</li>
+            <li>Placement in government projects and get real and valuable experiences</li>
+            <li>1 v 1 hands-on teaching in official recognized Apprenticeship Base and get solid techniques in a short time</li>
+            <li>Exclusive opportunity to be referred to a job after class completion</li>
+          </ul>
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="electrician">
+            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Program 6: Full Stack (Info Left, Image Right) -->
       <div id="fullstack" class="program-row reverse-layout">
         <div class="program-img-wrapper">
           <img src="images/fullstack.jpg" alt="Full Stack Web Technician">
@@ -217,87 +298,6 @@
             <li>Design Pattern</li>
           </ul>
           <button type="button" class="btn-learn-more js-open-prog-modal" data-program="tech">
-            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Program 3: Accounting (Image Left, Info Right) -->
-      <div id="accounting" class="program-row">
-        <div class="program-img-wrapper">
-          <img src="images/accounting.jpg" alt="Computerized Accounting">
-          <div class="vic-watermark-tag">VIC COLLEGE</div>
-        </div>
-        <div class="program-info-col">
-          <h2 class="program-heading" data-i18n="prog_acc_title">Accounting, Tax and Payroll</h2>
-          <div class="vic-divider"></div>
-          <p class="program-text" data-i18n="prog_acc_desc">The program consists of 30 weeks of intensive instructor led hands on training and practical exercises under the supervision of industry-experienced instructors.</p>
-          <p class="program-text">Our Computerized Accounting program provides students with solid knowledge and skills to work as a bookkeeper, an accounting assistant, or accounts receivable/ accounts payable clerk, and proficiencies appropriate for careers in accounting and payroll administration.</p>
-          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="accounting">
-            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Program 4: Early Childcare Assistant (Info Left, Image Right) -->
-      <div id="eca" class="program-row reverse-layout">
-        <div class="program-img-wrapper">
-          <img src="images/eca.jpg" alt="Early Childcare Assistant ECA">
-          <div class="vic-watermark-tag">VIC COLLEGE</div>
-        </div>
-        <div class="program-info-col">
-          <h2 class="program-heading" data-i18n="prog_eca_title">Early Childcare Assistant</h2>
-          <div class="vic-divider"></div>
-          <p class="program-text" data-i18n="prog_eca_desc">We provide our students with the opportunity for personal growth and success by providing an intimate and friendly learning environment that emphasizes academic &amp; professional excellence. Subjects included in the program:</p>
-          <ul class="program-bullet-list">
-            <li>Interpersonal Communication</li>
-            <li>Health, Safety and Nutrition</li>
-            <li>Child Development</li>
-            <li>Customer Service</li>
-            <li>Operations</li>
-            <li>Creative Expression</li>
-            <li>Field Placement</li>
-          </ul>
-          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="eca">
-            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Program 5: Acupuncture (Image Left, Info Right) -->
-      <div id="acupuncture" class="program-row">
-        <div class="program-img-wrapper">
-          <img src="images/acupuncture.jpg" alt="Acupuncture Program">
-          <div class="vic-watermark-tag">VIC COLLEGE</div>
-        </div>
-        <div class="program-info-col">
-          <h2 class="program-heading" data-i18n="prog_acu_title">Acupuncture</h2>
-          <div class="vic-divider"></div>
-          <p class="program-text" data-i18n="prog_acu_desc">Acupuncture program is a Non-Vocational Program. This program does not require approval under the Ontario Career Colleges Act, 2005.</p>
-          <p class="program-text">Our Acupuncture program is designed for individuals seeking personal interest learning, wellness knowledge, or complementary health education. This program provides foundational theory, traditional concepts, and practical demonstrations for personal enrichment.</p>
-          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="acupuncture">
-            <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Program 6: Electrician (Info Left, Image Right) -->
-      <div id="electrician" class="program-row reverse-layout">
-        <div class="program-img-wrapper">
-          <img src="images/electrician.jpg" alt="Electrician Training">
-          <div class="vic-watermark-tag">VIC COLLEGE</div>
-        </div>
-        <div class="program-info-col">
-          <h2 class="program-heading" data-i18n="prog_elec_title">Electrician (Construction &amp; Maintenance)</h2>
-          <div class="vic-divider"></div>
-          <p class="program-text" data-i18n="prog_elec_desc">Becoming an Electrician in Ontario — Series Classes</p>
-          <ul class="program-bullet-list" style="grid-template-columns: 1fr;">
-            <li>Instructor: working in one of the biggest electrician contractors in Ontario with 20+ years</li>
-            <li>Placement in government projects and get real and valuable experiences</li>
-            <li>1 v 1 hands-on teaching in official recognized Apprenticeship Base and get solid techniques in a short time</li>
-            <li>Exclusive opportunity to be referred to a job after class completion</li>
-          </ul>
-          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="electrician">
             <span data-i18n="btn_learn_more">Learn More</span> <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
@@ -561,9 +561,9 @@
           <p style="font-size: 13px; color: #888; margin-bottom: 12px;">Approved as a vocational program under the <i>Ontario Career Colleges Act, 2005</i></p>
           <ul class="footer-prog-list">
             <li><a href="#psw" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a></li>
-            <li><a href="#fullstack" data-i18n="prog_tech_title">Full Stack Web Technician</a></li>
             <li><a href="#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
             <li><a href="#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a></li>
+            <li><a href="#fullstack" data-i18n="prog_tech_title">Full Stack Web Technician</a></li>
           </ul>
         </div>
 
