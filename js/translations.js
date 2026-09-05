@@ -479,10 +479,6 @@ async function fetchDatabaseTranslations() {
       if (typeof window.applyLanguage === 'function') {
         window.applyLanguage(curLang);
       }
-      if (typeof window.applyDynamicHomepageSections === 'function' && data.sections) {
-        window.homepageSectionsCache = data.sections;
-        window.applyDynamicHomepageSections(data.sections, curLang);
-      }
     }
   } catch (err) {
     console.warn('Could not fetch SQLite database translations, using built-in defaults:', err);

@@ -277,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initConsultationForm();
   initMobileMenu();
   initSmoothScroll();
-  initDynamicHomepageSections();
   
   // Initialize Victoria AI Assistant
   if (typeof window.initVicChatbot === 'function') {
@@ -298,11 +297,6 @@ function initLanguage() {
       window.currentLanguage = currentLanguage;
       localStorage.setItem('vic_lang', currentLanguage);
       applyLanguage(currentLanguage);
-      
-      // Update dynamic homepage sections
-      if (window.homepageSectionsCache && window.homepageSectionsCache.length > 0) {
-        applyDynamicHomepageSections(window.homepageSectionsCache, currentLanguage);
-      }
 
       // Update testimonial text
       updateTestimonialDisplay();
@@ -359,7 +353,6 @@ function applyLanguage(lang) {
 
 // Expose globally
 window.applyLanguage = applyLanguage;
-window.applyDynamicHomepageSections = applyDynamicHomepageSections;
 
 // 2. Testimonial Navigation
 function initTestimonialNav() {
@@ -690,163 +683,6 @@ function openPublicArticleModal(article) {
   }
 
   modal.classList.add('active');
-}
-
-// ----------------------------------------------------
-// Dynamic Homepage Sections CMS Loader & Renderer
-// ----------------------------------------------------
-window.homepageSectionsCache = [];
-
-async function initDynamicHomepageSections() {
-  try {
-    const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/homepage/sections') : '/api/homepage/sections';
-    const res = await fetch(apiUrl);
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data && data.sections) {
-      window.homepageSectionsCache = data.sections;
-      applyDynamicHomepageSections(data.sections, currentLanguage);
-    }
-  } catch (e) {
-    console.warn('Dynamic homepage sections fetch error:', e);
-  }
-}
-
-function applyDynamicHomepageSections(sections, lang) {
-  if (!sections || !Array.isArray(sections)) return;
-
-  const isZh = lang === 'zh';
-  const customContainer = document.getElementById('dynamic-custom-sections');
-  let customHtml = '';
-
-  const user = window.VicAuth?.getUser();
-  const isAdmin = user && user.role === 'admin';
-
-  sections.forEach(sec => {
-    const key = sec.section_key;
-    const title = isZh ? (sec.title_zh || sec.title_en) : (sec.title_en || sec.title_zh);
-    const subtitle = isZh ? (sec.subtitle_zh || sec.subtitle_en) : (sec.subtitle_en || sec.subtitle_zh);
-    const badge = isZh ? (sec.badge_zh || sec.badge_en) : (sec.badge_en || sec.badge_zh);
-    const ctaText = isZh ? (sec.cta_text_zh || sec.cta_text_en) : (sec.cta_text_en || sec.cta_text_zh);
-    const content = isZh ? (sec.content_zh || sec.content_en) : (sec.content_en || sec.content_zh);
-
-    // Target matching DOM section
-    const el = document.querySelector(`[data-section-key="${key}"]`);
-    if (el) {
-      // 1. Hero Section
-      if (key === 'hero') {
-        const h1 = el.querySelector('.hero-headline-text');
-        if (h1 && title) h1.textContent = title;
-        const sub = el.querySelector('.hero-subtext');
-        if (sub && subtitle) sub.textContent = subtitle;
-        const cta = el.querySelector('.btn-vic-red');
-        if (cta) {
-          if (ctaText) cta.textContent = ctaText;
-          if (sec.cta_link) cta.href = sec.cta_link;
-        }
-        if (sec.image_url) {
-          el.style.backgroundImage = `url('${sec.image_url}')`;
-        }
-      }
-
-      // 2. Job Fair Banner
-      if (key === 'job_fair') {
-        const titleEl = el.querySelector('.job-fair-title');
-        if (titleEl && title) titleEl.textContent = title;
-        const subEl = el.querySelector('.job-fair-subtitle');
-        if (subEl && subtitle) subEl.textContent = subtitle;
-        const ctaEl = el.querySelector('.btn-vic-red');
-        if (ctaEl) {
-          if (ctaText) ctaEl.textContent = ctaText;
-          if (sec.cta_link) ctaEl.href = sec.cta_link;
-        }
-        if (sec.image_url) {
-          el.style.backgroundImage = `url('${sec.image_url}')`;
-        }
-      }
-
-      // 3. Free Class Section
-      if (key === 'free_class') {
-        const titleEl = el.querySelector('.free-class-title');
-        if (titleEl && title) titleEl.innerHTML = title.includes('Free') ? title.replace('Free', '<span class="highlight-gold">Free</span>') : title;
-        const subEl = el.querySelector('.free-class-subtitle');
-        if (subEl && subtitle) subEl.textContent = subtitle;
-        const btn = el.querySelector('.metform-submit-btn');
-        if (btn && ctaText) btn.textContent = ctaText;
-      }
-
-      // 4. Financial Aid Section
-      if (key === 'financial_aid') {
-        const badgeEl = el.querySelector('.sub-badge-red');
-        if (badgeEl && badge) badgeEl.textContent = badge;
-        const titleEl = el.querySelector('.section-headline-serif');
-        if (titleEl && title) titleEl.textContent = title;
-        const subEl = el.querySelector('.section-subtitle-center');
-        if (subEl && subtitle) subEl.textContent = subtitle;
-        const ctaEl = el.querySelector('.js-check-aid-cta');
-        if (ctaEl && ctaText) ctaEl.textContent = ctaText;
-      }
-
-      // 5. Value Props
-      if (key === 'value_props') {
-        const titleEl = el.querySelector('.section-headline-serif');
-        if (titleEl && title) titleEl.textContent = title;
-      }
-
-      // 6. Campuses
-      if (key === 'campuses') {
-        const titleEl = el.querySelector('.campuses-header-title');
-        if (titleEl && title) titleEl.textContent = title;
-        const subEl = el.querySelector('.campuses-header-sub');
-        if (subEl && subtitle) subEl.textContent = subtitle;
-      }
-
-      // Inline Edit Controls for Admin
-      if (isAdmin) {
-        let editBtn = el.querySelector('.vic-inline-edit-btn');
-        const targetUrl = `/admin.html?edit_sec=${sec.id}#tab-homepage-sections`;
-        if (!editBtn) {
-          editBtn = document.createElement('a');
-          editBtn.className = 'vic-inline-edit-btn';
-          editBtn.href = targetUrl;
-          editBtn.target = '_blank';
-          editBtn.title = `Click to edit "${sec.section_name}" in Admin CMS`;
-          editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit "${sec.section_name}"`;
-          el.style.position = 'relative';
-          el.appendChild(editBtn);
-        } else {
-          editBtn.href = targetUrl;
-          editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit "${sec.section_name}"`;
-        }
-      }
-    } else if (sec.category === 'custom' || !el) {
-      // Render as custom announcement block
-      customHtml += `
-        <section class="dynamic-custom-banner" style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); color: #fff; padding: 45px 0; margin: 30px 0; position: relative;">
-          <div class="container" style="display: flex; justify-content: space-between; align-items: center; gap: 30px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 280px;">
-              ${badge ? `<span style="background: #dc2626; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 10px;">${badge}</span>` : ''}
-              <h2 style="font-size: 26px; font-family: var(--font-serif); margin-bottom: 10px; color: #fff;">${title}</h2>
-              ${subtitle ? `<p style="font-size: 15px; color: #cbd5e1; margin-bottom: 12px;">${subtitle}</p>` : ''}
-              ${content ? `<div style="font-size: 14px; color: #94a3b8; line-height: 1.6;">${content}</div>` : ''}
-            </div>
-            ${ctaText ? `
-              <div>
-                <a href="${sec.cta_link || '#consultation'}" class="btn-vic-red" style="padding: 12px 26px; border-radius: 6px; text-decoration: none; font-weight: 700;">
-                  ${ctaText} <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
-                </a>
-              </div>
-            ` : ''}
-          </div>
-          ${isAdmin ? `<a href="/admin.html?edit_sec=${sec.id}#tab-homepage-sections" target="_blank" class="vic-inline-edit-btn" style="position: absolute; top: 10px; right: 15px;"><i class="fa-solid fa-pen-to-square"></i> Edit "${sec.section_name || 'Custom Section'}"</a>` : ''}
-        </section>
-      `;
-    }
-  });
-
-  if (customContainer) {
-    customContainer.innerHTML = customHtml;
-  }
 }
 
 

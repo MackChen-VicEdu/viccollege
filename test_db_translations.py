@@ -25,7 +25,6 @@ class TestDatabaseTranslations(unittest.TestCase):
         data = res.get_json()
         self.assertIn('en', data)
         self.assertIn('zh', data)
-        self.assertIn('sections', data)
         self.assertIn('topbar_call', data['en'])
         self.assertIn('topbar_call', data['zh'])
         self.assertEqual(data['en']['topbar_call'], 'Call Us: 416-665-6668')

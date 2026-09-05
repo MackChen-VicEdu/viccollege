@@ -10,7 +10,6 @@
   let allUsers = [];
   let allChatLogs = [];
   let allArticles = [];
-  let allHomepageSections = [];
   let currentPreviewArticle = null;
 
   const fetchApi = (url, opts) => {
@@ -74,20 +73,15 @@
           this.loadStats();
           this.loadUsers();
           this.loadKnowledge();
-          await this.loadHomepageSections();
           this.loadSEOArticles();
           this.loadAISettings();
           this.loadChatLogs();
 
-          // Check URL query parameters or hash to jump straight to a section editor
+          // Check URL query parameters or hash to jump straight to a tab
           const urlParams = new URLSearchParams(window.location.search);
-          const editSecId = urlParams.get('edit_sec') || (window.location.hash.startsWith('#edit-sec-') ? window.location.hash.replace('#edit-sec-', '') : null);
-          const targetTab = urlParams.get('tab') || (window.location.hash && !window.location.hash.startsWith('#edit-sec-') ? window.location.hash.replace('#', '').replace('tab-', '') : null);
+          const targetTab = urlParams.get('tab') || (window.location.hash ? window.location.hash.replace('#', '').replace('tab-', '') : null);
 
-          if (editSecId) {
-            this.switchTab('homepage-sections');
-            await this.openSectionEditor(editSecId);
-          } else if (targetTab && document.getElementById(`tab-${targetTab}`)) {
+          if (targetTab && document.getElementById(`tab-${targetTab}`)) {
             this.switchTab(targetTab);
           }
         } else {
@@ -114,7 +108,6 @@
       if (tabId === 'overview') this.loadStats();
       if (tabId === 'users') this.loadUsers();
       if (tabId === 'knowledge') this.loadKnowledge();
-      if (tabId === 'homepage-sections') this.loadHomepageSections();
       if (tabId === 'seo-articles') this.loadSEOArticles();
       if (tabId === 'ai-settings') this.loadAISettings();
       if (tabId === 'chat-logs') this.loadChatLogs();
@@ -299,32 +292,6 @@
         kbCategoryFilter.addEventListener('change', () => this.loadKnowledge());
       }
 
-      // 3bb. Homepage Section CMS Modal & Event Listeners
-      const openAddSecBtn = document.getElementById('btn-add-homepage-section');
-      const closeSecModalBtns = document.querySelectorAll('.js-close-sec-modal');
-      const secModal = document.getElementById('modal-section-editor');
-      const secForm = document.getElementById('form-admin-sec-editor');
-
-      if (openAddSecBtn && secModal) {
-        openAddSecBtn.onclick = () => {
-          document.getElementById('sec-edit-id').value = '';
-          document.getElementById('sec-modal-title').innerHTML = '<i class="fa-solid fa-plus" style="color: #2563eb;"></i> Add New Home Page Section';
-          document.getElementById('sec-modal-submit-btn').textContent = 'Create Section';
-          if (secForm) secForm.reset();
-          document.getElementById('sec-input-order').value = (allHomepageSections.length + 1) * 1;
-          document.getElementById('sec-input-status').value = '1';
-          this.switchCmsLanguage('en');
-          secModal.classList.add('active');
-        };
-      }
-
-      closeSecModalBtns.forEach(btn => {
-        btn.onclick = (e) => {
-          e.preventDefault();
-          if (secModal) secModal.classList.remove('active');
-        };
-      });
-
       // Universal Backdrop click to close modals
       document.querySelectorAll('.vic-auth-modal-backdrop').forEach(modalBackdrop => {
         modalBackdrop.addEventListener('click', (e) => {
@@ -340,78 +307,6 @@
           document.querySelectorAll('.vic-auth-modal-backdrop.active').forEach(m => m.classList.remove('active'));
         }
       });
-
-      // Bilingual tabs in CMS modal
-      document.querySelectorAll('.cms-lang-tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const lang = btn.dataset.lang;
-          this.switchCmsLanguage(lang);
-        });
-      });
-
-      if (secForm) {
-        secForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const editId = document.getElementById('sec-edit-id').value;
-          const section_name = document.getElementById('sec-input-name').value.trim();
-          const section_key = document.getElementById('sec-input-key').value.trim();
-          const category = document.getElementById('sec-input-category').value;
-          const order_index = parseInt(document.getElementById('sec-input-order').value) || 1;
-          const is_active = document.getElementById('sec-input-status').value === '1';
-
-          const title_en = document.getElementById('sec-input-title-en').value.trim();
-          const subtitle_en = document.getElementById('sec-input-subtitle-en').value.trim();
-          const badge_en = document.getElementById('sec-input-badge-en').value.trim();
-          const content_en = document.getElementById('sec-input-content-en').value.trim();
-          const cta_text_en = document.getElementById('sec-input-cta-en').value.trim();
-
-          const title_zh = document.getElementById('sec-input-title-zh').value.trim();
-          const subtitle_zh = document.getElementById('sec-input-subtitle-zh').value.trim();
-          const badge_zh = document.getElementById('sec-input-badge-zh').value.trim();
-          const content_zh = document.getElementById('sec-input-content-zh').value.trim();
-          const cta_text_zh = document.getElementById('sec-input-cta-zh').value.trim();
-
-          const cta_link = document.getElementById('sec-input-cta-link').value.trim();
-          const image_url = document.getElementById('sec-input-image').value.trim();
-
-          try {
-            const token = window.VicAuth.getToken();
-            const method = editId ? 'PUT' : 'POST';
-            const url = editId ? `/api/admin/homepage/sections/${editId}` : '/api/admin/homepage/sections';
-
-            const payload = {
-              section_name, section_key, category, order_index, is_active,
-              title_en, subtitle_en, badge_en, content_en, cta_text_en,
-              title_zh, subtitle_zh, badge_zh, content_zh, cta_text_zh,
-              cta_link, image_url
-            };
-
-            const res = await fetchApi(url, {
-              method,
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Failed to save section');
-
-            this.showToast(data.message || 'Section saved successfully!', 'success');
-            if (secModal) secModal.classList.remove('active');
-            secForm.reset();
-            this.loadHomepageSections();
-            this.loadStats();
-          } catch (err) {
-            this.showToast(err.message, 'error');
-          }
-        });
-      }
-
-      const secSearchInput = document.getElementById('sec-search-input');
-      const secCategoryFilter = document.getElementById('sec-category-filter');
-      if (secSearchInput) secSearchInput.addEventListener('input', () => this.loadHomepageSections());
-      if (secCategoryFilter) secCategoryFilter.addEventListener('change', () => this.loadHomepageSections());
 
       // 3c. Knowledge Base Query Tester
       const openTestKbBtn = document.querySelector('.js-open-test-kb-modal');
@@ -881,8 +776,6 @@
           if (totalArtEl) totalArtEl.textContent = data.total_articles || 0;
           const activeArtEl = document.getElementById('stat-active-articles');
           if (activeArtEl) activeArtEl.textContent = data.active_articles || 0;
-          const hpSecEl = document.getElementById('stat-homepage-sections');
-          if (hpSecEl) hpSecEl.textContent = data.homepage_sections || 0;
           const sitemapUrlsEl = document.getElementById('stat-sitemap-urls');
           if (sitemapUrlsEl) sitemapUrlsEl.textContent = data.sitemap_urls || 5;
           document.getElementById('stat-google-users').textContent = data.google_users || 0;
@@ -896,296 +789,6 @@
         }
       } catch (e) {
         console.warn('Failed to load stats:', e);
-      }
-    },
-
-    // Switch bilingual language tab in CMS editor modal
-    switchCmsLanguage(lang) {
-      document.querySelectorAll('.cms-lang-tab-btn').forEach(b => {
-        if (b.dataset.lang === lang) {
-          b.classList.add('active');
-          b.style.background = '#2563eb';
-          b.style.color = '#fff';
-          b.style.border = 'none';
-        } else {
-          b.classList.remove('active');
-          b.style.background = '#F3F4F6';
-          b.style.color = '#374151';
-          b.style.border = '1px solid #D1D5DB';
-        }
-      });
-      const enPane = document.getElementById('cms-fields-en');
-      const zhPane = document.getElementById('cms-fields-zh');
-      if (enPane) enPane.style.display = lang === 'en' ? 'block' : 'none';
-      if (zhPane) zhPane.style.display = lang === 'zh' ? 'block' : 'none';
-    },
-
-    // Load & Render Dynamic Homepage Sections
-    async loadHomepageSections() {
-      const tbody = document.getElementById('homepage-sections-tbody');
-      const search = document.getElementById('sec-search-input')?.value || '';
-      const category = document.getElementById('sec-category-filter')?.value || 'all';
-
-      try {
-        const token = window.VicAuth.getToken();
-        if (!token) {
-          if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:25px; color:#6b7280;">🔒 Please sign in as an administrator to load and edit homepage sections.</td></tr>`;
-          return;
-        }
-
-        const queryParams = new URLSearchParams();
-        if (search) queryParams.set('search', search);
-        if (category && category !== 'all') queryParams.set('category', category);
-
-        const res = await fetchApi(`/api/admin/homepage/sections?${queryParams.toString()}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await this.safeJson(res);
-        if (!res.ok) {
-          throw new Error(data.error || `HTTP ${res.status}: Failed to load sections`);
-        }
-        if (data.sections) {
-          allHomepageSections = data.sections;
-          this.renderHomepageSectionsTable(data.sections);
-        }
-      } catch (e) {
-        if (tbody) {
-          tbody.innerHTML = `
-            <tr>
-              <td colspan="6" style="color: #dc2626; text-align: center; padding: 25px;">
-                <div style="font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-triangle-exclamation"></i> Error: ${this.escapeHtml(e.message)}</div>
-                <div style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">Make sure you are logged in at <a href="/admin.html" style="color: #2563eb;">http://localhost:5055/admin.html</a></div>
-                <button type="button" class="btn-admin-secondary" style="font-size: 12px; padding: 4px 12px;" onclick="AdminApp.loadHomepageSections()"><i class="fa-solid fa-rotate-right"></i> Retry Loading</button>
-              </td>
-            </tr>
-          `;
-        }
-      }
-    },
-
-    renderHomepageSectionsTable(sections) {
-      const tbody = document.getElementById('homepage-sections-tbody');
-      if (!tbody) return;
-
-      if (!sections || sections.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: #666;">No homepage sections found matching your filter criteria.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = sections.map((sec, idx) => {
-        const isActive = sec.is_active === 1;
-        const statusBadge = isActive
-          ? '<span class="status-badge-pill published">Active on Site</span>'
-          : '<span class="status-badge-pill draft">Hidden / Draft</span>';
-
-        const categoryBadge = `<span class="geo-badge-pill" style="font-size: 11px; margin-top: 4px; display: inline-block;">${this.escapeHtml(sec.category)}</span>`;
-
-        return `
-          <tr data-sec-id="${sec.id}">
-            <td style="text-align: center;">
-              <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
-                <button type="button" class="btn-order-move js-sec-move-up" data-id="${sec.id}" ${idx === 0 ? 'disabled' : ''} title="Move Up" style="background: none; border: none; cursor: pointer; color: #4b5563; font-size: 11px;">
-                  <i class="fa-solid fa-chevron-up"></i>
-                </button>
-                <span style="font-weight: 700; font-size: 13px; color: #1e293b;">${sec.order_index}</span>
-                <button type="button" class="btn-order-move js-sec-move-down" data-id="${sec.id}" ${idx === sections.length - 1 ? 'disabled' : ''} title="Move Down" style="background: none; border: none; cursor: pointer; color: #4b5563; font-size: 11px;">
-                  <i class="fa-solid fa-chevron-down"></i>
-                </button>
-              </div>
-            </td>
-            <td>
-              <code style="background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 12px;">${this.escapeHtml(sec.section_key)}</code>
-            </td>
-            <td>
-              <strong>${this.escapeHtml(sec.section_name)}</strong><br>
-              ${categoryBadge}
-            </td>
-            <td>
-              <div style="font-size: 13px; color: #1e293b; font-weight: 600;">
-                <span style="color: #2563eb; font-size: 11px;">EN:</span> ${this.escapeHtml(sec.title_en || '(No English Title)')}
-              </div>
-              <div style="font-size: 12.5px; color: #854d0e; margin-top: 3px;">
-                <span style="color: #dc2626; font-size: 11px;">ZH:</span> ${this.escapeHtml(sec.title_zh || '(无中文标题)')}
-              </div>
-              ${sec.cta_text_en ? `<div style="font-size: 11.5px; color: #64748b; margin-top: 2px;"><i class="fa-solid fa-link" style="font-size: 10px;"></i> CTA: ${this.escapeHtml(sec.cta_text_en)} &rarr; ${this.escapeHtml(sec.cta_link || '#')}</div>` : ''}
-            </td>
-            <td style="text-align: center;">
-              ${statusBadge}
-            </td>
-            <td style="text-align: right;">
-              <div style="display: flex; gap: 6px; justify-content: flex-end;">
-                <button type="button" class="btn-table-action edit js-edit-sec-btn" data-id="${sec.id}" title="Edit Section Content & Titles">
-                  <i class="fa-solid fa-pen"></i> Edit
-                </button>
-                <button type="button" class="btn-table-action js-toggle-sec-btn" data-id="${sec.id}" title="${isActive ? 'Hide this section from site' : 'Make this section visible on live site'}" style="background: ${isActive ? '#fef2f2' : '#f0fdf4'}; color: ${isActive ? '#dc2626' : '#16a34a'}; border: 1px solid ${isActive ? '#fca5a5' : '#86efac'};">
-                  <i class="fa-solid ${isActive ? 'fa-eye-slash' : 'fa-eye'}"></i>
-                </button>
-                <button type="button" class="btn-table-action delete js-delete-sec-btn" data-id="${sec.id}" title="Delete Section">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join('');
-
-      // Bind row actions
-      tbody.querySelectorAll('.js-edit-sec-btn').forEach(btn => {
-        btn.onclick = () => this.openSectionEditor(parseInt(btn.dataset.id));
-      });
-
-      tbody.querySelectorAll('.js-toggle-sec-btn').forEach(btn => {
-        btn.onclick = () => this.toggleSectionStatus(parseInt(btn.dataset.id));
-      });
-
-      tbody.querySelectorAll('.js-delete-sec-btn').forEach(btn => {
-        btn.onclick = () => this.deleteHomepageSection(parseInt(btn.dataset.id));
-      });
-
-      tbody.querySelectorAll('.js-sec-move-up').forEach(btn => {
-        btn.onclick = () => this.moveSectionOrder(parseInt(btn.dataset.id), -1);
-      });
-
-      tbody.querySelectorAll('.js-sec-move-down').forEach(btn => {
-        btn.onclick = () => this.moveSectionOrder(parseInt(btn.dataset.id), 1);
-      });
-    },
-
-    async openSectionEditor(secId) {
-      const parsedId = parseInt(secId);
-      let sec = allHomepageSections.find(s => s.id === parsedId || s.section_key === String(secId).trim());
-
-      if (!sec && !isNaN(parsedId)) {
-        try {
-          const token = window.VicAuth.getToken();
-          const res = await fetchApi(`/api/admin/homepage/sections/${parsedId}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          const data = await this.safeJson(res);
-          if (res.ok && data.section) {
-            sec = data.section;
-          }
-        } catch (e) {
-          console.warn('Could not fetch section directly:', e);
-        }
-      }
-
-      if (!sec) {
-        this.showToast(`Section #${secId} not found in database.`, 'warning');
-        return;
-      }
-
-      const modal = document.getElementById('modal-section-editor');
-      if (!modal) return;
-
-      document.getElementById('sec-edit-id').value = sec.id;
-      document.getElementById('sec-modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square" style="color: #2563eb;"></i> Edit Section: ${this.escapeHtml(sec.section_name)}`;
-      document.getElementById('sec-modal-submit-btn').textContent = 'Save Section Changes';
-
-      document.getElementById('sec-input-name').value = sec.section_name || '';
-      document.getElementById('sec-input-key').value = sec.section_key || '';
-      document.getElementById('sec-input-category').value = sec.category || 'general';
-      document.getElementById('sec-input-order').value = sec.order_index ?? 1;
-      document.getElementById('sec-input-status').value = sec.is_active === 1 ? '1' : '0';
-
-      document.getElementById('sec-input-title-en').value = sec.title_en || '';
-      document.getElementById('sec-input-subtitle-en').value = sec.subtitle_en || '';
-      document.getElementById('sec-input-badge-en').value = sec.badge_en || '';
-      document.getElementById('sec-input-content-en').value = sec.content_en || '';
-      document.getElementById('sec-input-cta-en').value = sec.cta_text_en || '';
-
-      document.getElementById('sec-input-title-zh').value = sec.title_zh || '';
-      document.getElementById('sec-input-subtitle-zh').value = sec.subtitle_zh || '';
-      document.getElementById('sec-input-badge-zh').value = sec.badge_zh || '';
-      document.getElementById('sec-input-content-zh').value = sec.content_zh || '';
-      document.getElementById('sec-input-cta-zh').value = sec.cta_text_zh || '';
-
-      document.getElementById('sec-input-cta-link').value = sec.cta_link || '';
-      document.getElementById('sec-input-image').value = sec.image_url || '';
-
-      this.switchCmsLanguage('en');
-      modal.classList.add('active');
-    },
-
-    async toggleSectionStatus(secId) {
-      try {
-        const token = window.VicAuth.getToken();
-        const res = await fetchApi(`/api/admin/homepage/sections/${secId}/toggle`, {
-          method: 'PATCH',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to toggle section status');
-
-        this.showToast(data.message, 'success');
-        this.loadHomepageSections();
-        this.loadStats();
-      } catch (err) {
-        this.showToast(err.message, 'error');
-      }
-    },
-
-    async deleteHomepageSection(secId) {
-      const sec = allHomepageSections.find(s => s.id === secId);
-      const name = sec ? sec.section_name : 'this section';
-      if (!confirm(`Are you sure you want to permanently delete "${name}"?`)) return;
-
-      try {
-        const token = window.VicAuth.getToken();
-        const res = await fetchApi(`/api/admin/homepage/sections/${secId}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to delete section');
-
-        this.showToast(data.message, 'info');
-        this.loadHomepageSections();
-        this.loadStats();
-      } catch (err) {
-        this.showToast(err.message, 'error');
-      }
-    },
-
-    async moveSectionOrder(secId, direction) {
-      const idx = allHomepageSections.findIndex(s => s.id === secId);
-      if (idx < 0) return;
-      const targetIdx = idx + direction;
-      if (targetIdx < 0 || targetIdx >= allHomepageSections.length) return;
-
-      const currentSec = allHomepageSections[idx];
-      const targetSec = allHomepageSections[targetIdx];
-
-      const tempOrder = currentSec.order_index;
-      currentSec.order_index = targetSec.order_index;
-      targetSec.order_index = tempOrder;
-
-      // If orders are identical, adjust them sequentially
-      if (currentSec.order_index === targetSec.order_index) {
-        currentSec.order_index = (targetIdx + 1) * 1;
-        targetSec.order_index = (idx + 1) * 1;
-      }
-
-      try {
-        const token = window.VicAuth.getToken();
-        const orders = [
-          { id: currentSec.id, order_index: currentSec.order_index },
-          { id: targetSec.id, order_index: targetSec.order_index }
-        ];
-
-        const res = await fetchApi('/api/admin/homepage/sections/reorder', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ orders })
-        });
-        if (res.ok) {
-          this.loadHomepageSections();
-        }
-      } catch (e) {
-        console.warn('Failed to reorder sections:', e);
       }
     },
 
