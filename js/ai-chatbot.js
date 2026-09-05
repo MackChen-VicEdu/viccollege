@@ -516,7 +516,8 @@
     let backendResult = null;
 
     try {
-      const res = await fetch('/api/chat', {
+      const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/chat') : '/api/chat';
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -461,7 +461,12 @@ window.translations = translations;
 // Asynchronously pull live translations directly from SQLite Database on startup
 async function fetchDatabaseTranslations() {
   try {
-    const res = await fetch('/api/translations');
+    const apiUrl = typeof window.getVicApiUrl === 'function' 
+      ? window.getVicApiUrl('/api/translations') 
+      : (window.location.protocol === 'file:' || (window.location.port !== '5055' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) 
+        ? 'http://127.0.0.1:5055/api/translations' 
+        : '/api/translations');
+    const res = await fetch(apiUrl);
     if (!res.ok) return;
     const data = await res.json();
     if (data && data.en && data.zh) {

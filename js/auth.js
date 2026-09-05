@@ -9,6 +9,27 @@
   const AUTH_TOKEN_KEY = 'vic_auth_token';
   let currentUser = null;
 
+  // Universal API Base URL Resolver
+  window.getVicApiUrl = function(endpoint) {
+    if (!endpoint) return '';
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) return endpoint;
+    if (!endpoint.startsWith('/')) endpoint = '/' + endpoint;
+
+    let base = window.VIC_API_BASE || '';
+    if (!base) {
+      try {
+        const loc = window.location;
+        const isLocal = loc.hostname === 'localhost' || loc.hostname === '127.0.0.1' || loc.hostname === '';
+        if (loc.protocol === 'file:' || (isLocal && loc.port !== '5055')) {
+          base = 'http://127.0.0.1:5055';
+        }
+      } catch (e) {
+        base = 'http://127.0.0.1:5055';
+      }
+    }
+    return base + endpoint;
+  };
+
   const VicAuth = {
     getToken() {
       return localStorage.getItem(AUTH_TOKEN_KEY);
@@ -41,7 +62,7 @@
       const token = this.getToken();
       if (token) {
         try {
-          const res = await fetch('/api/auth/me', {
+          const res = await fetch(window.getVicApiUrl('/api/auth/me'), {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           const data = await res.json();
@@ -61,7 +82,8 @@
 
     async login(email, password) {
       try {
-        const res = await fetch('/api/auth/login', {
+        const apiUrl = window.getVicApiUrl('/api/auth/login');
+        const res = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -77,11 +99,8 @@
         this.showToast(`Welcome back, ${currentUser.name}!`, 'success');
         return data;
       } catch (err) {
-        if (window.location.protocol === 'file:') {
-          throw new Error('You are viewing this page as a local file (file://). Please open http://localhost:5055 in your browser to log in.');
-        }
-        if (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch')) {
-          throw new Error('Cannot connect to server. Please verify you are browsing at http://localhost:5055 (or your deployed URL).');
+        if (err.message && (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch') || err.message.includes('Network request failed'))) {
+          throw new Error('Cannot connect to backend server. Please verify "python server.py" is running at http://localhost:5055.');
         }
         throw err;
       }
@@ -89,7 +108,8 @@
 
     async register(name, email, password) {
       try {
-        const res = await fetch('/api/auth/register', {
+        const apiUrl = window.getVicApiUrl('/api/auth/register');
+        const res = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
@@ -105,11 +125,8 @@
         this.showToast(`Welcome to Victoria College, ${currentUser.name}!`, 'success');
         return data;
       } catch (err) {
-        if (window.location.protocol === 'file:') {
-          throw new Error('You are viewing this page as a local file (file://). Please open http://localhost:5055 in your browser.');
-        }
-        if (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch')) {
-          throw new Error('Cannot connect to server. Please verify you are browsing at http://localhost:5055.');
+        if (err.message && (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch') || err.message.includes('Network request failed'))) {
+          throw new Error('Cannot connect to backend server. Please verify "python server.py" is running at http://localhost:5055.');
         }
         throw err;
       }
@@ -129,7 +146,7 @@
 
       try {
         const avatar_url = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`;
-        const res = await fetch('/api/auth/oauth/google', {
+        const res = await fetch(window.getVicApiUrl('/api/auth/oauth/google'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, name, avatar_url })
@@ -160,7 +177,7 @@
 
       try {
         const avatar_url = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`;
-        const res = await fetch('/api/auth/oauth/linkedin', {
+        const res = await fetch(window.getVicApiUrl('/api/auth/oauth/linkedin'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, name, avatar_url })
@@ -182,7 +199,7 @@
       const token = this.getToken();
       if (token) {
         try {
-          await fetch('/api/auth/logout', {
+          await fetch(window.getVicApiUrl('/api/auth/logout'), {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
           });
@@ -390,6 +407,12 @@
               <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
             </div>
             <button type="submit" class="btn-auth-submit">Sign In to Victoria</button>
+            <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
+              <span style="color: #64748b;">Admin Demo:</span>
+              <button type="button" class="btn-quick-fill-admin js-quick-admin" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; color: #1e293b; font-weight: 500;">
+                <i class="fa-solid fa-user-shield" style="color: #b91c1c; margin-right: 4px;"></i> Quick-Fill Admin
+              </button>
+            </div>
           </form>
 
           <!-- Register Form -->
@@ -450,6 +473,16 @@
 
       document.querySelectorAll('.js-auth-linkedin').forEach(btn => {
         btn.onclick = () => this.loginWithLinkedIn();
+      });
+
+      // Quick fill admin credentials
+      document.querySelectorAll('.js-quick-admin').forEach(btn => {
+        btn.onclick = () => {
+          const emailInput = document.getElementById('login-email');
+          const passInput = document.getElementById('login-password');
+          if (emailInput) emailInput.value = 'admin@viccollege.com';
+          if (passInput) passInput.value = 'admin123';
+        };
       });
 
       // Login form submit

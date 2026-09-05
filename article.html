@@ -223,7 +223,8 @@
         const token = localStorage.getItem('vic_auth_token');
         const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
-        const res = await fetch(`/api/articles/${encodeURIComponent(slug)}`, { headers });
+        const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl(`/api/articles/${encodeURIComponent(slug)}`) : `/api/articles/${encodeURIComponent(slug)}`;
+        const res = await fetch(apiUrl, { headers });
         const data = await res.json();
 
         if (!res.ok || !data.article) {
@@ -270,7 +271,8 @@
           previewBanner.style.display = 'block';
           if (publishBtn) {
             publishBtn.onclick = async () => {
-              const pRes = await fetch(`/api/admin/articles/${a.id}/toggle-status`, {
+              const toggleUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl(`/api/admin/articles/${a.id}/toggle-status`) : `/api/admin/articles/${a.id}/toggle-status`;
+              const pRes = await fetch(toggleUrl, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
               });

@@ -560,7 +560,8 @@ async function initPublicArticles() {
   if (!container) return;
 
   try {
-    const res = await fetch('/api/articles');
+    const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/articles') : '/api/articles';
+    const res = await fetch(apiUrl);
     const data = await res.json();
 
     if (res.ok && data.articles && data.articles.length > 0) {
@@ -698,7 +699,8 @@ window.homepageSectionsCache = [];
 
 async function initDynamicHomepageSections() {
   try {
-    const res = await fetch('/api/homepage/sections');
+    const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/homepage/sections') : '/api/homepage/sections';
+    const res = await fetch(apiUrl);
     if (!res.ok) return;
     const data = await res.json();
     if (data && data.sections) {

@@ -13,6 +13,11 @@
   let allHomepageSections = [];
   let currentPreviewArticle = null;
 
+  const fetchApi = (url, opts) => {
+    const finalUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl(url) : url;
+    return fetch(finalUrl, opts);
+  };
+
   const AdminApp = {
     async init() {
       this.bindTabNavigation();
@@ -33,7 +38,7 @@
       }
 
       try {
-        const res = await fetch('/api/auth/me', {
+        const res = await fetchApi('/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await this.safeJson(res);
@@ -203,7 +208,7 @@
 
           try {
             const token = window.VicAuth.getToken();
-            const res = await fetch('/api/admin/users', {
+            const res = await fetchApi('/api/admin/users', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -263,7 +268,7 @@
             const method = editId ? 'PUT' : 'POST';
             const url = editId ? `/api/admin/knowledge/${editId}` : '/api/admin/knowledge';
 
-            const res = await fetch(url, {
+            const res = await fetchApi(url, {
               method,
               headers: {
                 'Content-Type': 'application/json',
@@ -381,7 +386,7 @@
               cta_link, image_url
             };
 
-            const res = await fetch(url, {
+            const res = await fetchApi(url, {
               method,
               headers: {
                 'Content-Type': 'application/json',
@@ -436,7 +441,7 @@
 
           try {
             const token = window.VicAuth.getToken();
-            const res = await fetch('/api/admin/knowledge/test-query', {
+            const res = await fetchApi('/api/admin/knowledge/test-query', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -512,7 +517,7 @@
 
           try {
             const token = window.VicAuth.getToken();
-            const res = await fetch('/api/admin/articles/generate', {
+            const res = await fetchApi('/api/admin/articles/generate', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -570,7 +575,7 @@
             const method = editId ? 'PUT' : 'POST';
             const url = editId ? `/api/admin/articles/${editId}` : '/api/admin/articles';
 
-            const res = await fetch(url, {
+            const res = await fetchApi(url, {
               method,
               headers: {
                 'Content-Type': 'application/json',
@@ -688,7 +693,7 @@
               payload.openai_api_key = keyInput.trim();
             }
 
-            const res = await fetch('/api/admin/settings', {
+            const res = await fetchApi('/api/admin/settings', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -733,7 +738,7 @@
 
           try {
             const token = window.VicAuth.getToken();
-            const res = await fetch('/api/admin/settings/test-key', {
+            const res = await fetchApi('/api/admin/settings/test-key', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -788,7 +793,7 @@
 
           try {
             const token = window.VicAuth.getToken();
-            const res = await fetch('/api/auth/change-password', {
+            const res = await fetchApi('/api/auth/change-password', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -825,7 +830,7 @@
           if (!confirm("Are you sure you want to clear all conversation logs?")) return;
           try {
             const token = window.VicAuth.getToken();
-            const res = await fetch('/api/admin/logs', {
+            const res = await fetchApi('/api/admin/logs', {
               method: 'DELETE',
               headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -864,7 +869,7 @@
     async loadStats() {
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch('/api/admin/stats', {
+        const res = await fetchApi('/api/admin/stats', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -932,7 +937,7 @@
         if (search) queryParams.set('search', search);
         if (category && category !== 'all') queryParams.set('category', category);
 
-        const res = await fetch(`/api/admin/homepage/sections?${queryParams.toString()}`, {
+        const res = await fetchApi(`/api/admin/homepage/sections?${queryParams.toString()}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await this.safeJson(res);
@@ -1053,7 +1058,7 @@
       if (!sec && !isNaN(parsedId)) {
         try {
           const token = window.VicAuth.getToken();
-          const res = await fetch(`/api/admin/homepage/sections/${parsedId}`, {
+          const res = await fetchApi(`/api/admin/homepage/sections/${parsedId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           const data = await this.safeJson(res);
@@ -1105,7 +1110,7 @@
     async toggleSectionStatus(secId) {
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/homepage/sections/${secId}/toggle`, {
+        const res = await fetchApi(`/api/admin/homepage/sections/${secId}/toggle`, {
           method: 'PATCH',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1127,7 +1132,7 @@
 
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/homepage/sections/${secId}`, {
+        const res = await fetchApi(`/api/admin/homepage/sections/${secId}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1168,7 +1173,7 @@
           { id: targetSec.id, order_index: targetSec.order_index }
         ];
 
-        const res = await fetch('/api/admin/homepage/sections/reorder', {
+        const res = await fetchApi('/api/admin/homepage/sections/reorder', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1196,7 +1201,7 @@
         if (search) queryParams.set('search', search);
         if (category && category !== 'all') queryParams.set('category', category);
 
-        const res = await fetch(`/api/admin/knowledge?${queryParams.toString()}`, {
+        const res = await fetchApi(`/api/admin/knowledge?${queryParams.toString()}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -1271,7 +1276,7 @@
     async openEditKnowledge(id) {
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/knowledge/${id}`, {
+        const res = await fetchApi(`/api/admin/knowledge/${id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -1298,7 +1303,7 @@
       if (!confirm('Are you sure you want to permanently delete this knowledge article from the SQLite database?')) return;
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/knowledge/${id}`, {
+        const res = await fetchApi(`/api/admin/knowledge/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1318,7 +1323,7 @@
       const tbody = document.getElementById('users-tbody');
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch('/api/admin/users', {
+        const res = await fetchApi('/api/admin/users', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -1395,7 +1400,7 @@
 
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/users/${userId}`, {
+        const res = await fetchApi(`/api/admin/users/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -1418,7 +1423,7 @@
 
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/users/${userId}`, {
+        const res = await fetchApi(`/api/admin/users/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -1440,7 +1445,7 @@
 
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/users/${userId}`, {
+        const res = await fetchApi(`/api/admin/users/${userId}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1461,7 +1466,7 @@
     async loadAISettings() {
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch('/api/admin/settings', {
+        const res = await fetchApi('/api/admin/settings', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -1495,7 +1500,7 @@
       const tbody = document.getElementById('logs-tbody');
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch('/api/admin/logs', {
+        const res = await fetchApi('/api/admin/logs', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -1559,7 +1564,7 @@
       if (!log) {
         try {
           const token = window.VicAuth.getToken();
-          const res = await fetch('/api/admin/logs', {
+          const res = await fetchApi('/api/admin/logs', {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           const d = await res.json();
@@ -1628,7 +1633,7 @@
         if (status && status !== 'all') queryParams.set('status', status);
         if (category && category !== 'all') queryParams.set('category', category);
 
-        const res = await fetch(`/api/admin/articles?${queryParams.toString()}`, {
+        const res = await fetchApi(`/api/admin/articles?${queryParams.toString()}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -1751,7 +1756,7 @@
     async toggleArticleStatus(articleId) {
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/articles/${articleId}/toggle-status`, {
+        const res = await fetchApi(`/api/admin/articles/${articleId}/toggle-status`, {
           method: 'PATCH',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1774,7 +1779,7 @@
       if (articleId) {
         try {
           const token = window.VicAuth.getToken();
-          const res = await fetch(`/api/admin/articles/${articleId}`, {
+          const res = await fetchApi(`/api/admin/articles/${articleId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           const data = await res.json();
@@ -1814,7 +1819,7 @@
 
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/articles/${articleId}`, {
+        const res = await fetchApi(`/api/admin/articles/${articleId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -1860,7 +1865,7 @@
 
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch(`/api/admin/articles/${articleId}`, {
+        const res = await fetchApi(`/api/admin/articles/${articleId}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1878,7 +1883,7 @@
     async syncSitemap() {
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetch('/api/admin/sitemap/generate', {
+        const res = await fetchApi('/api/admin/sitemap/generate', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1903,7 +1908,7 @@
       pre.textContent = 'Fetching current /sitemap.xml...';
 
       try {
-        const res = await fetch('/sitemap.xml');
+        const res = await fetchApi('/sitemap.xml');
         const xml = await res.text();
         pre.textContent = xml;
 

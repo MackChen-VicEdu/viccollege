@@ -55,9 +55,15 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
     return response
 
+@app.route('/api', methods=['OPTIONS'])
 @app.route('/api/<path:dummy>', methods=['OPTIONS'])
-def options_handler(dummy):
-    return Response(status=204)
+@app.route('/<path:dummy>', methods=['OPTIONS'])
+def options_handler(dummy=None):
+    resp = Response(status=204)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+    resp.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+    return resp
 
 AUTH_SALT = os.environ.get('AUTH_SALT', 'vic_college_salt_2026')
 
