@@ -787,10 +787,20 @@ function renderDynamicPrograms(lang = currentLanguage) {
       <!-- Program ${index + 1}: ${escapeAppHtml(prog.slug)} -->
       <div id="${escapeAppHtml(prog.slug)}" class="${rowClass}">
         <div class="program-img-wrapper">
-          <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+          ${prog.slug === 'psw' ? `
+            <a href="personal-support-worker-online-psw-course.html" aria-label="${escapeAppHtml(title)}">
+              <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+            </a>
+          ` : `
+            <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+          `}
         </div>
         <div class="program-info-col">
-          <h2 class="program-heading">${escapeAppHtml(title)}</h2>
+          <h2 class="program-heading">
+            ${prog.slug === 'psw' ? `
+              <a href="personal-support-worker-online-psw-course.html" style="color: inherit; text-decoration: none;">${escapeAppHtml(title)}</a>
+            ` : escapeAppHtml(title)}
+          </h2>
           <div class="vic-divider"></div>
           <p class="program-text">${escapeAppHtml(desc)}</p>
           ${bulletsHtml}
@@ -826,7 +836,8 @@ function updateProgramNavigationAndDropdowns(lang = currentLanguage) {
   if (headerDropdown) {
     headerDropdown.innerHTML = dynamicProgramsList.map(p => {
       const title = (lang === 'zh' ? p.title_zh : p.title_en) || p.title_en;
-      return `<a href="#${p.slug}">${escapeAppHtml(title)}</a>`;
+      const href = p.slug === 'psw' ? 'personal-support-worker-online-psw-course.html' : `#${p.slug}`;
+      return `<a href="${href}">${escapeAppHtml(title)}</a>`;
     }).join('');
   }
 
@@ -847,7 +858,8 @@ function updateProgramNavigationAndDropdowns(lang = currentLanguage) {
   if (footerList) {
     footerList.innerHTML = dynamicProgramsList.map(p => {
       const title = (lang === 'zh' ? p.title_zh : p.title_en) || p.title_en;
-      return `<li><a href="#${p.slug}">${escapeAppHtml(title)}</a></li>`;
+      const href = p.slug === 'psw' ? 'personal-support-worker-online-psw-course.html' : `#${p.slug}`;
+      return `<li><a href="${href}">${escapeAppHtml(title)}</a></li>`;
     }).join('');
   }
 }

@@ -977,6 +977,22 @@ Key College Knowledge:
     if jf_cnt == 0:
         seed_default_job_fairs(cursor, now_str)
 
+    # 10. Student Inquiries & Consultations Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS consultations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT,
+        phone TEXT,
+        program TEXT,
+        interested_in_grant INTEGER DEFAULT 0,
+        source_page TEXT,
+        notes TEXT,
+        status TEXT DEFAULT 'new',
+        created_at TEXT NOT NULL
+    )
+    ''')
+
     conn.commit()
     conn.close()
     print(">> SQLite Database initialized at:", DB_PATH)
@@ -3803,6 +3819,55 @@ def admin_delete_job_fair(event_id):
         'success': True,
         'message': f'Job Fair "{row["title_en"]}" deleted successfully.'
     })
+
+
+# ==============================================================================
+# Public Lead Capture & Consultation Booking APIs
+# ==============================================================================
+
+@app.route('/api/consultations', methods=['POST'])
+def submit_consultation():
+    """Public API: Submit student lead / consultation booking."""
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    phone = (data.get('phone') or '').strip()
+    program = (data.get('program') or '').strip()
+    interested_in_grant = int(data.get('interested_in_grant', 0))
+    source_page = (data.get('source_page') or 'direct').strip()
+    notes = (data.get('notes') or '').strip()
+
+    if not name or (not email and not phone):
+        return jsonify({'error': 'Name and contact info (email or phone) are required.'}), 400
+
+    now_str = datetime.utcnow().isoformat()
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute('''
+    INSERT INTO consultations (name, email, phone, program, interested_in_grant, source_page, notes, status, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 'new', ?)
+    ''', (name, email, phone, program, interested_in_grant, source_page, notes, now_str))
+    db.commit()
+    new_id = cursor.lastrowid
+
+    return jsonify({
+        'success': True,
+        'id': new_id,
+        'message': 'Consultation request submitted successfully.'
+    }), 201
+
+@app.route('/api/admin/consultations', methods=['GET'])
+def admin_get_consultations():
+    """Admin API: View all consultation leads."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM consultations ORDER BY id DESC")
+    rows = [dict(r) for r in cursor.fetchall()]
+    return jsonify({'success': True, 'consultations': rows, 'count': len(rows)})
 
 
 # ==============================================================================

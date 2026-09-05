@@ -321,7 +321,7 @@
   <!-- Header Navigation -->
   <header class="vic-main-header">
     <div class="container nav-wrapper">
-      <a href="/" class="logo-section" aria-label="Victoria College of Business Healthcare Technology & Trades">
+      <a href="index.html#home" class="logo-section" aria-label="Victoria College of Business Healthcare Technology & Trades">
         <img class="logo-img" src="images/vic_logo.png" alt="Victoria College">
         <div class="logo-text">
           <span class="logo-brand-main" data-i18n="logo_brand_main">Victoria College</span>
@@ -331,29 +331,29 @@
 
       <nav class="main-nav-list">
         <div class="main-nav-item">
-          <a href="/#home" class="main-nav-link" data-i18n="nav_home">Home</a>
+          <a href="index.html#home" class="main-nav-link" data-i18n="nav_home">Home</a>
         </div>
         <div class="main-nav-item">
-          <a href="/#about" class="main-nav-link" data-i18n="nav_about">About Us</a>
+          <a href="index.html#about" class="main-nav-link" data-i18n="nav_about">About Us</a>
         </div>
         <div class="main-nav-item">
-          <a href="/#programs" class="main-nav-link active" data-i18n="nav_programs">Programs <i
+          <a href="index.html#programs" class="main-nav-link active" data-i18n="nav_programs">Programs <i
               class="fa-solid fa-angle-down" style="font-size: 11px;"></i></a>
-          <div class="nav-dropdown">
-            <a href="/personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support
+          <div class="nav-dropdown" id="psw-nav-dropdown">
+            <a href="personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support
               Worker DE 2022</a>
-            <a href="/#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
-            <a href="/#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a>
-            <a href="/#acupuncture" data-i18n="prog_acu_title">Acupuncture (Non-Vocational)</a>
-            <a href="/#electrician" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
-            <a href="/#fullstack" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a>
+            <a href="index.html#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
+            <a href="index.html#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a>
+            <a href="index.html#acupuncture" data-i18n="prog_acu_title">Acupuncture (Non-Vocational)</a>
+            <a href="index.html#electrician" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
+            <a href="index.html#fullstack" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a>
           </div>
         </div>
         <div class="main-nav-item">
-          <a href="/#financial-aid" class="main-nav-link" data-i18n="nav_aid">Financial Aid</a>
+          <a href="index.html#financial-aid" class="main-nav-link" data-i18n="nav_aid">Financial Aid</a>
         </div>
         <div class="main-nav-item">
-          <a href="/#articles" class="main-nav-link" data-i18n="nav_articles">Career Insights</a>
+          <a href="index.html#articles" class="main-nav-link" data-i18n="nav_articles">Career Insights</a>
         </div>
       </nav>
 
@@ -400,12 +400,12 @@
       </button>
     </div>
 
-    <nav class="mobile-nav-links">
-      <a href="/#home" data-i18n="nav_home">Home</a>
-      <a href="/#about" data-i18n="nav_about">About Us</a>
-      <a href="/#programs" data-i18n="nav_programs">Programs</a>
-      <a href="/#financial-aid" data-i18n="nav_aid">Financial Aid</a>
-      <a href="/#articles" data-i18n="nav_articles">Career Insights</a>
+    <nav class="mobile-nav-links" id="psw-mobile-nav-links">
+      <a href="index.html#home" data-i18n="nav_home">Home</a>
+      <a href="index.html#about" data-i18n="nav_about">About Us</a>
+      <a href="index.html#programs" data-i18n="nav_programs">Programs</a>
+      <a href="index.html#financial-aid" data-i18n="nav_aid">Financial Aid</a>
+      <a href="index.html#articles" data-i18n="nav_articles">Career Insights</a>
       <a href="#consultation-booking" data-i18n="nav_consultation_btn">Book Consultation</a>
     </nav>
   </div>
@@ -414,19 +414,19 @@
   <section class="prog-page-hero">
     <div class="container">
       <div class="prog-breadcrumb">
-        <a href="/"><i class="fa-solid fa-house"></i> <span data-i18n="psw_bread_home">Home</span></a>
+        <a href="index.html#home"><i class="fa-solid fa-house"></i> <span data-i18n="psw_bread_home">Home</span></a>
         <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
-        <a href="/#programs"><span data-i18n="psw_bread_programs">Programs</span></a>
+        <a href="index.html#programs"><span data-i18n="psw_bread_programs">Programs</span></a>
         <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
-        <a href="/#programs"><span data-i18n="psw_bread_health">Healthcare</span></a>
+        <a href="index.html#programs"><span data-i18n="psw_bread_health">Healthcare</span></a>
         <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
-        <span data-i18n="psw_bread_curr">NACC Personal Support Worker DE 2022</span>
+        <span id="psw-bread-curr" data-i18n="psw_bread_curr">NACC Personal Support Worker DE 2022</span>
       </div>
 
-      <span class="prog-hero-badge" data-i18n="psw_hero_badge">Accredited Career Diploma • NACC PSW DE 2022</span>
-      <h1 class="prog-hero-title" data-i18n="psw_hero_title">Become a Compassionate &amp; Skilled Caregiver with our
+      <span class="prog-hero-badge" id="psw-hero-badge" data-i18n="psw_hero_badge">Accredited Career Diploma • NACC PSW DE 2022</span>
+      <h1 class="prog-hero-title" id="psw-hero-title" data-i18n="psw_hero_title">Become a Compassionate &amp; Skilled Caregiver with our
         Online &amp; Hybrid PSW Program</h1>
-      <p class="prog-hero-lead" data-i18n="psw_hero_lead">
+      <p class="prog-hero-lead" id="psw-hero-lead" data-i18n="psw_hero_lead">
         Transform lives with a fulfilling healthcare career. The NACC Personal Support Worker (PSW DE 2022) Certificate
         Program consists of intensive online theory, hands-on clinical lab simulations, and guaranteed clinical
         practicum placements in top Ontario nursing homes and long-term care facilities.
@@ -444,7 +444,7 @@
       <!-- Quick Stats -->
       <div class="prog-hero-stats-grid">
         <div class="prog-stat-card">
-          <span class="prog-stat-val" data-i18n="psw_stat_1_val">23 Weeks</span>
+          <span class="prog-stat-val" id="psw-stat-duration" data-i18n="psw_stat_1_val">23 Weeks</span>
           <span class="prog-stat-lbl" data-i18n="psw_stat_1_lbl">Hybrid Theory + Lab + 310+ Hrs Practicum</span>
         </div>
         <div class="prog-stat-card">
@@ -566,7 +566,7 @@
             Career Colleges (NACC) and Ontario Ministry guidelines:
           </p>
 
-          <ul class="curriculum-module-list">
+          <ul class="curriculum-module-list" id="psw-curriculum-list">
             <li class="curriculum-item"><span class="curriculum-num">1</span> <span data-i18n="psw_m1"><strong>PSW
                   Foundations:</strong> Role, responsibilities, scope of practice, legal boundaries &amp; healthcare
                 ethics.</span></li>
@@ -737,12 +737,12 @@
               style="list-style: none; padding: 0; margin: 0; font-size: 13.5px; color: #475569; display: flex; flex-direction: column; gap: 12px;">
               <li
                 style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong data-i18n="psw_side_c_lbl">Credential:</strong></span> <span
+                <span><strong data-i18n="psw_side_c_lbl">Credential:</strong></span> <span id="psw-side-credential"
                   data-i18n="psw_side_c_val">NACC Career Certificate</span>
               </li>
               <li
                 style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong data-i18n="psw_side_d_lbl">Duration:</strong></span> <span data-i18n="psw_side_d_val">23
+                <span><strong data-i18n="psw_side_d_lbl">Duration:</strong></span> <span id="psw-side-duration" data-i18n="psw_side_d_val">23
                   Weeks</span>
               </li>
               <li
@@ -851,12 +851,12 @@
         <!-- Column 2: Programs -->
         <div class="footer-col">
           <h3 data-i18n="footer_col_programs">Programs</h3>
-          <ul class="footer-prog-list">
-            <li><a href="/personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal
+          <ul class="footer-prog-list" id="psw-footer-prog-list">
+            <li><a href="personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal
                 Support Worker DE 2022</a></li>
-            <li><a href="/#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
-            <li><a href="/#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a></li>
-            <li><a href="/#fullstack" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a></li>
+            <li><a href="index.html#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
+            <li><a href="index.html#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a></li>
+            <li><a href="index.html#fullstack" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a></li>
           </ul>
         </div>
 
@@ -935,9 +935,107 @@
         });
     }
 
-    // Comprehensive Language Switcher & Hydrator
+    // Dynamic Data Stores for Live SQLite Database Sync
     let currentLanguage = localStorage.getItem('vic_lang') || 'en';
+    let pswDynamicData = null;
+    let allProgramsList = [];
 
+    // 1. Fetch Dynamic PSW Program & Academic Programs from SQLite Backend API
+    async function loadPswPageDynamicData() {
+      // Fetch PSW program details
+      try {
+        const pswApiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs/psw') : '/api/programs/psw';
+        const res = await fetch(pswApiUrl);
+        const data = await res.json();
+        if (res.ok && data.success && data.program) {
+          pswDynamicData = data.program;
+          renderDynamicPswContent(currentLanguage);
+        }
+      } catch (err) {
+        console.warn('Could not load dynamic PSW program data from API:', err);
+      }
+
+      // Fetch all active programs for navigation dropdowns and footer
+      try {
+        const progsApiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs') : '/api/programs';
+        const res = await fetch(progsApiUrl);
+        const data = await res.json();
+        if (res.ok && data.success && Array.isArray(data.programs)) {
+          allProgramsList = data.programs;
+          renderDynamicNavPrograms(currentLanguage);
+        }
+      } catch (err) {
+        console.warn('Could not load dynamic programs list from API:', err);
+      }
+    }
+
+    // 2. Render Dynamic PSW Content from DB
+    function renderDynamicPswContent(lang = currentLanguage) {
+      if (!pswDynamicData) return;
+
+      const isZh = lang === 'zh';
+      const title = (isZh ? pswDynamicData.title_zh : pswDynamicData.title_en) || pswDynamicData.title_en;
+      const badge = (isZh ? pswDynamicData.badge_zh : pswDynamicData.badge_en) || pswDynamicData.badge_en;
+      const overview = (isZh ? pswDynamicData.overview_zh : pswDynamicData.overview_en) || (isZh ? pswDynamicData.desc_zh : pswDynamicData.desc_en) || '';
+      const duration = (isZh ? pswDynamicData.duration_zh : pswDynamicData.duration_en) || pswDynamicData.duration_en;
+      const credential = (isZh ? pswDynamicData.credential_zh : pswDynamicData.credential_en) || pswDynamicData.credential_en;
+
+      // Update Hero Badge
+      const badgeEl = document.getElementById('psw-hero-badge');
+      if (badgeEl && badge) badgeEl.textContent = badge;
+
+      // Update Hero Title
+      const titleEl = document.getElementById('psw-hero-title');
+      if (titleEl && title) titleEl.textContent = title;
+
+      // Update Hero Lead / Overview
+      const leadEl = document.getElementById('psw-hero-lead');
+      if (leadEl && overview) leadEl.textContent = overview;
+
+      // Update Stat Duration
+      const durationStatEl = document.getElementById('psw-stat-duration');
+      if (durationStatEl && duration) durationStatEl.textContent = duration;
+
+      // Update Sidebar Snapshot Duration & Credential
+      const sideDurationEl = document.getElementById('psw-side-duration');
+      if (sideDurationEl && duration) sideDurationEl.textContent = duration;
+
+      const sideCredEl = document.getElementById('psw-side-credential');
+      if (sideCredEl && credential) sideCredEl.textContent = credential;
+
+      // Update Breadcrumb Current Item
+      const breadCurrEl = document.getElementById('psw-bread-curr');
+      if (breadCurrEl && title) breadCurrEl.textContent = title;
+    }
+
+    // 3. Render Dynamic Navigation Dropdowns from DB
+    function renderDynamicNavPrograms(lang = currentLanguage) {
+      if (!allProgramsList || allProgramsList.length === 0) return;
+
+      const isZh = lang === 'zh';
+
+      // Header Dropdown
+      const dropdown = document.getElementById('psw-nav-dropdown') || document.querySelector('.main-nav-item .nav-dropdown');
+      if (dropdown) {
+        dropdown.innerHTML = allProgramsList.map(p => {
+          const title = (isZh ? p.title_zh : p.title_en) || p.title_en;
+          const href = p.slug === 'psw' ? 'personal-support-worker-online-psw-course.html' : `index.html#${p.slug}`;
+          return `<a href="${href}">${title}</a>`;
+        }).join('');
+      }
+
+      // Footer Programs List
+      const footerList = document.getElementById('psw-footer-prog-list') || document.querySelector('.footer-prog-list');
+      if (footerList) {
+        footerList.innerHTML = allProgramsList.map(p => {
+          const title = (isZh ? p.title_zh : p.title_en) || p.title_en;
+          const href = p.slug === 'psw' ? 'personal-support-worker-online-psw-course.html' : `index.html#${p.slug}`;
+          return `<li><a href="${href}">${title}</a></li>`;
+        }).join('');
+      }
+    }
+
+    // Comprehensive Language Switcher & Hydrator
     function applyLanguage(lang) {
       currentLanguage = lang;
       localStorage.setItem('vic_lang', lang);
@@ -961,6 +1059,14 @@
           el.placeholder = langData[key];
         }
       });
+
+      // Re-apply live DB dynamic data
+      if (pswDynamicData) {
+        renderDynamicPswContent(lang);
+      }
+      if (allProgramsList && allProgramsList.length > 0) {
+        renderDynamicNavPrograms(lang);
+      }
 
       // Update button visual states
       document.querySelectorAll('.js-lang-toggle').forEach(btn => {
@@ -1015,12 +1121,14 @@
       });
     });
 
-    // Initial language application on DOM ready
+    // Initial language application & dynamic data loading on DOM ready
     document.addEventListener('DOMContentLoaded', () => {
       applyLanguage(currentLanguage);
+      loadPswPageDynamicData();
     });
     // Fallback immediate execution
     applyLanguage(currentLanguage);
+    loadPswPageDynamicData();
   </script>
 
 </body>
