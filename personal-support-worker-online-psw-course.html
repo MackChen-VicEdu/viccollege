@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Online PSW Course • NACC Personal Support Worker DE 2022 | Victoria International College</title>
+  <title data-i18n="psw_page_title">Online PSW Course • NACC Personal Support Worker DE 2022 | Victoria International College</title>
   <meta name="description" content="Become an accredited Personal Support Worker (PSW) with Victoria International College's Hybrid/Online PSW Course in Ontario. NACC certified training, guaranteed clinical placements, and up to $28,000+ government grants.">
   <meta name="keywords" content="online psw course, personal support worker ontario, nacc psw training toronto, psw certification markham, psw clinical practicum, better jobs ontario psw grant">
   
@@ -26,7 +26,7 @@
       position: relative;
       background: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.82)), url('images/psw.jpg') center/cover no-repeat;
       color: #ffffff;
-      padding: 90px 0 80px;
+      padding: 85px 0 75px;
     }
     .prog-breadcrumb {
       display: flex;
@@ -59,22 +59,22 @@
     .prog-hero-title {
       font-size: 2.8rem;
       font-family: var(--font-serif);
-      line-height: 1.2;
+      line-height: 1.25;
       margin-bottom: 16px;
       color: #ffffff;
     }
     .prog-hero-lead {
       font-size: 1.15rem;
       color: #e2e8f0;
-      line-height: 1.6;
-      max-width: 820px;
+      line-height: 1.65;
+      max-width: 840px;
       margin-bottom: 28px;
     }
     .prog-hero-stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
-      margin-top: 30px;
+      margin-top: 32px;
     }
     .prog-stat-card {
       background: rgba(255, 255, 255, 0.1);
@@ -94,7 +94,7 @@
     .prog-stat-lbl {
       font-size: 12.5px;
       color: #cbd5e1;
-      line-height: 1.3;
+      line-height: 1.35;
     }
     .prog-content-layout {
       display: grid;
@@ -105,7 +105,7 @@
     .prog-main-col {
       display: flex;
       flex-direction: column;
-      gap: 45px;
+      gap: 40px;
     }
     .prog-section-card {
       background: #ffffff;
@@ -137,7 +137,7 @@
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 10px;
-      padding: 20px;
+      padding: 22px;
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .prog-pillar-item:hover {
@@ -158,7 +158,7 @@
     .prog-pillar-desc {
       font-size: 13.5px;
       color: #64748b;
-      line-height: 1.5;
+      line-height: 1.55;
     }
     .curriculum-module-list {
       list-style: none;
@@ -174,11 +174,11 @@
       border-radius: 8px;
       padding: 14px 18px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 15px;
       font-size: 14.5px;
       color: #334155;
-      font-weight: 500;
+      line-height: 1.5;
     }
     .curriculum-num {
       width: 28px;
@@ -192,10 +192,11 @@
       font-size: 12px;
       font-weight: 700;
       flex-shrink: 0;
+      margin-top: 2px;
     }
     .sidebar-sticky-box {
       position: sticky;
-      top: 100px;
+      top: 90px;
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -230,13 +231,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      user-select: none;
+    }
+    .faq-accordion-header:hover {
+      background: #f1f5f9;
     }
     .faq-accordion-body {
       padding: 18px 20px;
       background: #ffffff;
       font-size: 14px;
       color: #475569;
-      line-height: 1.6;
+      line-height: 1.65;
       border-top: 1px solid #e2e8f0;
     }
 
@@ -261,6 +266,9 @@
       .prog-hero-stats-grid {
         grid-template-columns: 1fr;
       }
+      .prog-sec-heading {
+        font-size: 1.4rem;
+      }
     }
   </style>
 </head>
@@ -270,13 +278,17 @@
   <div class="vic-top-bar">
     <div class="container top-bar-content">
       <div class="top-bar-contact">
-        <span><i class="fa-solid fa-phone"></i> Call Us: <a href="tel:416-665-6668">416-665-6668</a></span>
-        <span><i class="fa-solid fa-envelope"></i> info@viccollege.com</span>
-        <span><i class="fa-solid fa-location-dot"></i> Markham &amp; North York, ON</span>
+        <span><i class="fa-solid fa-phone"></i> <span data-i18n="topbar_call">Call Us: 416-665-6668</span></span>
+        <span><i class="fa-solid fa-envelope"></i> <span data-i18n="topbar_email">info@viccollege.com</span></span>
+        <span><i class="fa-solid fa-location-dot"></i> <span data-i18n="topbar_address">7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8</span></span>
       </div>
       <div class="top-bar-right">
-        <span class="top-bar-reg">Registered under Ontario Career Colleges Act, 2005</span>
-        <button type="button" class="lang-toggle-btn" id="lang-toggle">中文</button>
+        <span class="top-bar-reg" data-i18n="topbar_registered">Registered under Ontario Career Colleges Act, 2005</span>
+        <button type="button" class="lang-switcher-vic js-lang-toggle desktop-only" aria-label="Toggle language">
+          <i class="fa-solid fa-globe"></i>
+          <span class="lang-label" data-i18n="lang_btn">中文</span>
+          <span class="lang-badge lang-current">EN</span>
+        </button>
       </div>
     </div>
   </div>
@@ -287,84 +299,130 @@
       <a href="/" class="logo-section" aria-label="Victoria College of Business Healthcare Technology & Trades">
         <img class="logo-img" src="images/vic_logo.png" alt="Victoria College">
         <div class="logo-text">
-          <span class="logo-brand-main">Victoria College</span>
-          <span class="logo-brand-sub">of Business Healthcare Technology &amp; Trades</span>
+          <span class="logo-brand-main" data-i18n="logo_brand_main">Victoria College</span>
+          <span class="logo-brand-sub" data-i18n="logo_brand_sub">of Business Healthcare Technology &amp; Trades</span>
         </div>
       </a>
 
       <nav class="main-nav-list">
         <div class="main-nav-item">
-          <a href="/#home" class="main-nav-link">Home</a>
+          <a href="/#home" class="main-nav-link" data-i18n="nav_home">Home</a>
         </div>
         <div class="main-nav-item">
-          <a href="/#about" class="main-nav-link">About</a>
+          <a href="/#about" class="main-nav-link" data-i18n="nav_about">About Us</a>
         </div>
         <div class="main-nav-item">
-          <a href="/#programs" class="main-nav-link active">Programs <i class="fa-solid fa-angle-down" style="font-size: 11px;"></i></a>
+          <a href="/#programs" class="main-nav-link active" data-i18n="nav_programs">Programs <i class="fa-solid fa-angle-down" style="font-size: 11px;"></i></a>
           <div class="nav-dropdown">
-            <a href="/personal-support-worker-online-psw-course.html">NACC Personal Support Worker DE 2022</a>
-            <a href="/#accounting">Accounting, Tax and Payroll</a>
-            <a href="/#eca">Early Childcare Assistant</a>
-            <a href="/#acupuncture">Acupuncture (Non-Vocational)</a>
-            <a href="/#electrician">Electrician (309A / 442A)</a>
-            <a href="/#fullstack">Full Stack Web with AI Mini-Credential</a>
+            <a href="/personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a>
+            <a href="/#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
+            <a href="/#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a>
+            <a href="/#acupuncture" data-i18n="prog_acu_title">Acupuncture (Non-Vocational)</a>
+            <a href="/#electrician" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
+            <a href="/#fullstack" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a>
           </div>
         </div>
         <div class="main-nav-item">
-          <a href="/#financial-aid" class="main-nav-link">Financial Aid</a>
+          <a href="/#financial-aid" class="main-nav-link" data-i18n="nav_aid">Financial Aid</a>
         </div>
         <div class="main-nav-item">
-          <a href="/#articles" class="main-nav-link">Career Insights</a>
+          <a href="/#articles" class="main-nav-link" data-i18n="nav_articles">Career Insights</a>
         </div>
       </nav>
 
-      <div class="header-cta-group">
-        <a href="#consultation-booking" class="btn-vic-red">Book Free Assessment</a>
+      <div class="nav-social-icons">
+        <a href="https://www.instagram.com/vic.college/?utm_medium=copy_link" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=100078023242504" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i></a>
+        <button type="button" class="lang-switcher-vic js-lang-toggle desktop-only" style="margin-left: 10px;" aria-label="Toggle language">
+          <i class="fa-solid fa-globe"></i>
+          <span class="lang-label" data-i18n="lang_btn">中文</span>
+          <span class="lang-badge lang-current">EN</span>
+        </button>
+        <a href="#consultation-booking" class="btn-vic-red desktop-only" style="padding: 8px 16px; font-size: 13px;" data-i18n="nav_consultation_btn">Book Free Consultation</a>
       </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button type="button" class="mobile-toggle-btn" aria-label="Open navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </div>
   </header>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-drawer-overlay"></div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer">
+    <div class="mobile-drawer-header">
+      <div class="logo-text">
+        <h1 style="font-size: 1rem; font-family: var(--font-serif);" data-i18n="logo_brand_main">VICTORIA COLLEGE</h1>
+      </div>
+      <button type="button" class="mobile-drawer-close" aria-label="Close navigation menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <button type="button" class="lang-switcher-vic js-lang-toggle" style="width: 100%; justify-content: center;" aria-label="Toggle language">
+        <i class="fa-solid fa-globe"></i>
+        <span class="lang-label" data-i18n="lang_btn">中文</span>
+        <span class="lang-badge lang-current">EN</span>
+      </button>
+    </div>
+
+    <nav class="mobile-nav-links">
+      <a href="/#home" data-i18n="nav_home">Home</a>
+      <a href="/#about" data-i18n="nav_about">About Us</a>
+      <a href="/#programs" data-i18n="nav_programs">Programs</a>
+      <a href="/#financial-aid" data-i18n="nav_aid">Financial Aid</a>
+      <a href="/#articles" data-i18n="nav_articles">Career Insights</a>
+      <a href="#consultation-booking" data-i18n="nav_consultation_btn">Book Consultation</a>
+    </nav>
+  </div>
 
   <!-- Hero Banner -->
   <section class="prog-page-hero">
     <div class="container">
       <div class="prog-breadcrumb">
-        <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="/"><i class="fa-solid fa-house"></i> <span data-i18n="psw_bread_home">Home</span></a>
         <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
-        <a href="/#programs">Programs</a>
+        <a href="/#programs"><span data-i18n="psw_bread_programs">Programs</span></a>
         <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
-        <span>NACC Personal Support Worker DE 2022</span>
+        <a href="/#programs"><span data-i18n="psw_bread_health">Healthcare</span></a>
+        <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
+        <span data-i18n="psw_bread_curr">NACC Personal Support Worker DE 2022</span>
       </div>
 
-      <span class="prog-hero-badge">Accredited Career Diploma • NACC PSW DE 2022</span>
-      <h1 class="prog-hero-title">Become a Compassionate &amp; Skilled Caregiver with our Online &amp; Hybrid PSW Program</h1>
-      <p class="prog-hero-lead">
+      <span class="prog-hero-badge" data-i18n="psw_hero_badge">Accredited Career Diploma • NACC PSW DE 2022</span>
+      <h1 class="prog-hero-title" data-i18n="psw_hero_title">Become a Compassionate &amp; Skilled Caregiver with our Online &amp; Hybrid PSW Program</h1>
+      <p class="prog-hero-lead" data-i18n="psw_hero_lead">
         Transform lives with a fulfilling healthcare career. The NACC Personal Support Worker (PSW DE 2022) Certificate Program consists of intensive online theory, hands-on clinical lab simulations, and guaranteed clinical practicum placements in top Ontario nursing homes and long-term care facilities.
       </p>
 
       <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-        <a href="#consultation-booking" class="btn-vic-red" style="padding: 14px 28px; font-size: 15px;">Book Free Grant Assessment</a>
+        <a href="#consultation-booking" class="btn-vic-red" style="padding: 14px 28px; font-size: 15px;" data-i18n="psw_hero_cta_grant">Book Free Grant Assessment</a>
         <a href="#curriculum" class="btn-learn-more" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 14px 24px; font-size: 15px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
-          View Curriculum <i class="fa-solid fa-arrow-down"></i>
+          <span data-i18n="psw_hero_cta_curriculum">View Curriculum</span> <i class="fa-solid fa-arrow-down"></i>
         </a>
       </div>
 
       <!-- Quick Stats -->
       <div class="prog-hero-stats-grid">
         <div class="prog-stat-card">
-          <span class="prog-stat-val">23–30 Weeks</span>
-          <span class="prog-stat-lbl">Hybrid Theory + Lab + 310+ Hrs Practicum</span>
+          <span class="prog-stat-val" data-i18n="psw_stat_1_val">23–30 Weeks</span>
+          <span class="prog-stat-lbl" data-i18n="psw_stat_1_lbl">Hybrid Theory + Lab + 310+ Hrs Practicum</span>
         </div>
         <div class="prog-stat-card">
-          <span class="prog-stat-val">$20 – $28 / hr</span>
-          <span class="prog-stat-lbl">Average Starting Wage Across GTA Facilities</span>
+          <span class="prog-stat-val" data-i18n="psw_stat_2_val">$20 – $28 / hr</span>
+          <span class="prog-stat-lbl" data-i18n="psw_stat_2_lbl">Average Starting Wage Across GTA Facilities</span>
         </div>
         <div class="prog-stat-card">
-          <span class="prog-stat-val">100% Placement</span>
-          <span class="prog-stat-lbl">Direct LTC Nursing Home Clinical Placement</span>
+          <span class="prog-stat-val" data-i18n="psw_stat_3_val">100% Placement</span>
+          <span class="prog-stat-lbl" data-i18n="psw_stat_3_lbl">Direct LTC Nursing Home Clinical Placement</span>
         </div>
         <div class="prog-stat-card">
-          <span class="prog-stat-val">$28,000+ Grant</span>
-          <span class="prog-stat-lbl">Second Career / Better Jobs Ontario Eligible</span>
+          <span class="prog-stat-val" data-i18n="psw_stat_4_val">$28,000+ Grant</span>
+          <span class="prog-stat-lbl" data-i18n="psw_stat_4_lbl">Second Career / Better Jobs Ontario Eligible</span>
         </div>
       </div>
     </div>
@@ -379,40 +437,40 @@
 
         <!-- 1. Why Become a PSW -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-heart-pulse"></i> Why Choose a Career as a Personal Support Worker?</h2>
-          <p style="font-size: 15px; color: #475569; line-height: 1.6;">
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-heart-pulse"></i> <span data-i18n="psw_why_title">Why Choose a Career as a Personal Support Worker?</span></h2>
+          <p style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_why_desc">
             Personal Support Workers (PSWs) are among the most essential and respected healthcare professionals in Canada. With Ontario's rapidly aging population and growing healthcare infrastructure, certified PSWs enjoy unmatched job security, flexible shifts, and meaningful daily patient impact.
           </p>
 
           <div class="prog-pillar-grid">
             <div class="prog-pillar-item">
               <div class="prog-pillar-icon"><i class="fa-solid fa-briefcase-medical"></i></div>
-              <h3 class="prog-pillar-title">Abundant Job Opportunities</h3>
-              <p class="prog-pillar-desc">
+              <h3 class="prog-pillar-title" data-i18n="psw_pillar_1_title">Abundant Job Opportunities</h3>
+              <p class="prog-pillar-desc" data-i18n="psw_pillar_1_desc">
                 PSWs are in extreme high demand across Ontario hospitals, long-term care homes (LTC), retirement residences, and home healthcare agencies, ensuring rapid job placement upon graduation.
               </p>
             </div>
 
             <div class="prog-pillar-item">
               <div class="prog-pillar-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
-              <h3 class="prog-pillar-title">Personal Fulfillment</h3>
-              <p class="prog-pillar-desc">
+              <h3 class="prog-pillar-title" data-i18n="psw_pillar_2_title">Personal Fulfillment</h3>
+              <p class="prog-pillar-desc" data-i18n="psw_pillar_2_desc">
                 Make a genuine difference every day by providing compassionate, dignified physical and emotional care that directly enhances the independence and quality of life for seniors and patients.
               </p>
             </div>
 
             <div class="prog-pillar-item">
               <div class="prog-pillar-icon"><i class="fa-solid fa-sack-dollar"></i></div>
-              <h3 class="prog-pillar-title">Competitive Compensation</h3>
-              <p class="prog-pillar-desc">
+              <h3 class="prog-pillar-title" data-i18n="psw_pillar_3_title">Competitive Compensation</h3>
+              <p class="prog-pillar-desc" data-i18n="psw_pillar_3_desc">
                 Earn competitive hourly wages ($20–$28/hr) with opportunities for shift premiums, overtime, union benefits, comprehensive dental/medical plans, and paid vacation time.
               </p>
             </div>
 
             <div class="prog-pillar-item">
               <div class="prog-pillar-icon"><i class="fa-solid fa-laptop-medical"></i></div>
-              <h3 class="prog-pillar-title">Flexible Hybrid Learning</h3>
-              <p class="prog-pillar-desc">
+              <h3 class="prog-pillar-title" data-i18n="psw_pillar_4_title">Flexible Hybrid Learning</h3>
+              <p class="prog-pillar-desc" data-i18n="psw_pillar_4_desc">
                 Study live interactive theory online from home, paired with hands-on practice in our fully equipped on-campus hospital simulation lab in Markham &amp; North York.
               </p>
             </div>
@@ -421,65 +479,65 @@
 
         <!-- 2. Program Structure & Credentials -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-certificate"></i> Credentials &amp; Certifications Awarded</h2>
-          <p style="font-size: 15px; color: #475569; line-height: 1.6;">
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-certificate"></i> <span data-i18n="psw_cred_title">Credentials &amp; Certifications Awarded</span></h2>
+          <p style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_cred_desc">
             Upon successful completion of the course and national examination, graduates receive official industry-recognized credentials:
           </p>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 18px;">
             <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px;">
-              <h4 style="color: #1e3a8a; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-award"></i> NACC PSW Official Diploma</h4>
-              <p style="font-size: 13px; color: #3b82f6; margin: 0;">National Association of Career Colleges certified credential recognized nationwide across Canadian healthcare employers.</p>
+              <h4 style="color: #1e3a8a; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-award"></i> <span data-i18n="psw_c1_title">NACC PSW Official Diploma</span></h4>
+              <p style="font-size: 13px; color: #3b82f6; margin: 0;" data-i18n="psw_c1_desc">National Association of Career Colleges certified credential recognized nationwide across Canadian healthcare employers.</p>
             </div>
             <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px;">
-              <h4 style="color: #991b1b; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-kit-medical"></i> Standard First Aid &amp; CPR Level C</h4>
-              <p style="font-size: 13px; color: #dc2626; margin: 0;">Certified CPR/AED life support training required for all healthcare and long-term care clinical settings.</p>
+              <h4 style="color: #991b1b; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-kit-medical"></i> <span data-i18n="psw_c2_title">Standard First Aid &amp; CPR Level C</span></h4>
+              <p style="font-size: 13px; color: #dc2626; margin: 0;" data-i18n="psw_c2_desc">Certified CPR/AED life support training required for all healthcare and long-term care clinical settings.</p>
             </div>
             <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px;">
-              <h4 style="color: #166534; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-brain"></i> GPA Dementia Care Certificate</h4>
-              <p style="font-size: 13px; color: #16a34a; margin: 0;">Gentle Persuasive Approaches (GPA) certification for managing responsive behaviors in seniors with dementia.</p>
+              <h4 style="color: #166534; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-brain"></i> <span data-i18n="psw_c3_title">GPA Dementia Care Certificate</span></h4>
+              <p style="font-size: 13px; color: #16a34a; margin: 0;" data-i18n="psw_c3_desc">Gentle Persuasive Approaches (GPA) certification for managing responsive behaviors in seniors with dementia.</p>
             </div>
             <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 16px;">
-              <h4 style="color: #6b21a8; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-user-nurse"></i> Guaranteed Clinical Practicum</h4>
-              <p style="font-size: 13px; color: #9333ea; margin: 0;">Over 310 hours of hands-on placement in accredited Ontario nursing homes and community care agencies.</p>
+              <h4 style="color: #6b21a8; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-user-nurse"></i> <span data-i18n="psw_c4_title">Guaranteed Clinical Practicum</span></h4>
+              <p style="font-size: 13px; color: #9333ea; margin: 0;" data-i18n="psw_c4_desc">Over 310 hours of hands-on placement in accredited Ontario nursing homes and community care agencies.</p>
             </div>
           </div>
         </section>
 
         <!-- 3. Complete Curriculum Modules -->
         <section id="curriculum" class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-book-medical"></i> Official NACC Curriculum Modules (15 Subjects)</h2>
-          <p style="font-size: 15px; color: #475569; line-height: 1.6;">
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-book-medical"></i> <span data-i18n="psw_curr_title">Official NACC Curriculum Modules (15 Subjects)</span></h2>
+          <p style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_curr_desc">
             Our comprehensive curriculum covers all 15 core vocational modules mandated by the National Association of Career Colleges (NACC) and Ontario Ministry guidelines:
           </p>
 
           <ul class="curriculum-module-list">
-            <li class="curriculum-item"><span class="curriculum-num">1</span> <span><strong>PSW Foundations:</strong> Role, responsibilities, scope of practice, legal boundaries &amp; healthcare ethics.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">2</span> <span><strong>Safety and Mobility:</strong> Body mechanics, ergonomics, patient transfer techniques, infection control &amp; WHMIS.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">3</span> <span><strong>Body Systems &amp; Anatomy:</strong> Comprehensive overview of human anatomy, physiology, aging processes &amp; vital signs.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">4</span> <span><strong>Assisting with Personal Hygiene:</strong> Bed baths, oral hygiene, skin integrity prevention, grooming &amp; dignity care.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">5</span> <span><strong>Abuse and Neglect:</strong> Identification, institutional abuse reporting protocols &amp; client rights advocacy.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">6</span> <span><strong>Household Management, Nutrition &amp; Hydration:</strong> Meal planning, special dietary requirements, therapeutic diets &amp; feeding assistance.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">7</span> <span><strong>Care Planning &amp; Documentation:</strong> Restorative care goals, electronic health documentation (EHR) &amp; reporting to RNs/RPNs.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">8</span> <span><strong>Assisting the Family / Growth &amp; Development:</strong> Family dynamics, child development, supportive care across the lifespan.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">9</span> <span><strong>Assisting the Dying Person:</strong> Palliative care, end-of-life comfort, hospice support &amp; bereavement protocols.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">10</span> <span><strong>Assisting with Medications:</strong> Pharmacological routes, medication reminders, blister packs &amp; error reporting.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">11</span> <span><strong>Cognitive &amp; Mental Health Issues:</strong> Alzheimer's disease, dementia care, depression, delirium &amp; acquired brain injuries.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">12</span> <span><strong>Common Health Conditions:</strong> Diabetes, cardiovascular diseases, stroke, respiratory conditions, arthritis &amp; cancer care.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">13</span> <span><strong>Gentle Persuasive Approaches (GPA):</strong> Evidence-based dementia de-escalation techniques &amp; patient-centered behavioral care.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">14</span> <span><strong>Clinical Placement (Facility - 200+ Hours):</strong> Supervised on-site practicum in accredited Ontario Long-Term Care (LTC) nursing homes.</span></li>
-            <li class="curriculum-item"><span class="curriculum-num">15</span> <span><strong>Clinical Placement (Community - 110+ Hours):</strong> Hands-on in-home patient support with community healthcare agencies.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">1</span> <span data-i18n="psw_m1"><strong>PSW Foundations:</strong> Role, responsibilities, scope of practice, legal boundaries &amp; healthcare ethics.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">2</span> <span data-i18n="psw_m2"><strong>Safety and Mobility:</strong> Body mechanics, ergonomics, patient transfer techniques, infection control &amp; WHMIS.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">3</span> <span data-i18n="psw_m3"><strong>Body Systems &amp; Anatomy:</strong> Comprehensive overview of human anatomy, physiology, aging processes &amp; vital signs.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">4</span> <span data-i18n="psw_m4"><strong>Assisting with Personal Hygiene:</strong> Bed baths, oral hygiene, skin integrity prevention, grooming &amp; dignity care.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">5</span> <span data-i18n="psw_m5"><strong>Abuse and Neglect:</strong> Identification, institutional abuse reporting protocols &amp; client rights advocacy.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">6</span> <span data-i18n="psw_m6"><strong>Household Management, Nutrition &amp; Hydration:</strong> Meal planning, special dietary requirements, therapeutic diets &amp; feeding assistance.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">7</span> <span data-i18n="psw_m7"><strong>Care Planning &amp; Documentation:</strong> Restorative care goals, electronic health documentation (EHR) &amp; reporting to RNs/RPNs.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">8</span> <span data-i18n="psw_m8"><strong>Assisting the Family / Growth &amp; Development:</strong> Family dynamics, child development, supportive care across the lifespan.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">9</span> <span data-i18n="psw_m9"><strong>Assisting the Dying Person:</strong> Palliative care, end-of-life comfort, hospice support &amp; bereavement protocols.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">10</span> <span data-i18n="psw_m10"><strong>Assisting with Medications:</strong> Pharmacological routes, medication reminders, blister packs &amp; error reporting.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">11</span> <span data-i18n="psw_m11"><strong>Cognitive &amp; Mental Health Issues:</strong> Alzheimer's disease, dementia care, depression, delirium &amp; acquired brain injuries.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">12</span> <span data-i18n="psw_m12"><strong>Common Health Conditions:</strong> Diabetes, cardiovascular diseases, stroke, respiratory conditions, arthritis &amp; cancer care.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">13</span> <span data-i18n="psw_m13"><strong>Gentle Persuasive Approaches (GPA):</strong> Evidence-based dementia de-escalation techniques &amp; patient-centered behavioral care.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">14</span> <span data-i18n="psw_m14"><strong>Clinical Placement (Facility - 200+ Hours):</strong> Supervised on-site practicum in accredited Ontario Long-Term Care (LTC) nursing homes.</span></li>
+            <li class="curriculum-item"><span class="curriculum-num">15</span> <span data-i18n="psw_m15"><strong>Clinical Placement (Community - 110+ Hours):</strong> Hands-on in-home patient support with community healthcare agencies.</span></li>
           </ul>
         </section>
 
         <!-- 4. Clinical Placement & Practicum Network -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-hospital-user"></i> Hands-on Clinical Practicum Placement</h2>
-          <p style="font-size: 15px; color: #475569; line-height: 1.6;">
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-hospital-user"></i> <span data-i18n="psw_prac_title">Hands-on Clinical Practicum Placement</span></h2>
+          <p style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_prac_desc">
             Victoria International College coordinates 100% of your clinical placements. You will gain real-world experience under the direct mentorship of Registered Nurses (RNs) and Registered Practical Nurses (RPNs).
           </p>
           <div style="background: #f8fafc; border-left: 4px solid var(--vic-red); padding: 18px 20px; border-radius: 0 8px 8px 0; margin-top: 16px;">
-            <h4 style="color: var(--vic-dark); margin-bottom: 6px; font-size: 15px;">Direct Hire from Practicum</h4>
-            <p style="font-size: 13.5px; color: #475569; margin: 0; line-height: 1.55;">
+            <h4 style="color: var(--vic-dark); margin-bottom: 6px; font-size: 15px;" data-i18n="psw_prac_box_title">Direct Hire from Practicum</h4>
+            <p style="font-size: 13.5px; color: #475569; margin: 0; line-height: 1.55;" data-i18n="psw_prac_box_desc">
               Over <strong>85%</strong> of our graduates receive permanent job offers directly from their clinical placement facility before graduation!
             </p>
           </div>
@@ -487,55 +545,55 @@
 
         <!-- 5. Admission Requirements -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-clipboard-check"></i> Admission Requirements</h2>
-          <ul style="padding-left: 20px; font-size: 14.5px; color: #334155; line-height: 1.8;">
-            <li>Ontario Secondary School Diploma (OSSD / Grade 12) or Canadian / International equivalent evaluation.</li>
-            <li><strong>Mature Student Status:</strong> 18 years of age or older with passing score on the Wonderlic Scholastic Level Exam (administered free on campus).</li>
-            <li>Clear Vulnerable Sector Police Check (VSS).</li>
-            <li>Standard Medical &amp; Immunization Clearance Form (TB 2-step test, Hepatitis B, Influenza, COVID-19).</li>
-            <li>Proficiency in English communication.</li>
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-clipboard-check"></i> <span data-i18n="psw_adm_title">Admission Requirements</span></h2>
+          <ul style="padding-left: 20px; font-size: 14.5px; color: #334155; line-height: 1.85;">
+            <li data-i18n="psw_adm_1">Ontario Secondary School Diploma (OSSD / Grade 12) or Canadian / International equivalent evaluation.</li>
+            <li data-i18n="psw_adm_2"><strong>Mature Student Status:</strong> 18 years of age or older with passing score on the Wonderlic Scholastic Level Exam (administered free on campus).</li>
+            <li data-i18n="psw_adm_3">Clear Vulnerable Sector Police Check (VSS).</li>
+            <li data-i18n="psw_adm_4">Standard Medical &amp; Immunization Clearance Form (TB 2-step test, Hepatitis B, Influenza, COVID-19).</li>
+            <li data-i18n="psw_adm_5">Proficiency in English communication.</li>
           </ul>
         </section>
 
         <!-- 6. FAQs -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-circle-question"></i> Frequently Asked Questions</h2>
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-circle-question"></i> <span data-i18n="psw_faq_title">Frequently Asked Questions</span></h2>
           <div class="faq-accordion-item">
-            <div class="faq-accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
-              <span>Can I get government funding (Better Jobs Ontario) to cover my tuition?</span>
+            <div class="faq-accordion-header" onclick="toggleFaq(this)">
+              <span data-i18n="psw_faq_q1">Can I get government funding (Better Jobs Ontario) to cover my tuition?</span>
               <i class="fa-solid fa-angle-down"></i>
             </div>
-            <div class="faq-accordion-body">
+            <div class="faq-accordion-body" data-i18n="psw_faq_a1">
               Yes! Eligible candidates (unemployed, laid-off, former EI recipients, self-employed, gig workers, or low-income PR/Citizens) can qualify for up to <strong>$28,000+</strong> in non-repayable government grants covering 100% of tuition, books, transportation, and living allowance. Our advisors assist you throughout the entire application process free of charge.
             </div>
           </div>
 
           <div class="faq-accordion-item">
-            <div class="faq-accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
-              <span>How long does the PSW course take to complete?</span>
+            <div class="faq-accordion-header" onclick="toggleFaq(this)">
+              <span data-i18n="psw_faq_q2">How long does the PSW course take to complete?</span>
               <i class="fa-solid fa-angle-down"></i>
             </div>
-            <div class="faq-accordion-body">
+            <div class="faq-accordion-body" data-i18n="psw_faq_a2">
               The program takes between <strong>23 to 30 weeks</strong> to complete, depending on whether you choose the accelerated daytime stream or flexible evening/weekend stream.
             </div>
           </div>
 
           <div class="faq-accordion-item">
-            <div class="faq-accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
-              <span>Do I need to find my own clinical placement?</span>
+            <div class="faq-accordion-header" onclick="toggleFaq(this)">
+              <span data-i18n="psw_faq_q3">Do I need to find my own clinical placement?</span>
               <i class="fa-solid fa-angle-down"></i>
             </div>
-            <div class="faq-accordion-body">
+            <div class="faq-accordion-body" data-i18n="psw_faq_a3">
               No! Our dedicated clinical placement coordinators handle the entire placement process and assign you to one of our accredited partner long-term care facilities and community health organizations across the GTA.
             </div>
           </div>
 
           <div class="faq-accordion-item">
-            <div class="faq-accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
-              <span>What is the starting salary for PSWs in Ontario?</span>
+            <div class="faq-accordion-header" onclick="toggleFaq(this)">
+              <span data-i18n="psw_faq_q4">What is the starting salary for PSWs in Ontario?</span>
               <i class="fa-solid fa-angle-down"></i>
             </div>
-            <div class="faq-accordion-body">
+            <div class="faq-accordion-body" data-i18n="psw_faq_a4">
               PSWs in Ontario typically earn between <strong>$20.00 to $28.00 per hour</strong>, with additional government hourly retention wage enhancements, overtime opportunities, and comprehensive employee benefits in unionized hospitals and nursing homes.
             </div>
           </div>
@@ -549,37 +607,37 @@
 
           <!-- Free Grant Assessment Card -->
           <div class="sidebar-grant-card">
-            <span style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 700; margin-bottom: 10px;">GOVERNMENT GRANTS</span>
-            <h3 style="color: #ffffff; margin-bottom: 8px; font-size: 1.3rem;">Get Up to $28,000+ Grant</h3>
-            <p style="color: #dbeafe; font-size: 13.5px; line-height: 1.5; margin-bottom: 18px;">
+            <span style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 700; margin-bottom: 10px;" data-i18n="psw_side_grant_badge">GOVERNMENT GRANTS</span>
+            <h3 style="color: #ffffff; margin-bottom: 8px; font-size: 1.3rem;" data-i18n="psw_side_grant_title">Get Up to $28,000+ Grant</h3>
+            <p style="color: #dbeafe; font-size: 13.5px; line-height: 1.5; margin-bottom: 18px;" data-i18n="psw_side_grant_desc">
               Study PSW with zero out-of-pocket tuition. Book a 100% free eligibility assessment with our funding specialists today.
             </p>
-            <a href="#consultation-booking" class="btn-vic-red" style="background: #ffffff; color: #1e3a8a; font-weight: 800; padding: 12px 20px; border-radius: 6px; text-decoration: none; display: block;">Check Eligibility Now</a>
+            <a href="#consultation-booking" class="btn-vic-red" style="background: #ffffff; color: #1e3a8a; font-weight: 800; padding: 12px 20px; border-radius: 6px; text-decoration: none; display: block;" data-i18n="psw_side_grant_btn">Check Eligibility Now</a>
           </div>
 
           <!-- Quick Program Details Card -->
           <div class="sidebar-widget">
             <h4 style="font-size: 16px; color: var(--vic-dark); margin-bottom: 16px; border-bottom: 2px solid var(--vic-red); padding-bottom: 8px;">
-              <i class="fa-solid fa-circle-info" style="color: var(--vic-red);"></i> Program Snapshot
+              <i class="fa-solid fa-circle-info" style="color: var(--vic-red);"></i> <span data-i18n="psw_side_snap_title">Program Snapshot</span>
             </h4>
             <ul style="list-style: none; padding: 0; margin: 0; font-size: 13.5px; color: #475569; display: flex; flex-direction: column; gap: 12px;">
               <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong>Credential:</strong></span> <span>NACC Career Certificate</span>
+                <span><strong data-i18n="psw_side_c_lbl">Credential:</strong></span> <span data-i18n="psw_side_c_val">NACC Career Certificate</span>
               </li>
               <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong>Duration:</strong></span> <span>23 – 30 Weeks</span>
+                <span><strong data-i18n="psw_side_d_lbl">Duration:</strong></span> <span data-i18n="psw_side_d_val">23 – 30 Weeks</span>
               </li>
               <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong>Delivery:</strong></span> <span>Hybrid (Online + Lab)</span>
+                <span><strong data-i18n="psw_side_del_lbl">Delivery:</strong></span> <span data-i18n="psw_side_del_val">Hybrid (Online + Lab)</span>
               </li>
               <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong>Practicum:</strong></span> <span>310+ Hours (Guaranteed)</span>
+                <span><strong data-i18n="psw_side_p_lbl">Practicum:</strong></span> <span data-i18n="psw_side_p_val">310+ Hours (Guaranteed)</span>
               </li>
               <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong>Locations:</strong></span> <span>Markham / North York</span>
+                <span><strong data-i18n="psw_side_loc_lbl">Locations:</strong></span> <span data-i18n="psw_side_loc_val">Markham / North York</span>
               </li>
               <li style="display: flex; justify-content: space-between;">
-                <span><strong>Hotline:</strong></span> <a href="tel:416-665-6668" style="color: var(--vic-red); font-weight: 700; text-decoration: none;">416-665-6668</a>
+                <span><strong data-i18n="psw_side_hot_lbl">Hotline:</strong></span> <a href="tel:416-665-6668" style="color: var(--vic-red); font-weight: 700; text-decoration: none;">416-665-6668</a>
               </li>
             </ul>
           </div>
@@ -587,33 +645,33 @@
           <!-- Interactive Booking Form -->
           <div id="consultation-booking" class="sidebar-widget" style="background: #ffffff; border: 2px solid var(--vic-red);">
             <h4 style="font-size: 17px; color: var(--vic-dark); margin-bottom: 8px;">
-              <i class="fa-solid fa-calendar-check" style="color: var(--vic-red);"></i> Apply / Book Consultation
+              <i class="fa-solid fa-calendar-check" style="color: var(--vic-red);"></i> <span data-i18n="psw_form_title">Apply / Book Consultation</span>
             </h4>
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 18px;">
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 18px;" data-i18n="psw_form_desc">
               Reserve your spot or request grant evaluation. An advisor will contact you within 24 hours.
             </p>
 
             <form id="psw-consult-form" onsubmit="event.preventDefault(); handlePswBooking(this);">
               <div style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; color: #334155;">Your Full Name *</label>
-                <input type="text" id="psw-name" class="consult-input-style" placeholder="e.g. John Smith" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px;">
+                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; color: #334155;" data-i18n="psw_form_name_lbl">Your Full Name *</label>
+                <input type="text" id="psw-name" class="consult-input-style" placeholder="e.g. John Smith" data-i18n-ph="psw_form_name_ph" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px;">
               </div>
               <div style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; color: #334155;">Email Address *</label>
-                <input type="email" id="psw-email" class="consult-input-style" placeholder="name@example.com" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px;">
+                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; color: #334155;" data-i18n="psw_form_email_lbl">Email Address *</label>
+                <input type="email" id="psw-email" class="consult-input-style" placeholder="name@example.com" data-i18n-ph="psw_form_email_ph" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px;">
               </div>
               <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; color: #334155;">Phone Number *</label>
-                <input type="tel" id="psw-phone" class="consult-input-style" placeholder="416-665-6668" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px;">
+                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; color: #334155;" data-i18n="psw_form_phone_lbl">Phone Number *</label>
+                <input type="tel" id="psw-phone" class="consult-input-style" placeholder="416-665-6668" data-i18n-ph="psw_form_phone_ph" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px;">
               </div>
               <div style="margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
                 <input type="checkbox" id="psw-grant-check" checked style="width: 16px; height: 16px; accent-color: var(--vic-red); cursor: pointer;">
-                <label for="psw-grant-check" style="font-size: 12px; color: #475569; cursor: pointer;">Evaluate for Better Jobs Ontario Grant</label>
+                <label for="psw-grant-check" style="font-size: 12px; color: #475569; cursor: pointer;" data-i18n="psw_form_grant_check">Evaluate for Better Jobs Ontario Grant</label>
               </div>
-              <button type="submit" class="btn-vic-red" style="width: 100%; padding: 12px; font-weight: 700; border-radius: 6px; font-size: 14px; border: none; cursor: pointer;">Submit Application</button>
+              <button type="submit" class="btn-vic-red" style="width: 100%; padding: 12px; font-weight: 700; border-radius: 6px; font-size: 14px; border: none; cursor: pointer;" data-i18n="psw_form_submit">Submit Application</button>
             </form>
 
-            <div id="psw-form-success" style="display: none; padding: 14px; background: #e8f5e9; border: 1px solid #a5d6a7; color: #2e7d32; border-radius: 6px; text-align: center; margin-top: 14px; font-size: 13px;">
+            <div id="psw-form-success" style="display: none; padding: 14px; background: #e8f5e9; border: 1px solid #a5d6a7; color: #2e7d32; border-radius: 6px; text-align: center; margin-top: 14px; font-size: 13px;" data-i18n="psw_form_success">
               <strong>Thank You!</strong> Your request has been submitted. Our admissions advisor will reach out shortly.
             </div>
           </div>
@@ -633,48 +691,47 @@
         <div class="footer-col">
           <div class="footer-logo-row">
             <img class="footer-logo-img" src="images/vic_logo.png" alt="Victoria College">
-            <span class="footer-brand-name">VICTORIA<br>INTERNATIONAL COLLEGE<br><span style="font-size:12px; color:#888;">OF BUSINESS &amp; TECHNOLOGY</span></span>
+            <span class="footer-brand-name">VICTORIA<br>INTERNATIONAL COLLEGE<br><span style="font-size:12px; color:#888;" data-i18n="logo_brand_sub">OF BUSINESS &amp; TECHNOLOGY</span></span>
           </div>
-          <p class="footer-reg-statement">Registered as a career college under the <i>Ontario Career Colleges Act, 2005</i>.</p>
+          <p class="footer-reg-statement" data-i18n="footer_desc">Registered as a career college under the <i>Ontario Career Colleges Act, 2005</i>.</p>
           <div class="footer-socials">
-            <a href="https://www.facebook.com/VictoriaCollegeVICBT" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=100078023242504" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i></a>
             <a href="https://www.instagram.com/vic.college/?utm_medium=copy_link" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
           </div>
         </div>
 
         <!-- Column 2: Programs -->
         <div class="footer-col">
-          <h3>Programs</h3>
-          <p style="font-size: 13px; color: #888; margin-bottom: 12px;">Approved as a vocational program under the <i>Ontario Career Colleges Act, 2005</i></p>
+          <h3 data-i18n="footer_col_programs">Programs</h3>
           <ul class="footer-prog-list">
-            <li><a href="/personal-support-worker-online-psw-course.html">NACC Personal Support Worker DE 2022</a></li>
-            <li><a href="/#accounting">Accounting, Tax and Payroll</a></li>
-            <li><a href="/#eca">Early Childcare Assistant</a></li>
-            <li><a href="/#fullstack">Full Stack Web with AI Mini-Credential</a></li>
+            <li><a href="/personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a></li>
+            <li><a href="/#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
+            <li><a href="/#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a></li>
+            <li><a href="/#fullstack" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a></li>
           </ul>
         </div>
 
         <!-- Column 3: Contact -->
         <div class="footer-col">
-          <h3>Contact</h3>
+          <h3 data-i18n="nav_contact">Contact</h3>
           <div class="footer-contact-item">
             <i class="fa-solid fa-phone"></i>
             <a href="tel:416-665-6668">416-665-6668</a>
           </div>
           <div class="footer-contact-item">
             <i class="fa-solid fa-location-dot"></i>
-            <span>7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8</span>
+            <span data-i18n="campus_markham_addr">7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8</span>
           </div>
           <div class="footer-contact-item">
             <i class="fa-solid fa-location-dot"></i>
-            <span>306 Consumers Rd., North York, ON M2J 1P8</span>
+            <span data-i18n="campus_nyork_addr">306 Consumers Rd., North York, ON M2J 1P8</span>
           </div>
         </div>
 
       </div>
 
       <div class="footer-bottom-bar">
-        <span>Copyright © 2026 VICTORIA INTERNATIONAL COLLEGE OF BUSINESS &amp; TECHNOLOGY. All rights reserved.</span>
+        <span data-i18n="footer_copyright">Copyright © 2026 VICTORIA INTERNATIONAL COLLEGE OF BUSINESS &amp; TECHNOLOGY. All rights reserved.</span>
       </div>
     </div>
   </footer>
@@ -684,6 +741,18 @@
   <script src="js/auth.js"></script>
   <script src="js/ai-chatbot.js"></script>
   <script>
+    // FAQ Toggle Handler
+    function toggleFaq(header) {
+      const body = header.nextElementSibling;
+      const isHidden = body.style.display === 'none' || window.getComputedStyle(body).display === 'none';
+      body.style.display = isHidden ? 'block' : 'none';
+      const icon = header.querySelector('i');
+      if (icon) {
+        icon.className = isHidden ? 'fa-solid fa-angle-up' : 'fa-solid fa-angle-down';
+      }
+    }
+
+    // Lead Consultation Submission
     function handlePswBooking(form) {
       const name = document.getElementById('psw-name').value;
       const email = document.getElementById('psw-email').value;
@@ -716,15 +785,92 @@
       });
     }
 
-    // Language switcher toggle
-    let currLang = 'en';
-    const langBtn = document.getElementById('lang-toggle');
-    if (langBtn) {
-      langBtn.addEventListener('click', () => {
-        currLang = currLang === 'en' ? 'zh' : 'en';
-        langBtn.textContent = currLang === 'en' ? '中文' : 'English';
+    // Comprehensive Language Switcher & Hydrator
+    let currentLanguage = localStorage.getItem('vic_lang') || 'en';
+
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('vic_lang', lang);
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+      const langData = window.translations ? window.translations[lang] : null;
+      if (!langData) return;
+
+      // Translate all [data-i18n]
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (langData[key] !== undefined) {
+          el.innerHTML = langData[key];
+        }
       });
+
+      // Translate placeholders [data-i18n-ph]
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (langData[key] !== undefined) {
+          el.placeholder = langData[key];
+        }
+      });
+
+      // Update button visual states
+      document.querySelectorAll('.js-lang-toggle').forEach(btn => {
+        const labelSpan = btn.querySelector('.lang-label');
+        const badgeSpan = btn.querySelector('.lang-badge');
+        if (labelSpan) {
+          labelSpan.textContent = lang === 'en' ? '中文' : 'English';
+        }
+        if (badgeSpan) {
+          badgeSpan.textContent = lang === 'en' ? 'EN' : '中文';
+        }
+        btn.setAttribute('aria-label', lang === 'en' ? 'Switch to Chinese' : 'Switch to English');
+      });
+
+      // Update AI Chatbot Language if active
+      if (typeof window.updateChatbotLanguage === 'function') {
+        window.updateChatbotLanguage(lang);
+      }
     }
+
+    // Expose applyLanguage
+    window.applyLanguage = applyLanguage;
+
+    // Mobile Navigation Drawer Toggle
+    const mobileToggleBtn = document.querySelector('.mobile-toggle-btn');
+    const mobileDrawerClose = document.querySelector('.mobile-drawer-close');
+    const mobileDrawerOverlay = document.querySelector('.mobile-drawer-overlay');
+    const mobileNavDrawer = document.querySelector('.mobile-nav-drawer');
+
+    function openMobileDrawer() {
+      if (mobileNavDrawer) mobileNavDrawer.classList.add('active');
+      if (mobileDrawerOverlay) mobileDrawerOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileDrawer() {
+      if (mobileNavDrawer) mobileNavDrawer.classList.remove('active');
+      if (mobileDrawerOverlay) mobileDrawerOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileToggleBtn) mobileToggleBtn.addEventListener('click', openMobileDrawer);
+    if (mobileDrawerClose) mobileDrawerClose.addEventListener('click', closeMobileDrawer);
+    if (mobileDrawerOverlay) mobileDrawerOverlay.addEventListener('click', closeMobileDrawer);
+
+    // Attach click listeners to all language toggle buttons
+    document.querySelectorAll('.js-lang-toggle').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const nextLang = currentLanguage === 'en' ? 'zh' : 'en';
+        applyLanguage(nextLang);
+      });
+    });
+
+    // Initial language application on DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      applyLanguage(currentLanguage);
+    });
+    // Fallback immediate execution
+    applyLanguage(currentLanguage);
   </script>
 
 </body>
