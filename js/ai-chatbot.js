@@ -59,20 +59,20 @@
       },
       tech: {
         en: {
-          name: "Full Stack Web Technician",
+          name: "Full Stack Web Technician (with AI Mini-Credential)",
           duration: "32 Weeks (Intensive Labs + Commercial Capstone Project)",
-          credential: "Full Stack Web Technician Career Diploma",
+          credential: "Full Stack Web Technician Career Diploma + AI Mini-Credential",
           salary: "$65,000 – $85,000 / year entry starting salary",
-          highlights: "Core Java, Spring Boot 3, Spring Cloud microservices, React, TypeScript, AWS Cloud, Docker, LeetCode coaching & mock interviews.",
-          overview: "Enterprise-grade software engineering curriculum designed for landing modern IT jobs across Canadian banks, tech firms, and enterprises."
+          highlights: "Core Java, Spring Boot 3, Spring Cloud, React, TypeScript, AWS Cloud, Docker, Generative AI / LLM APIs, and AI-assisted programming.",
+          overview: "Enterprise-grade software engineering curriculum integrated with a cutting-edge AI Mini-Credential designed for landing modern IT jobs across Canadian banks, tech firms, and enterprises."
         },
         zh: {
-          name: "全栈网页开发技术员 (Full Stack Web Technician)",
-          duration: "32 周（高强度代码实训 + 商业级大型云端微服务项目）",
-          credential: "安省教育部认证 Full Stack Web 职业文凭",
+          name: "全栈网页开发技术员 + AI 微证书 (Full Stack Web)",
+          duration: "32 周（高强度代码实训 + 商业级大型云端微服务与 AI 大项目）",
+          credential: "安省教育部认证 Full Stack Web 职业文凭 + AI 微证书 (AI Mini-Credential)",
           salary: "加国毕业起薪 $65,000 – $85,000 加元/年",
-          highlights: "涵盖 Java、Spring Boot 微服务架构、React 前端全家桶、TypeScript、AWS 云原生与 Docker 容器化部署，名师辅导 LeetCode 刷题与大厂面试。",
-          overview: "零基础到企业级实战开发，助您高效进入加国高薪科技与金融 IT 行业。"
+          highlights: "涵盖 Java、Spring Boot 微服务架构、React 前端、TypeScript、AWS 云原生、Docker、生成式 AI/大模型 LLM API 与 AI 辅助编程实战。",
+          overview: "零基础到企业级实战开发，双重认证（职业文凭 + AI 微证书），助您高效进入加国高薪科技与金融 IT 行业。"
         }
       },
       accounting: {

@@ -338,12 +338,12 @@ def seed_default_programs(cursor, now_str):
             'slug': 'tech',
             'category': 'technology',
             'image_url': 'images/fullstack.jpg',
-            'badge_en': 'Career Diploma • Enterprise Level',
-            'badge_zh': '加国紧缺高薪 IT 职业文凭',
+            'badge_en': 'Career Diploma • AI Mini-Credential',
+            'badge_zh': '加国紧缺高薪 IT 职业文凭 • 含 AI 微证书',
             'title_en': 'Full Stack Web Technician',
             'title_zh': '全栈网页开发技术员 (Full Stack Web)',
-            'desc_en': 'This diploma program contains theoretical concepts with practical lab work to ensure graduates have a solid foundation in the following areas: programming fundamentals, system testing, web programming, design concepts, networks, server and database programming.',
-            'desc_zh': '该职业文凭课程将理论概念与高强度实操上机紧密结合，确保毕业生在以下领域奠定坚实基础：编程基础、系统测试、Web前端与后端开发、设计模式、计算机网络、服务器与云端数据库。',
+            'desc_en': 'This diploma program contains theoretical concepts with practical lab work to ensure graduates have a solid foundation in the following areas: programming fundamentals, system testing, web programming, design concepts, networks, server and database programming, plus a cutting-edge AI Mini-Credential.',
+            'desc_zh': '该职业文凭课程将理论概念与高强度实操上机紧密结合，确保毕业生在编程基础、系统测试、Web开发、设计模式、计算机网络、云端数据库及前沿 AI 微证书（生成式 AI 与大模型应用）等领域奠定坚实基础。',
             'bullets_en': json.dumps([
                 "Core Java",
                 "Advanced Java",
@@ -357,7 +357,8 @@ def seed_default_programs(cursor, now_str):
                 "Spring Cloud",
                 "Netty",
                 "AWS",
-                "Design Pattern"
+                "Design Pattern",
+                "AI Mini-Credential"
             ], ensure_ascii=False),
             'bullets_zh': json.dumps([
                 "Core Java 核心编程",
@@ -372,14 +373,15 @@ def seed_default_programs(cursor, now_str):
                 "Spring Cloud 微服务架构",
                 "Netty 高性能网络框架",
                 "AWS 云端部署与运维",
-                "企业级设计模式与架构实战"
+                "企业级设计模式与架构实战",
+                "AI 微证书 (AI Mini-Credential)"
             ], ensure_ascii=False),
             'duration_en': '32 Weeks (Intensive Labs + Commercial Projects)',
             'duration_zh': '32 周（高强度实战机房 + 商业级项目交付）',
-            'credential_en': 'Full Stack Web Technician Diploma',
-            'credential_zh': '安省教育部认证 Full Stack Web Technician 职业文凭',
-            'overview_en': 'An intensive software engineering diploma blending theoretical computer science foundations with modern enterprise web development, server architecture, cloud platforms, and full-stack project building.',
-            'overview_zh': '紧扣北美一线大厂与金融机构用人标准，从编程底层基础到企业级微服务架构、React 前端开发与 AWS 云端部署，手把手带领学员打造高含金量商业项目作品集。',
+            'credential_en': 'Full Stack Web Technician Diploma + AI Mini-Credential',
+            'credential_zh': '安省教育部认证 Full Stack Web Technician 职业文凭 + AI 微证书',
+            'overview_en': 'An intensive software engineering diploma blending theoretical computer science foundations with modern enterprise web development, server architecture, cloud platforms, and full-stack project building. Includes an integrated AI Mini-Credential covering Generative AI and LLM enterprise integration.',
+            'overview_zh': '紧扣北美一线大厂与金融机构用人标准，从编程底层基础到企业级微服务架构、React 前端开发与 AWS 云端部署，并深度融入 AI 微证书（生成式 AI 与 LLM 大模型开发实战），手把手带领学员打造高含金量商业项目作品集。',
             'modules_en': json.dumps([
                 "Programming Fundamentals & Core Java (OOP, Data Structures, JVM)",
                 "Advanced Java, Multithreading & Network Socket Programming",
@@ -388,7 +390,8 @@ def seed_default_programs(cursor, now_str):
                 "Modern Frontend Architecture: React, Hooks, Redux Toolkit, TypeScript, HTML5/CSS3",
                 "Cloud Infrastructure: AWS (EC2, S3, RDS, Lambda), Docker Containers, CI/CD",
                 "System Design, Software Design Patterns & Agile Development Workflow",
-                "Full Stack Capstone Project: Production-grade E-Commerce / SaaS Platform"
+                "AI Engineering Mini-Credential: Generative AI, LLM Integration (OpenAI / Claude API), Prompt Engineering & AI Dev Tools",
+                "Full Stack Capstone Project: Production-grade E-Commerce / SaaS Platform with AI Features"
             ], ensure_ascii=False),
             'modules_zh': json.dumps([
                 "计算机编程核心与 Java 深度进阶（面向对象、数据结构、JVM 调优）",
@@ -398,12 +401,13 @@ def seed_default_programs(cursor, now_str):
                 "现代前端全家桶：React、TypeScript、Next.js、Tailwind、状态管理",
                 "云原生架构：AWS 云服务（EC2, S3, RDS）、Docker 容器化与 CI/CD 自动化",
                 "软件工程设计模式、系统架构设计与敏捷开发流程",
-                "毕业大项目：工业级大型分布式电商 / 敏捷 SaaS 云平台全栈实战"
+                "AI 智能工程微证书：生成式 AI、大模型 LLM API 集成、Prompt 提示词工程与 AI 辅助编程实战",
+                "毕业大项目：集成 AI 智能特性的工业级大型分布式电商 / 敏捷 SaaS 云平台实战"
             ], ensure_ascii=False),
-            'careers_en': 'Full Stack Developer, Java Backend Engineer, Frontend React Developer, Web Applications Specialist, Cloud Software Associate.',
-            'careers_zh': '全栈开发工程师（Full Stack Developer）、Java 后端工程师、React 前端工程师、Web 软件技术专员。',
-            'outcomes_en': 'Average entry salary $65,000–$85,000/year. Direct preparation for technical white-boarding and system design interviews.',
-            'outcomes_zh': '加国起薪约 $65,000–$85,000/年。名师辅导 LeetCode 刷题、简历深度技术包装与大厂模拟面试。',
+            'careers_en': 'Full Stack Developer, Java Backend Engineer, Frontend React Developer, AI/Web Applications Specialist, Cloud Software Associate.',
+            'careers_zh': '全栈开发工程师（Full Stack Developer）、Java 后端工程师、React 前端工程师、AI/Web 软件技术专员。',
+            'outcomes_en': 'Average entry salary $65,000–$85,000/year. Direct preparation for technical white-boarding, system design, and AI-assisted workflow interviews.',
+            'outcomes_zh': '加国起薪约 $65,000–$85,000/年。名师辅导 LeetCode 刷题、简历深度技术包装、AI 辅助编程与大厂模拟面试。',
             'display_order': 6,
             'is_active': 1
         }
@@ -557,9 +561,9 @@ def init_database():
             ),
             (
                 'programs',
-                'Full Stack Web Technician Diploma Program',
-                'full stack, web development, software, programming, java, springboot, react, javascript, nodejs, aws, mysql, cloud, coding, developer, diploma',
-                'The Full Stack Web Technician Diploma covers core & advanced Java, SpringBoot, Spring Cloud, React, Node.js, Webpack, MySQL, Netty, AWS Cloud deployment, and enterprise software engineering design patterns. Includes hands-on real-world capstone projects and resume/interview preparation for high-paying tech careers ($65k-$85k/yr) in Canada.',
+                'Full Stack Web Technician Diploma + AI Mini-Credential',
+                'full stack, web development, software, programming, java, springboot, react, javascript, nodejs, aws, mysql, cloud, coding, developer, diploma, ai, artificial intelligence, mini credential, llm, prompt engineering',
+                'The Full Stack Web Technician Diploma covers core & advanced Java, SpringBoot, Spring Cloud, React, Node.js, Webpack, MySQL, Netty, AWS Cloud deployment, enterprise software engineering design patterns, and an integrated AI Mini-Credential (Generative AI, OpenAI/Claude LLM APIs, and AI-assisted programming). Includes hands-on real-world capstone projects and resume/interview preparation for high-paying tech careers ($65k-$85k/yr) in Canada.',
                 2, now_str, now_str
             ),
             (
@@ -1664,8 +1668,8 @@ def generate_local_knowledge_reply(query: str) -> str:
     if any(k in q for k in ['psw', 'support worker', 'nurse', 'caregiver', '护工', '护理', '养老院']):
         return "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **学制：** 30 周（包含 300+ 小时持牌长期护理院临床实地实习）\n• **毕业证书：** NACC PSW 官方文凭 + CPR/AED 急救证书\n• **薪资待遇：** 起薪时薪 $20 – $28 加元/小时\n• **亮点：** 安省持牌资深护士带教，配备标准病房模拟实验室，毕业直接对接西人养老机构就业。" if is_zh else "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **Duration:** 30 Weeks (Includes 300+ hours clinical practicum)\n• **Credential:** NACC PSW Diploma + CPR & First Aid Certification\n• **Salary:** $20 – $28 / hour with strong demand across Ontario\n• **Highlights:** Fully accredited, hands-on simulation labs, and direct placement in top healthcare facilities."
 
-    if any(k in q for k in ['tech', 'full stack', 'web', 'code', 'java', 'react', 'developer', '全栈', '编程', '前端', '后端', '软件']):
-        return "### 💻 Full Stack Web Technician (全栈开发文凭)\n\n• **学制：** 32 周（高强度实战机房 + 商业级微服务大项目）\n• **技术栈：** Java, Spring Boot 3, React, TypeScript, AWS 云原生, Docker, MySQL, Redis\n• **起薪前景：** 加拿大毕业起薪 $65,000 – $85,000 加元/年\n• **就业支持：** 名师辅导 LeetCode 刷题与大厂模拟面试，直通金融与科技名企。" if is_zh else "### 💻 Full Stack Web Technician Diploma\n\n• **Duration:** 32 Weeks (Live Projects + Intensive Labs)\n• **Stack:** Core Java, Spring Boot 3, React, TypeScript, AWS Cloud, Docker, MySQL\n• **Starting Salary:** $65,000 – $85,000 / year in Canadian tech & banking sectors\n• **Support:** 1-on-1 resume polish, LeetCode algorithms, and mock interview coaching."
+    if any(k in q for k in ['tech', 'full stack', 'web', 'code', 'java', 'react', 'developer', 'ai', 'mini credential', '全栈', '编程', '前端', '后端', '软件', '人工智能']):
+        return "### 💻 Full Stack Web Technician (全栈开发文凭 + AI 微证书)\n\n• **双重认证：** 安省官方 Full Stack Web 职业文凭 + **AI Mini-Credential 微证书**\n• **学制：** 32 周（高强度实战机房 + 商业级微服务与 AI 大项目）\n• **技术栈：** Java, Spring Boot 3, React, TypeScript, AWS 云原生, Docker, OpenAI/Claude API, 智能辅助编程\n• **起薪前景：** 加拿大毕业起薪 $65,000 – $85,000 加元/年\n• **就业支持：** 名师辅导 LeetCode 刷题与大厂模拟面试，直通金融与科技名企。" if is_zh else "### 💻 Full Stack Web Technician Diploma + AI Mini-Credential\n\n• **Dual Credentials:** Accredited Career Diploma + **AI Mini-Credential**\n• **Duration:** 32 Weeks (Live Projects + Intensive Labs)\n• **Stack:** Core Java, Spring Boot 3, React, TypeScript, AWS Cloud, Docker, GenAI & LLM Integration\n• **Starting Salary:** $65,000 – $85,000 / year in Canadian tech & banking sectors\n• **Support:** 1-on-1 resume polish, LeetCode algorithms, and mock interview coaching."
 
     if any(k in q for k in ['account', 'tax', 'payroll', 'bookkeep', 'cpa', '会计', '报税', '薪资']):
         return "### 📊 Accounting, Tax and Payroll Administration (会计与税务文凭)\n\n• **学制：** 30 周（资深持牌 CPA 亲授 + 真账实训）\n• **软件技能：** QuickBooks Desktop/Online, Sage 50, Profile, TaxPrep, Advanced Excel\n• **核心业务：** 全流程记账、加拿大个人税 (T1) 与公司税 (T2)、CRA 工资税 (CPP, EI, T4)\n• **薪资待遇：** 起薪 $48,000 – $65,000 加元/年，稳健白领晋升路径。" if is_zh else "### 📊 Accounting, Tax & Payroll Administration\n\n• **Duration:** 30 Weeks (Hands-on corporate accounting software)\n• **Software:** QuickBooks Desktop/Online, Sage 50, Profile, TaxPrep, Excel\n• **Core Skills:** Full-cycle bookkeeping, Canadian T1/T2 tax returns, CRA payroll filings\n• **Salary:** $48,000 – $65,000 / year with clear progression to CPA designation."

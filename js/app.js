@@ -47,10 +47,10 @@ const programDetailsData = {
   tech: {
     en: {
       title: "Full Stack Web Technician",
-      badge: "Career Diploma • Enterprise Level",
+      badge: "Career Diploma • AI Mini-Credential",
       duration: "32 Weeks (Intensive Labs + Commercial Projects)",
-      credential: "Full Stack Web Technician Diploma",
-      overview: "An intensive software engineering diploma blending theoretical computer science foundations with modern enterprise web development, server architecture, cloud platforms, and full-stack project building.",
+      credential: "Full Stack Web Technician Diploma + AI Mini-Credential",
+      overview: "An intensive software engineering diploma blending theoretical computer science foundations with modern enterprise web development, server architecture, cloud platforms, and full-stack project building. Includes an integrated AI Mini-Credential covering Generative AI and LLM enterprise integration.",
       modules: [
         "Programming Fundamentals & Core Java (OOP, Data Structures, JVM)",
         "Advanced Java, Multithreading & Network Socket Programming",
@@ -59,17 +59,18 @@ const programDetailsData = {
         "Modern Frontend Architecture: React, Hooks, Redux Toolkit, TypeScript, HTML5/CSS3",
         "Cloud Infrastructure: AWS (EC2, S3, RDS, Lambda), Docker Containers, CI/CD",
         "System Design, Software Design Patterns & Agile Development Workflow",
-        "Full Stack Capstone Project: Production-grade E-Commerce / SaaS Platform"
+        "AI Engineering Mini-Credential: Generative AI, LLM Integration (OpenAI / Claude API), Prompt Engineering & AI Dev Tools",
+        "Full Stack Capstone Project: Production-grade E-Commerce / SaaS Platform with AI Features"
       ],
-      careers: "Full Stack Developer, Java Backend Engineer, Frontend React Developer, Web Applications Specialist, Cloud Software Associate.",
-      outcomes: "Average entry salary $65,000–$85,000/year. Direct preparation for technical white-boarding and system design interviews."
+      careers: "Full Stack Developer, Java Backend Engineer, Frontend React Developer, AI/Web Applications Specialist, Cloud Software Associate.",
+      outcomes: "Average entry salary $65,000–$85,000/year. Direct preparation for technical white-boarding, system design, and AI-assisted workflow interviews."
     },
     zh: {
       title: "全栈网页开发技术员 (Full Stack Web)",
-      badge: "加国紧缺高薪 IT 职业文凭",
+      badge: "加国紧缺高薪 IT 职业文凭 • 含 AI 微证书",
       duration: "32 周（高强度实战机房 + 商业级项目交付）",
-      credential: "安省教育部认证 Full Stack Web Technician 职业文凭",
-      overview: "紧扣北美一线大厂与金融机构用人标准，从编程底层基础到企业级微服务架构、React 前端开发与 AWS 云端部署，手把手带领学员打造高含金量商业项目作品集。",
+      credential: "安省教育部认证 Full Stack Web Technician 职业文凭 + AI 微证书",
+      overview: "紧扣北美一线大厂与金融机构用人标准，从编程底层基础到企业级微服务架构、React 前端开发与 AWS 云端部署，并深度融入 AI 微证书（生成式 AI 与 LLM 大模型开发实战），手把手带领学员打造高含金量商业项目作品集。",
       modules: [
         "计算机编程核心与 Java 深度进阶（面向对象、数据结构、JVM 调优）",
         "多线程高并发网络编程与性能瓶颈诊断",
@@ -78,10 +79,11 @@ const programDetailsData = {
         "现代前端全家桶：React、TypeScript、Next.js、Tailwind、状态管理",
         "云原生架构：AWS 云服务（EC2, S3, RDS）、Docker 容器化与 CI/CD 自动化",
         "软件工程设计模式、系统架构设计与敏捷开发流程",
-        "毕业大项目：工业级大型分布式电商 / 敏捷 SaaS 云平台全栈实战"
+        "AI 智能工程微证书：生成式 AI、大模型 LLM API 集成、Prompt 提示词工程与 AI 辅助编程实战",
+        "毕业大项目：集成 AI 智能特性的工业级大型分布式电商 / 敏捷 SaaS 云平台实战"
       ],
-      careers: "全栈开发工程师（Full Stack Developer）、Java 后端工程师、React 前端工程师、Web 软件技术专员。",
-      outcomes: "加国起薪约 $65,000–$85,000/年。名师辅导 LeetCode 刷题、简历深度技术包装与大厂模拟面试。"
+      careers: "全栈开发工程师（Full Stack Developer）、Java 后端工程师、React 前端工程师、AI/Web 软件技术专员。",
+      outcomes: "加国起薪约 $65,000–$85,000/年。名师辅导 LeetCode 刷题、简历深度技术包装、AI 辅助编程与大厂模拟面试。"
     }
   },
   accounting: {

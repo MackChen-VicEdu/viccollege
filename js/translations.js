@@ -91,12 +91,12 @@ const translations = {
     prog_psw_duration: "Duration: 30 Weeks (Includes Practicum)",
 
     // Program 2: Full Stack
-    prog_tech_badge: "Career Diploma",
+    prog_tech_badge: "Career Diploma • AI Mini-Credential",
     prog_tech_title: "Full Stack Web Technician",
-    prog_tech_desc: "Comprehensive software engineering program providing solid theoretical concepts and hands-on laboratory work to build modern web and enterprise cloud applications.",
-    prog_tech_f1: "Core & Advanced Java, Spring Boot, Spring Cloud, Mybatis, MySQL",
+    prog_tech_desc: "Comprehensive software engineering program providing solid theoretical concepts, hands-on lab work, and an integrated AI Mini-Credential to build modern web, cloud, and AI-powered applications.",
+    prog_tech_f1: "Core & Advanced Java, Spring Boot, Spring Cloud, MyBatis, MySQL",
     prog_tech_f2: "Modern Frontend: React, JavaScript/TypeScript, Node.js, HTML5/CSS3",
-    prog_tech_f3: "Cloud deployment, AWS, Microservices, Network Architecture & Design Patterns",
+    prog_tech_f3: "AI Mini-Credential: GenAI, LLM APIs, Prompt Engineering & AI Dev Tools",
     prog_tech_duration: "Duration: 32 Weeks (Live Projects + Labs)",
 
     // Program 3: Accounting
@@ -321,12 +321,12 @@ const translations = {
     prog_psw_duration: "学制周期: 30 周（含实操与机构临床实习）",
 
     // Program 2: Full Stack
-    prog_tech_badge: "职业文凭",
+    prog_tech_badge: "职业文凭 • 含 AI 微证书",
     prog_tech_title: "全栈网页开发技术员 (Full Stack Web)",
-    prog_tech_desc: "理论与企业级项目实验深度融合，系统掌握现代全栈工程技术架构，涵盖网络协议、云端微服务及大型分布式系统开发。",
+    prog_tech_desc: "理论与企业级项目实验深度融合，系统掌握现代全栈工程架构，并深度融入 AI 微证书（生成式 AI、大模型开发实战与云端微服务）。",
     prog_tech_f1: "核心与进阶 Java、Spring Boot、Spring Cloud、MySQL 数据库",
     prog_tech_f2: "现代前端技术栈：React、JavaScript/TypeScript、Node.js",
-    prog_tech_f3: "AWS 云计算部署、微服务架构、网络编程与真实企业级商业项目",
+    prog_tech_f3: "AI 微证书：生成式 AI、大模型 LLM API、Prompt 提示词与智能辅助编程",
     prog_tech_duration: "学制周期: 32 周（含企业级项目实操演练）",
 
     // Program 3: Accounting
