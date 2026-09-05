@@ -8,7 +8,7 @@ const programDetailsData = {
     en: {
       title: "NACC Personal Support Worker DE 2022",
       badge: "Certificate Program • Ontario Regulated",
-      duration: "30 Weeks (Classroom + Lab + Practicum)",
+      duration: "23 Weeks (Classroom + Lab + Practicum)",
       credential: "NACC PSW Diploma + Standard First Aid & CPR Level C",
       overview: "The Personal Support Worker Certificate Program prepares students to master the required personal and occupational qualities needed to care for individuals in long-term care homes, retirement communities, hospitals, and home care environments.",
       modules: [
@@ -27,7 +27,7 @@ const programDetailsData = {
     zh: {
       title: "NACC 个人护理护工文凭 (PSW DE 2022)",
       badge: "安省官方职业证书 • 紧缺高薪",
-      duration: "30 周（理论课 + 实验室模拟 + 机构临床实习）",
+      duration: "23 周（理论课 + 实验室模拟 + 机构临床实习）",
       credential: "安省 NACC PSW 官方文凭 + CPR / AED 急救证书",
       overview: "PSW（Personal Support Worker）是安省长期紧缺的黄金医疗护理职业。维多利亚学院配备先进模拟病房，由安省资深护士名师亲授，包含扎实理论、实操技能及正规养老机构/医院实习。",
       modules: [

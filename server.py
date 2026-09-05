@@ -99,8 +99,8 @@ def seed_default_programs(cursor, now_str):
             'desc_zh': '个人支持工作者（PSW）证书课程包含课堂讲座和实习培训。毕业后，学生不仅将获得 PSW 证书，还将获得 CPR 和急救证书。\n\n个人支持工作者课程的目标是帮助个人掌握在家庭和长期护理机构中照顾他人所需的个人和职业素质。',
             'bullets_en': '[]',
             'bullets_zh': '[]',
-            'duration_en': '30 Weeks (Classroom + Lab + Practicum)',
-            'duration_zh': '30 周（理论课 + 实验室模拟 + 机构临床实习）',
+            'duration_en': '23 Weeks (Classroom + Lab + Practicum)',
+            'duration_zh': '23 周（理论课 + 实验室模拟 + 机构临床实习）',
             'credential_en': 'NACC PSW Diploma + Standard First Aid & CPR Level C',
             'credential_zh': '安省 NACC PSW 官方文凭 + CPR / AED 急救证书',
             'overview_en': 'The Personal Support Worker Certificate Program prepares students to master the required personal and occupational qualities needed to care for individuals in long-term care homes, retirement communities, hospitals, and home care environments.',
@@ -862,7 +862,7 @@ Your tone is professional, warm, encouraging, and highly knowledgeable.
 Key College Knowledge:
 1. Government Grants: Candidates may qualify for Better Jobs Ontario (Second Career) for up to $28,000+ non-repayable government funding covering tuition, books, transportation, and living allowances. Eligible: laid-off, gig/contract workers, low-income, permanent residents, citizens.
 2. Featured Programs:
-   - NACC Personal Support Worker (PSW DE 2022): 30 weeks, clinical practicum (300+ hrs), $20-$28/hr starting wage.
+   - NACC Personal Support Worker (PSW DE 2022): 23 weeks, clinical practicum (300+ hrs), $20-$28/hr starting wage.
    - Full Stack Web Technician: 32 weeks, Java, Spring Boot 3, React, TypeScript, AWS, $65k-$85k/yr.
    - Accounting, Tax and Payroll Administration: 30 weeks, QuickBooks, Sage 50, Canadian T1/T2 tax, CPA mentorship.
    - Early Childcare Assistant (ECA): 28 weeks, child psychology, daycare practicum.
@@ -1666,7 +1666,7 @@ def generate_local_knowledge_reply(query: str) -> str:
         return "### 🎯 Better Jobs Ontario (Second Career) 政府助学金\n\n您可申请最高 **$28,000+ 加币全额政府无偿资助**，涵盖 100% 学费、生活津贴、书本及交通费！\n\n**申请资格：**\n• 被解雇人士 / 领过 EI\n• 自雇、零工、合约工及低收入人士\n• 加拿大永久居民 (PR) 或公民\n\n维多利亚学院提供全程 1对1 免费规划与材料准备，欢迎致电 416-665-6668 或在线预约咨询！" if is_zh else "### 🎯 Better Jobs Ontario ($28,000+ Government Grants)\n\nYou may qualify for up to **$28,000+ in non-repayable government funding** covering 100% tuition, books, transportation, and monthly living allowances!\n\n**Key Eligibility:**\n• Laid-off workers or former EI recipients\n• Gig / contract / low-income workers\n• Canadian Permanent Residents & Citizens\n\nOur team provides 100% complimentary step-by-step assistance. Call us at 416-665-6668 or book a consultation!"
 
     if any(k in q for k in ['psw', 'support worker', 'nurse', 'caregiver', '护工', '护理', '养老院']):
-        return "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **学制：** 30 周（包含 300+ 小时持牌长期护理院临床实地实习）\n• **毕业证书：** NACC PSW 官方文凭 + CPR/AED 急救证书\n• **薪资待遇：** 起薪时薪 $20 – $28 加元/小时\n• **亮点：** 安省持牌资深护士带教，配备标准病房模拟实验室，毕业直接对接西人养老机构就业。" if is_zh else "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **Duration:** 30 Weeks (Includes 300+ hours clinical practicum)\n• **Credential:** NACC PSW Diploma + CPR & First Aid Certification\n• **Salary:** $20 – $28 / hour with strong demand across Ontario\n• **Highlights:** Fully accredited, hands-on simulation labs, and direct placement in top healthcare facilities."
+        return "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **学制：** 23 周（包含 300+ 小时持牌长期护理院临床实地实习）\n• **毕业证书：** NACC PSW 官方文凭 + CPR/AED 急救证书\n• **薪资待遇：** 起薪时薪 $20 – $28 加元/小时\n• **亮点：** 安省持牌资深护士带教，配备标准病房模拟实验室，毕业直接对接西人养老机构就业。" if is_zh else "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **Duration:** 23 Weeks (Includes 300+ hours clinical practicum)\n• **Credential:** NACC PSW Diploma + CPR & First Aid Certification\n• **Salary:** $20 – $28 / hour with strong demand across Ontario\n• **Highlights:** Fully accredited, hands-on simulation labs, and direct placement in top healthcare facilities."
 
     if any(k in q for k in ['tech', 'full stack', 'web', 'code', 'java', 'react', 'developer', 'ai', 'mini credential', '全栈', '编程', '前端', '后端', '软件', '人工智能']):
         return "### 💻 Full Stack Web Technician (全栈开发文凭 + AI 微证书)\n\n• **双重认证：** 安省官方 Full Stack Web 职业文凭 + **AI Mini-Credential 微证书**\n• **学制：** 32 周（高强度实战机房 + 商业级微服务与 AI 大项目）\n• **技术栈：** Java, Spring Boot 3, React, TypeScript, AWS 云原生, Docker, OpenAI/Claude API, 智能辅助编程\n• **起薪前景：** 加拿大毕业起薪 $65,000 – $85,000 加元/年\n• **就业支持：** 名师辅导 LeetCode 刷题与大厂模拟面试，直通金融与科技名企。" if is_zh else "### 💻 Full Stack Web Technician Diploma + AI Mini-Credential\n\n• **Dual Credentials:** Accredited Career Diploma + **AI Mini-Credential**\n• **Duration:** 32 Weeks (Live Projects + Intensive Labs)\n• **Stack:** Core Java, Spring Boot 3, React, TypeScript, AWS Cloud, Docker, GenAI & LLM Integration\n• **Starting Salary:** $65,000 – $85,000 / year in Canadian tech & banking sectors\n• **Support:** 1-on-1 resume polish, LeetCode algorithms, and mock interview coaching."

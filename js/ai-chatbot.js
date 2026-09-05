@@ -42,7 +42,7 @@
       psw: {
         en: {
           name: "NACC Personal Support Worker (PSW DE 2022)",
-          duration: "30 Weeks (Classroom + Simulation Lab + Clinical Practicum)",
+          duration: "23 Weeks (Classroom + Simulation Lab + Clinical Practicum)",
           credential: "NACC PSW Diploma + Standard First Aid & CPR Level C",
           salary: "$20 – $28 / hour with strong job security",
           highlights: "Accredited curriculum, 300+ hours guaranteed clinical practicum in top long-term care homes, direct hiring fairs.",
@@ -50,7 +50,7 @@
         },
         zh: {
           name: "NACC 个人护理护工文凭 (PSW DE 2022)",
-          duration: "30 周（理论课 + 实验室模拟实操 + 300+小时持牌养老院临床实习）",
+          duration: "23 周（理论课 + 实验室模拟实操 + 300+小时持牌养老院临床实习）",
           credential: "安省 NACC PSW 官方职业文凭 + CPR / First Aid 急救证书",
           salary: "起薪时薪 $20 – $28 加元/小时，各大公立私立养老院紧缺",
           highlights: "配备标准病房模拟实验室，安省持牌资深护士亲授，毕业直接对接西人养老机构实习就业。",
