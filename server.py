@@ -434,6 +434,33 @@ def seed_default_programs(cursor, now_str):
                 p['display_order'], p['is_active'], now_str, now_str
             ))
 
+def seed_default_job_fairs(cursor, now_str):
+    cursor.execute('''
+    INSERT INTO job_fairs (
+        tag_en, tag_zh, title_en, title_zh, subtitle_en, subtitle_zh,
+        date_en, date_zh, location_en, location_zh, btn_text_en, btn_text_zh,
+        btn_link, bg_image_url, is_active, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        'Upcoming Event',
+        '近期重磅活动',
+        'IN-PERSON PSW JOB FAIR',
+        '维多利亚线下 PSW 护工专场招聘会',
+        'Connect with employers, find jobs',
+        '知名养老机构 HR 亲临现场直接面试，岗位充足，当天即可锁定实习与工作机会！',
+        'Friday, 12 May | 10:00AM – 12:00PM',
+        '每周五 上午 10:00 – 中午 12:00',
+        '306 Consumers Rd. North York',
+        '306 Consumers Rd., North York / 7050 Woodbine Ave., Markham',
+        'Secure Your Spot',
+        '立即免费抢占席位',
+        '#consultation',
+        'images/job-fair.png',
+        1,
+        now_str,
+        now_str
+    ))
+
 def init_database():
     """Create database tables and seed default administrator if not exists."""
     conn = sqlite3.connect(DB_PATH)
@@ -915,6 +942,36 @@ Key College Knowledge:
     prog_cnt = prog_row['cnt'] if prog_row else 0
     if prog_cnt == 0:
         seed_default_programs(cursor, now_str)
+
+    # 9. Dynamic Job Fair & Events Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS job_fairs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tag_en TEXT DEFAULT 'Upcoming Event',
+        tag_zh TEXT DEFAULT '近期重磅活动',
+        title_en TEXT NOT NULL,
+        title_zh TEXT NOT NULL,
+        subtitle_en TEXT,
+        subtitle_zh TEXT,
+        date_en TEXT,
+        date_zh TEXT,
+        location_en TEXT,
+        location_zh TEXT,
+        btn_text_en TEXT DEFAULT 'Secure Your Spot',
+        btn_text_zh TEXT DEFAULT '立即免费抢占席位',
+        btn_link TEXT DEFAULT '#consultation',
+        bg_image_url TEXT DEFAULT 'images/job-fair.png',
+        is_active INTEGER DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    )
+    ''')
+
+    cursor.execute("SELECT COUNT(*) as cnt FROM job_fairs")
+    jf_row = cursor.fetchone()
+    jf_cnt = jf_row['cnt'] if jf_row else 0
+    if jf_cnt == 0:
+        seed_default_job_fairs(cursor, now_str)
 
     conn.commit()
     conn.close()
@@ -1666,6 +1723,11 @@ def admin_stats():
     cursor.execute("SELECT COUNT(*) as active_prog FROM programs WHERE is_active = 1")
     active_prog = cursor.fetchone()['active_prog']
 
+    cursor.execute("SELECT COUNT(*) as total_jf FROM job_fairs")
+    total_jf = cursor.fetchone()['total_jf']
+    cursor.execute("SELECT COUNT(*) as active_jf FROM job_fairs WHERE is_active = 1")
+    active_jf = cursor.fetchone()['active_jf']
+
     cursor.execute("SELECT value FROM settings WHERE key = 'openai_api_key'")
     key_row = cursor.fetchone()
     has_key = bool(key_row and key_row['value'].strip())
@@ -1685,6 +1747,9 @@ def admin_stats():
         'hidden_articles': hidden_art,
         'total_programs': total_prog,
         'active_programs': active_prog,
+        'total_job_fairs': total_jf,
+        'active_job_fairs': active_jf,
+        'job_fair_active': bool(active_jf > 0),
         'sitemap_urls': 5 + active_art,
         'has_api_key': has_key,
         'current_model': model
@@ -3513,6 +3578,227 @@ def admin_reorder_programs():
 
     db.commit()
     return jsonify({'success': True, 'message': 'Programs order updated successfully.'})
+
+
+# ==============================================================================
+# Dynamic Job Fair & Event Banner APIs
+# ==============================================================================
+
+def format_job_fair_dict(row):
+    if not row: return None
+    return dict(row)
+
+@app.route('/api/job-fair', methods=['GET'])
+def get_active_job_fair():
+    """
+    Public API: Returns the currently active job fair event banner.
+    If no active event exists or is_active == 0, returns job_fair: null.
+    """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM job_fairs WHERE is_active = 1 ORDER BY id DESC LIMIT 1")
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'success': True, 'job_fair': None, 'is_active': False})
+    
+    return jsonify({
+        'success': True,
+        'job_fair': format_job_fair_dict(row),
+        'is_active': True
+    })
+
+@app.route('/api/admin/job-fairs', methods=['GET'])
+def admin_get_job_fairs():
+    """Admin API: List all job fairs / event banners."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM job_fairs ORDER BY id DESC")
+    rows = cursor.fetchall()
+
+    return jsonify({
+        'success': True,
+        'job_fairs': [format_job_fair_dict(r) for r in rows],
+        'count': len(rows)
+    })
+
+@app.route('/api/admin/job-fairs/<int:event_id>', methods=['GET'])
+def admin_get_job_fair_by_id(event_id):
+    """Admin API: Get a single job fair event by ID."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM job_fairs WHERE id = ?", (event_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Job fair event not found.'}), 404
+
+    return jsonify({
+        'success': True,
+        'job_fair': format_job_fair_dict(row)
+    })
+
+@app.route('/api/admin/job-fairs', methods=['POST'])
+def admin_create_job_fair():
+    """Admin API: Create a new job fair event."""
+    err = require_admin()
+    if err: return err
+
+    data = request.get_json() or {}
+    title_en = (data.get('title_en') or '').strip()
+    title_zh = (data.get('title_zh') or '').strip()
+
+    if not title_en or not title_zh:
+        return jsonify({'error': 'Title (both English and Chinese) is required.'}), 400
+
+    tag_en = (data.get('tag_en') or 'Upcoming Event').strip()
+    tag_zh = (data.get('tag_zh') or '近期重磅活动').strip()
+    subtitle_en = (data.get('subtitle_en') or '').strip()
+    subtitle_zh = (data.get('subtitle_zh') or '').strip()
+    date_en = (data.get('date_en') or '').strip()
+    date_zh = (data.get('date_zh') or '').strip()
+    location_en = (data.get('location_en') or '').strip()
+    location_zh = (data.get('location_zh') or '').strip()
+    btn_text_en = (data.get('btn_text_en') or 'Secure Your Spot').strip()
+    btn_text_zh = (data.get('btn_text_zh') or '立即免费抢占席位').strip()
+    btn_link = (data.get('btn_link') or '#consultation').strip()
+    bg_image_url = (data.get('bg_image_url') or 'images/job-fair.png').strip()
+    is_active = int(data.get('is_active', 1))
+
+    now_str = datetime.utcnow().isoformat()
+    db = get_db()
+    cursor = db.cursor()
+
+    if is_active == 1:
+        cursor.execute("UPDATE job_fairs SET is_active = 0 WHERE is_active = 1")
+
+    cursor.execute('''
+    INSERT INTO job_fairs (
+        tag_en, tag_zh, title_en, title_zh, subtitle_en, subtitle_zh,
+        date_en, date_zh, location_en, location_zh, btn_text_en, btn_text_zh,
+        btn_link, bg_image_url, is_active, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        tag_en, tag_zh, title_en, title_zh, subtitle_en, subtitle_zh,
+        date_en, date_zh, location_en, location_zh, btn_text_en, btn_text_zh,
+        btn_link, bg_image_url, is_active, now_str, now_str
+    ))
+    db.commit()
+    new_id = cursor.lastrowid
+
+    cursor.execute("SELECT * FROM job_fairs WHERE id = ?", (new_id,))
+    new_row = cursor.fetchone()
+
+    return jsonify({
+        'success': True,
+        'job_fair': format_job_fair_dict(new_row),
+        'message': f'Job Fair "{title_en}" created successfully.'
+    }), 201
+
+@app.route('/api/admin/job-fairs/<int:event_id>', methods=['PUT'])
+def admin_update_job_fair(event_id):
+    """Admin API: Update an existing job fair event."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM job_fairs WHERE id = ?", (event_id,))
+    curr = cursor.fetchone()
+    if not curr:
+        return jsonify({'error': 'Job fair event not found.'}), 404
+
+    data = request.get_json() or {}
+    fields = ['tag_en', 'tag_zh', 'title_en', 'title_zh', 'subtitle_en', 'subtitle_zh',
+              'date_en', 'date_zh', 'location_en', 'location_zh', 'btn_text_en', 'btn_text_zh',
+              'btn_link', 'bg_image_url']
+    
+    updates = []
+    params = []
+    for f in fields:
+        if f in data and data[f] is not None:
+            updates.append(f"{f} = ?")
+            params.append(str(data[f]).strip())
+
+    if 'is_active' in data:
+        new_active = int(data['is_active'])
+        updates.append("is_active = ?")
+        params.append(new_active)
+        if new_active == 1:
+            cursor.execute("UPDATE job_fairs SET is_active = 0 WHERE id != ?", (event_id,))
+
+    if not updates:
+        return jsonify({'message': 'No changes detected.'})
+
+    updates.append("updated_at = ?")
+    params.append(datetime.utcnow().isoformat())
+    params.append(event_id)
+
+    query = f"UPDATE job_fairs SET {', '.join(updates)} WHERE id = ?"
+    db.execute(query, params)
+    db.commit()
+
+    cursor.execute("SELECT * FROM job_fairs WHERE id = ?", (event_id,))
+    updated_row = cursor.fetchone()
+
+    return jsonify({
+        'success': True,
+        'job_fair': format_job_fair_dict(updated_row),
+        'message': f'Job Fair "{data.get("title_en") or curr["title_en"]}" updated successfully.'
+    })
+
+@app.route('/api/admin/job-fairs/<int:event_id>/toggle-status', methods=['PATCH'])
+def admin_toggle_job_fair_status(event_id):
+    """Admin API: 1-click toggle active/inactive status for a job fair."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id, title_en, is_active FROM job_fairs WHERE id = ?", (event_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Job fair event not found.'}), 404
+
+    new_active = 0 if row['is_active'] == 1 else 1
+    now_str = datetime.utcnow().isoformat()
+    if new_active == 1:
+        db.execute("UPDATE job_fairs SET is_active = 0 WHERE id != ?", (event_id,))
+
+    db.execute("UPDATE job_fairs SET is_active = ?, updated_at = ? WHERE id = ?", (new_active, now_str, event_id))
+    db.commit()
+
+    status_str = "ACTIVE (Visible on website)" if new_active == 1 else "INACTIVE (Hidden from website)"
+    return jsonify({
+        'success': True,
+        'is_active': new_active,
+        'message': f'Job Fair "{row["title_en"]}" is now {status_str}.'
+    })
+
+@app.route('/api/admin/job-fairs/<int:event_id>', methods=['DELETE'])
+def admin_delete_job_fair(event_id):
+    """Admin API: Delete a job fair event."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT title_en FROM job_fairs WHERE id = ?", (event_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Job fair event not found.'}), 404
+
+    db.execute("DELETE FROM job_fairs WHERE id = ?", (event_id,))
+    db.commit()
+
+    return jsonify({
+        'success': True,
+        'message': f'Job Fair "{row["title_en"]}" deleted successfully.'
+    })
 
 
 # ==============================================================================

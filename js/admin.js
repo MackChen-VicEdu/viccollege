@@ -11,6 +11,7 @@
   let allChatLogs = [];
   let allArticles = [];
   let allAdminPrograms = [];
+  let allAdminJobFairs = [];
   let currentPreviewArticle = null;
 
   const fetchApi = (url, opts) => {
@@ -111,6 +112,7 @@
       if (tabId === 'users') this.loadUsers();
       if (tabId === 'knowledge') this.loadKnowledge();
       if (tabId === 'programs') this.loadPrograms();
+      if (tabId === 'job-fair') this.loadJobFairs();
       if (tabId === 'seo-articles') this.loadSEOArticles();
       if (tabId === 'ai-settings') this.loadAISettings();
       if (tabId === 'chat-logs') this.loadChatLogs();
@@ -824,6 +826,91 @@
           }
         });
       }
+
+      // 7b. Job Fair Modal Subtabs & Form
+      const jfSubtabs = document.querySelectorAll('.btn-jf-subtab');
+      jfSubtabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const paneKey = btn.dataset.pane;
+          jfSubtabs.forEach(b => {
+            const isMatch = b.dataset.pane === paneKey;
+            b.style.background = isMatch ? '#DC2626' : '#E2E8F0';
+            b.style.color = isMatch ? '#fff' : '#475569';
+          });
+          const paneEn = document.getElementById('jf-pane-en');
+          const paneZh = document.getElementById('jf-pane-zh');
+          if (paneEn) paneEn.style.display = paneKey === 'en' ? 'block' : 'none';
+          if (paneZh) paneZh.style.display = paneKey === 'zh' ? 'block' : 'none';
+        });
+      });
+
+      const openAddJfBtn = document.querySelector('.js-open-add-job-fair-modal');
+      const closeJfModalBtns = document.querySelectorAll('.js-close-jf-modal');
+      const jfModal = document.getElementById('modal-job-fair');
+      const jfForm = document.getElementById('form-job-fair');
+
+      if (openAddJfBtn) {
+        openAddJfBtn.onclick = () => this.openJobFairEditor();
+      }
+
+      closeJfModalBtns.forEach(btn => {
+        btn.onclick = () => {
+          if (jfModal) jfModal.classList.remove('active');
+        };
+      });
+
+      if (jfForm) {
+        jfForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const eventId = document.getElementById('jf-edit-id').value;
+          const saveBtn = document.getElementById('btn-save-job-fair');
+          if (saveBtn) saveBtn.disabled = true;
+
+          const payload = {
+            bg_image_url: document.getElementById('jf-bg-image').value.trim(),
+            btn_link: document.getElementById('jf-btn-link').value.trim(),
+            is_active: document.getElementById('jf-is-active').checked ? 1 : 0,
+            tag_en: document.getElementById('jf-tag-en').value.trim(),
+            title_en: document.getElementById('jf-title-en').value.trim(),
+            subtitle_en: document.getElementById('jf-subtitle-en').value.trim(),
+            date_en: document.getElementById('jf-date-en').value.trim(),
+            location_en: document.getElementById('jf-location-en').value.trim(),
+            btn_text_en: document.getElementById('jf-btn-text-en').value.trim(),
+            tag_zh: document.getElementById('jf-tag-zh').value.trim(),
+            title_zh: document.getElementById('jf-title-zh').value.trim(),
+            subtitle_zh: document.getElementById('jf-subtitle-zh').value.trim(),
+            date_zh: document.getElementById('jf-date-zh').value.trim(),
+            location_zh: document.getElementById('jf-location-zh').value.trim(),
+            btn_text_zh: document.getElementById('jf-btn-text-zh').value.trim()
+          };
+
+          try {
+            const token = window.VicAuth.getToken();
+            const method = eventId ? 'PUT' : 'POST';
+            const url = eventId ? `/api/admin/job-fairs/${eventId}` : '/api/admin/job-fairs';
+
+            const res = await fetchApi(url, {
+              method,
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(payload)
+            });
+            const data = await this.safeJson(res);
+            if (!res.ok) throw new Error(data.error || 'Failed to save job fair event');
+
+            this.showToast(data.message || 'Job fair event saved successfully!', 'success');
+            if (jfModal) jfModal.classList.remove('active');
+            this.loadJobFairs();
+            this.loadStats();
+          } catch (err) {
+            this.showToast(err.message, 'error');
+          } finally {
+            if (saveBtn) saveBtn.disabled = false;
+          }
+        });
+      }
     },
 
     // Load Overview Statistics
@@ -838,6 +925,12 @@
           document.getElementById('stat-total-users').textContent = data.total_users || 0;
           const progStatEl = document.getElementById('stat-total-programs');
           if (progStatEl) progStatEl.textContent = data.total_programs || 0;
+          const jfStatEl = document.getElementById('stat-job-fair-status');
+          if (jfStatEl) {
+            jfStatEl.innerHTML = data.job_fair_active 
+              ? '<span style="color:#059669; font-size: 16px;"><i class="fa-solid fa-circle-check"></i> Active (Live)</span>' 
+              : '<span style="color:#64748B; font-size: 16px;"><i class="fa-solid fa-eye-slash"></i> Inactive</span>';
+          }
           const kbStatEl = document.getElementById('stat-kb-articles');
           if (kbStatEl) kbStatEl.textContent = data.knowledge_articles || 0;
           const totalArtEl = document.getElementById('stat-total-articles');
@@ -1945,6 +2038,239 @@
         this.showToast(`✅ ${data.message}`, 'success');
         this.loadStats();
         this.loadSEOArticles();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
+    },
+
+    // =========================================================================
+    // Dynamic Job Fair & Events Management Methods
+    // =========================================================================
+
+    async loadJobFairs() {
+      const tbody = document.getElementById('job-fairs-tbody');
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi('/api/admin/job-fairs', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (res.ok && data.job_fairs) {
+          allAdminJobFairs = data.job_fairs;
+          this.renderJobFairsTable(allAdminJobFairs);
+
+          // Update live preview with active event or first event
+          const activeEvent = allAdminJobFairs.find(e => e.is_active === 1) || allAdminJobFairs[0];
+          this.updateLiveBannerPreview(activeEvent);
+        }
+      } catch (e) {
+        if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center; padding: 24px;">Failed to load job fair events: ${e.message}</td></tr>`;
+      }
+    },
+
+    updateLiveBannerPreview(event) {
+      const tagEl = document.getElementById('preview-jf-tag');
+      const titleEl = document.getElementById('preview-jf-title');
+      const subEl = document.getElementById('preview-jf-subtitle');
+      const dateEl = document.getElementById('preview-jf-date');
+      const locEl = document.getElementById('preview-jf-location');
+      const btnEl = document.getElementById('preview-jf-btn');
+      const box = document.getElementById('job-fair-admin-preview');
+
+      if (!event) {
+        if (titleEl) titleEl.textContent = 'No Active Job Fair Event';
+        if (subEl) subEl.textContent = 'Create a new event or activate an existing one.';
+        return;
+      }
+
+      if (tagEl) tagEl.textContent = event.tag_en || 'UPCOMING EVENT';
+      if (titleEl) titleEl.textContent = event.title_en || 'JOB FAIR EVENT';
+      if (subEl) subEl.textContent = event.subtitle_en || '';
+      if (dateEl) dateEl.textContent = event.date_en || '';
+      if (locEl) locEl.textContent = event.location_en || '';
+      if (btnEl) btnEl.textContent = event.btn_text_en || 'Secure Your Spot';
+      if (box && event.bg_image_url) {
+        box.style.backgroundImage = `url("${event.bg_image_url}")`;
+      }
+    },
+
+    renderJobFairsTable(events) {
+      const tbody = document.getElementById('job-fairs-tbody');
+      if (!tbody) return;
+
+      if (!events || events.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 36px; color:#888;">
+          <i class="fa-solid fa-calendar-xmark" style="font-size: 28px; margin-bottom: 8px; color: #cbd5e1; display: block;"></i>
+          No job fair events found. Click "Create New Event" to configure one.
+        </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = events.map(evt => {
+        const isActive = evt.is_active === 1;
+        const statusBadge = isActive
+          ? `<span class="badge-status-active" style="display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:6px; font-size:12px; font-weight:700; background:#DCFCE7; color:#15803D;"><i class="fa-solid fa-circle-check"></i> Active (Live Banner)</span>`
+          : `<span class="badge-status-hidden" style="display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:6px; font-size:12px; font-weight:700; background:#F1F5F9; color:#64748B;"><i class="fa-solid fa-eye-slash"></i> Inactive</span>`;
+
+        return `
+          <tr>
+            <td style="text-align: center;">
+              <img src="${evt.bg_image_url || 'images/job-fair.png'}" alt="${this.escapeHtml(evt.title_en)}" style="width: 54px; height: 38px; object-fit: cover; border-radius: 6px; border: 1px solid #E2E8F0;" onerror="this.src='images/job-fair.png'">
+            </td>
+            <td>
+              <div style="font-weight: 700; color: #1E293B; font-size: 14px; margin-bottom: 2px;">
+                ${this.escapeHtml(evt.title_en || 'Untitled Event')}
+              </div>
+              <div style="font-size: 12.5px; color: #64748B;">
+                ${this.escapeHtml(evt.title_zh || '')}
+              </div>
+              ${evt.tag_en ? `<span style="display:inline-block; margin-top:4px; font-size:10.5px; padding:2px 6px; background:#FFEDD5; color:#C2410C; border-radius:4px; font-weight:600;">${this.escapeHtml(evt.tag_en)}</span>` : ''}
+            </td>
+            <td>
+              <div style="font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 2px;">
+                <i class="fa-solid fa-clock" style="color: #64748B; font-size: 11px;"></i> ${this.escapeHtml(evt.date_en || 'N/A')}
+              </div>
+              <div style="font-size: 12px; color: #64748B;">
+                <i class="fa-solid fa-location-dot" style="color: #64748B; font-size: 11px;"></i> ${this.escapeHtml(evt.location_en || 'N/A')}
+              </div>
+            </td>
+            <td>
+              <span style="font-size: 12.5px; color: #334155; font-weight: 600;">${this.escapeHtml(evt.btn_text_en || 'Secure Your Spot')}</span>
+              <div style="font-size: 11px; color: #94A3B8; font-family: monospace;">link: ${this.escapeHtml(evt.btn_link || '#consultation')}</div>
+            </td>
+            <td style="text-align: center;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                ${statusBadge}
+                <button type="button" class="js-toggle-jf-btn" data-id="${evt.id}" style="border: none; background: none; color: #2563EB; font-size: 11px; text-decoration: underline; cursor: pointer; padding: 0;">
+                  ${isActive ? 'Make Inactive' : 'Set as Active Banner'}
+                </button>
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <div style="display: flex; justify-content: flex-end; gap: 6px; align-items: center;">
+                <button type="button" class="btn-table-action js-edit-jf-btn" data-id="${evt.id}" title="Edit Event" style="background:#F8FAFC; border:1px solid #E2E8F0; padding:6px 9px; border-radius:6px; cursor:pointer;">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button type="button" class="btn-table-action js-delete-jf-btn" data-id="${evt.id}" title="Delete Event" style="background:#FFF1F2; border:1px solid #FECDD3; color:#DC2626; padding:6px 9px; border-radius:6px; cursor:pointer;">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.querySelectorAll('.js-toggle-jf-btn').forEach(btn => {
+        btn.onclick = () => this.toggleJobFairStatus(parseInt(btn.dataset.id));
+      });
+      tbody.querySelectorAll('.js-edit-jf-btn').forEach(btn => {
+        btn.onclick = () => this.openJobFairEditor(parseInt(btn.dataset.id));
+      });
+      tbody.querySelectorAll('.js-delete-jf-btn').forEach(btn => {
+        btn.onclick = () => this.deleteJobFair(parseInt(btn.dataset.id));
+      });
+    },
+
+    async openJobFairEditor(eventId = null) {
+      const modal = document.getElementById('modal-job-fair');
+      const form = document.getElementById('form-job-fair');
+      if (!modal || !form) return;
+
+      // Reset to English subtab
+      const subtabs = modal.querySelectorAll('.btn-jf-subtab');
+      subtabs.forEach(tab => {
+        const isEn = tab.dataset.pane === 'en';
+        tab.style.background = isEn ? '#DC2626' : '#E2E8F0';
+        tab.style.color = isEn ? '#fff' : '#475569';
+      });
+      const paneEn = document.getElementById('jf-pane-en');
+      const paneZh = document.getElementById('jf-pane-zh');
+      if (paneEn) paneEn.style.display = 'block';
+      if (paneZh) paneZh.style.display = 'none';
+
+      if (eventId) {
+        try {
+          const token = window.VicAuth.getToken();
+          const res = await fetchApi(`/api/admin/job-fairs/${eventId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await this.safeJson(res);
+          if (!res.ok || !data.job_fair) throw new Error(data.error || 'Failed to load event');
+
+          const jf = data.job_fair;
+          document.getElementById('jf-edit-id').value = jf.id;
+          document.getElementById('modal-jf-title').innerHTML = `<i class="fa-solid fa-calendar-check" style="color: #ea580c;"></i> Edit Job Fair Event #${jf.id}`;
+          document.getElementById('jf-bg-image').value = jf.bg_image_url || 'images/job-fair.png';
+          document.getElementById('jf-btn-link').value = jf.btn_link || '#consultation';
+          document.getElementById('jf-is-active').checked = jf.is_active === 1;
+
+          document.getElementById('jf-tag-en').value = jf.tag_en || '';
+          document.getElementById('jf-title-en').value = jf.title_en || '';
+          document.getElementById('jf-subtitle-en').value = jf.subtitle_en || '';
+          document.getElementById('jf-date-en').value = jf.date_en || '';
+          document.getElementById('jf-location-en').value = jf.location_en || '';
+          document.getElementById('jf-btn-text-en').value = jf.btn_text_en || '';
+
+          document.getElementById('jf-tag-zh').value = jf.tag_zh || '';
+          document.getElementById('jf-title-zh').value = jf.title_zh || '';
+          document.getElementById('jf-subtitle-zh').value = jf.subtitle_zh || '';
+          document.getElementById('jf-date-zh').value = jf.date_zh || '';
+          document.getElementById('jf-location-zh').value = jf.location_zh || '';
+          document.getElementById('jf-btn-text-zh').value = jf.btn_text_zh || '';
+        } catch (err) {
+          this.showToast(err.message, 'error');
+          return;
+        }
+      } else {
+        document.getElementById('jf-edit-id').value = '';
+        document.getElementById('modal-jf-title').innerHTML = `<i class="fa-solid fa-calendar-check" style="color: #ea580c;"></i> Create New Job Fair Event`;
+        form.reset();
+        document.getElementById('jf-bg-image').value = 'images/job-fair.png';
+        document.getElementById('jf-btn-link').value = '#consultation';
+        document.getElementById('jf-is-active').checked = true;
+        document.getElementById('jf-tag-en').value = 'Upcoming Event';
+        document.getElementById('jf-tag-zh').value = '近期重磅活动';
+        document.getElementById('jf-btn-text-en').value = 'Secure Your Spot';
+        document.getElementById('jf-btn-text-zh').value = '立即免费抢占席位';
+      }
+
+      modal.classList.add('active');
+    },
+
+    async toggleJobFairStatus(eventId) {
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/job-fairs/${eventId}/toggle-status`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to toggle status');
+
+        this.showToast(data.message || 'Status updated successfully', 'success');
+        this.loadJobFairs();
+        this.loadStats();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
+    },
+
+    async deleteJobFair(eventId) {
+      if (!confirm('Are you sure you want to delete this job fair event? This action cannot be undone.')) return;
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/job-fairs/${eventId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to delete event');
+
+        this.showToast(data.message || 'Event deleted successfully', 'info');
+        this.loadJobFairs();
+        this.loadStats();
       } catch (err) {
         this.showToast(err.message, 'error');
       }

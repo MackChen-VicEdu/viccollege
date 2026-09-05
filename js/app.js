@@ -268,8 +268,9 @@ const testimonialsList = [
 
 let testIndex = 0;
 
-// Dynamic programs store
+// Dynamic programs & Job Fair store
 let dynamicProgramsList = [];
+let activeJobFairData = null;
 
 // Helper HTML escaping for public app
 function escapeAppHtml(str) {
@@ -288,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTestimonialNav();
   initModals();
   loadDynamicPrograms();
+  loadDynamicJobFair();
   initPublicArticles();
   initConsultationForm();
   initMobileMenu();
@@ -356,6 +358,11 @@ function applyLanguage(lang) {
   if (dynamicProgramsList && dynamicProgramsList.length > 0) {
     renderDynamicPrograms(lang);
     updateProgramNavigationAndDropdowns(lang);
+  }
+
+  // Update dynamic job fair banner if loaded
+  if (activeJobFairData) {
+    renderDynamicJobFair(lang);
   }
 
   // Update language button labels
@@ -834,6 +841,68 @@ function updateProgramNavigationAndDropdowns(lang = currentLanguage) {
       const title = (lang === 'zh' ? p.title_zh : p.title_en) || p.title_en;
       return `<li><a href="#${p.slug}">${escapeAppHtml(title)}</a></li>`;
     }).join('');
+  }
+}
+
+// 9. Dynamic Job Fair Banner Loader & Renderer
+async function loadDynamicJobFair() {
+  const section = document.getElementById('job-fair-banner-section');
+  if (!section) return;
+
+  try {
+    const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/job-fair') : '/api/job-fair';
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      activeJobFairData = data.job_fair;
+      renderDynamicJobFair(currentLanguage);
+    }
+  } catch (err) {
+    console.warn('Failed to load dynamic job fair banner:', err);
+  }
+}
+
+function renderDynamicJobFair(lang = currentLanguage) {
+  const section = document.getElementById('job-fair-banner-section');
+  if (!section) return;
+
+  if (!activeJobFairData || activeJobFairData.is_active === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+
+  const isZh = lang === 'zh';
+  const title = (isZh ? activeJobFairData.title_zh : activeJobFairData.title_en) || activeJobFairData.title_en || '';
+  const subtitle = (isZh ? activeJobFairData.subtitle_zh : activeJobFairData.subtitle_en) || activeJobFairData.subtitle_en || '';
+  const date = (isZh ? activeJobFairData.date_zh : activeJobFairData.date_en) || activeJobFairData.date_en || '';
+  const location = (isZh ? activeJobFairData.location_zh : activeJobFairData.location_en) || activeJobFairData.location_en || '';
+  const btnText = (isZh ? activeJobFairData.btn_text_zh : activeJobFairData.btn_text_en) || activeJobFairData.btn_text_en || 'Secure Your Spot';
+  const btnLink = activeJobFairData.btn_link || '#consultation';
+  const bgImage = activeJobFairData.bg_image_url || 'images/job-fair.png';
+
+  if (bgImage) {
+    section.style.backgroundImage = `url("${bgImage}")`;
+  }
+
+  const titleEl = document.getElementById('job-fair-title');
+  if (titleEl) titleEl.textContent = title;
+
+  const subtitleEl = document.getElementById('job-fair-subtitle');
+  if (subtitleEl) subtitleEl.textContent = subtitle;
+
+  const dateEl = document.getElementById('job-fair-date');
+  if (dateEl) dateEl.textContent = date;
+
+  const locEl = document.getElementById('job-fair-location');
+  if (locEl) locEl.textContent = location;
+
+  const btnEl = document.getElementById('job-fair-btn');
+  if (btnEl) {
+    btnEl.textContent = btnText;
+    btnEl.href = btnLink;
   }
 }
 
