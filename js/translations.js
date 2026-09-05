@@ -92,7 +92,7 @@ const translations = {
 
     // Program 2: Full Stack
     prog_tech_badge: "Career Diploma • AI Mini-Credential",
-    prog_tech_title: "Full Stack Web Technician",
+    prog_tech_title: "Full Stack Web with AI Mini-Credential",
     prog_tech_desc: "Comprehensive software engineering program providing solid theoretical concepts, hands-on lab work, and an integrated AI Mini-Credential to build modern web, cloud, and AI-powered applications.",
     prog_tech_f1: "Core & Advanced Java, Spring Boot, Spring Cloud, MyBatis, MySQL",
     prog_tech_f2: "Modern Frontend: React, JavaScript/TypeScript, Node.js, HTML5/CSS3",
@@ -190,7 +190,7 @@ const translations = {
     form_program_label: "Program of Interest",
     form_program_select: "-- Select a Program --",
     form_program_psw: "NACC Personal Support Worker (PSW)",
-    form_program_tech: "Full Stack Web Technician",
+    form_program_tech: "Full Stack Web with AI Mini-Credential",
     form_program_acc: "Accounting, Tax & Payroll",
     form_program_eca: "Early Childcare Assistant (ECA)",
     form_program_acu: "Acupuncture & Wellness",
@@ -322,7 +322,7 @@ const translations = {
 
     // Program 2: Full Stack
     prog_tech_badge: "职业文凭 • 含 AI 微证书",
-    prog_tech_title: "全栈网页开发技术员 (Full Stack Web)",
+    prog_tech_title: "全栈开发与 AI 微证书 (Full Stack Web with AI Mini-Credential)",
     prog_tech_desc: "理论与企业级项目实验深度融合，系统掌握现代全栈工程架构，并深度融入 AI 微证书（生成式 AI、大模型开发实战与云端微服务）。",
     prog_tech_f1: "核心与进阶 Java、Spring Boot、Spring Cloud、MySQL 数据库",
     prog_tech_f2: "现代前端技术栈：React、JavaScript/TypeScript、Node.js",
@@ -420,7 +420,7 @@ const translations = {
     form_program_label: "意向咨询专业",
     form_program_select: "-- 请选择意向专业 --",
     form_program_psw: "NACC 个人护理护工 (PSW)",
-    form_program_tech: "全栈网页开发技术员 (Full Stack)",
+    form_program_tech: "全栈开发与 AI 微证书 (Full Stack Web)",
     form_program_acc: "会计、税务与薪资管理 (Accounting)",
     form_program_eca: "早期幼儿教育助理 (ECA)",
     form_program_acu: "中医针灸与养生保健 (Acupuncture)",

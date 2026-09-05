@@ -46,7 +46,7 @@ const programDetailsData = {
   },
   tech: {
     en: {
-      title: "Full Stack Web Technician",
+      title: "Full Stack Web with AI Mini-Credential",
       badge: "Career Diploma • AI Mini-Credential",
       duration: "32 Weeks (Intensive Labs + Commercial Projects)",
       credential: "Full Stack Web Technician Diploma + AI Mini-Credential",
@@ -66,7 +66,7 @@ const programDetailsData = {
       outcomes: "Average entry salary $65,000–$85,000/year. Direct preparation for technical white-boarding, system design, and AI-assisted workflow interviews."
     },
     zh: {
-      title: "全栈网页开发技术员 (Full Stack Web)",
+      title: "全栈开发与 AI 微证书 (Full Stack Web with AI Mini-Credential)",
       badge: "加国紧缺高薪 IT 职业文凭 • 含 AI 微证书",
       duration: "32 周（高强度实战机房 + 商业级项目交付）",
       credential: "安省教育部认证 Full Stack Web Technician 职业文凭 + AI 微证书",

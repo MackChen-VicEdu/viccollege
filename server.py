@@ -340,8 +340,8 @@ def seed_default_programs(cursor, now_str):
             'image_url': 'images/fullstack.jpg',
             'badge_en': 'Career Diploma • AI Mini-Credential',
             'badge_zh': '加国紧缺高薪 IT 职业文凭 • 含 AI 微证书',
-            'title_en': 'Full Stack Web Technician',
-            'title_zh': '全栈网页开发技术员 (Full Stack Web)',
+            'title_en': 'Full Stack Web with AI Mini-Credential',
+            'title_zh': '全栈开发与 AI 微证书 (Full Stack Web with AI Mini-Credential)',
             'desc_en': 'This diploma program contains theoretical concepts with practical lab work to ensure graduates have a solid foundation in the following areas: programming fundamentals, system testing, web programming, design concepts, networks, server and database programming, plus a cutting-edge AI Mini-Credential.',
             'desc_zh': '该职业文凭课程将理论概念与高强度实操上机紧密结合，确保毕业生在编程基础、系统测试、Web开发、设计模式、计算机网络、云端数据库及前沿 AI 微证书（生成式 AI 与大模型应用）等领域奠定坚实基础。',
             'bullets_en': json.dumps([
