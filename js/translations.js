@@ -7,7 +7,7 @@ const translations = {
     topbar_registered: "Registered under Ontario Career Colleges Act, 2005",
     lang_btn: "中文",
     logo_brand_main: "Victoria College",
-    logo_brand_sub: "of Business, Healthcare, Technology, & Trades",
+    logo_brand_sub: "of Business Healthcare Technology & Trades",
 
     // Navigation
     nav_home: "Home",

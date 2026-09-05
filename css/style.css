@@ -197,9 +197,9 @@ ul {
 }
 
 .logo-brand-sub {
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
   color: var(--vic-red);
   letter-spacing: 0.25px;
   line-height: 1.25;
@@ -208,7 +208,7 @@ ul {
 
 @media (max-width: 992px) {
   .logo-brand-sub {
-    font-size: 0.65rem;
+    font-size: 0.72rem;
   }
 }
 
