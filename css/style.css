@@ -381,7 +381,7 @@ ul {
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 6px 1px 20px 2px rgba(0, 0, 0, 0.18);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .strip-item {
@@ -1187,6 +1187,16 @@ ul {
 @media (max-width: 992px) {
   .hero-headline-text {
     font-size: 2.5rem;
+  }
+  .hero-strip-box {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hero-strip-box .strip-item:nth-child(2) {
+    border-right: none;
+  }
+  .hero-strip-box .strip-item:nth-child(1),
+  .hero-strip-box .strip-item:nth-child(2) {
+    border-bottom: 1px solid #ECECEC;
   }
   .program-row, .program-row.reverse-layout {
     grid-template-columns: 1fr;

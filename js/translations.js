@@ -47,10 +47,12 @@ const translations = {
     // Quick Program Cards (Hero Bottom)
     cat_health_title: "Healthcare",
     cat_health_desc: "NACC PSW certified training with direct nursing home & clinical practicum placements.",
-    cat_biz_title: "Business & Tax",
-    cat_biz_desc: "Computerized accounting, Canadian taxation, Sage 50, and certified payroll administration.",
     cat_tech_title: "Technology",
     cat_tech_desc: "Full stack web development, Java Spring, React, Cloud AWS & enterprise systems.",
+    cat_trades_title: "Skilled Trades",
+    cat_trades_desc: "309A / 442A certified electrician exam preparation, hands-on wiring labs & job referrals.",
+    cat_biz_title: "Business & Tax",
+    cat_biz_desc: "Computerized accounting, Canadian taxation, Sage 50, and certified payroll administration.",
 
     // Job Fair Announcement Banner
     banner_tag: "Upcoming Event",
@@ -275,10 +277,12 @@ const translations = {
     // Quick Program Cards (Hero Bottom)
     cat_health_title: "医疗护理类",
     cat_health_desc: "NACC 认证 PSW 护工专业，提供正规养老院及医疗机构带薪/实习分配。",
-    cat_biz_title: "会计与税务",
-    cat_biz_desc: "加拿大电算化会计、企业报税全流程、Sage 50/QuickBooks 真实账目实操。",
     cat_tech_title: "IT 科技类",
     cat_tech_desc: "全栈网页工程师开发课程，涵盖 Java、Spring、React、云平台 AWS 实战。",
+    cat_trades_title: "建筑电工类",
+    cat_trades_desc: "安省 309A / 442A 建筑与维护电工考证培训，大师级名师亲授、实操机房与学徒推荐。",
+    cat_biz_title: "会计与税务",
+    cat_biz_desc: "加拿大电算化会计、企业报税全流程、Sage 50/QuickBooks 真实账目实操。",
 
     // Job Fair Announcement Banner
     banner_tag: "近期重磅活动",
