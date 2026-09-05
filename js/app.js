@@ -357,6 +357,10 @@ function applyLanguage(lang) {
   });
 }
 
+// Expose globally
+window.applyLanguage = applyLanguage;
+window.applyDynamicHomepageSections = applyDynamicHomepageSections;
+
 // 2. Testimonial Navigation
 function initTestimonialNav() {
   const prevBtn = document.getElementById('test-prev');

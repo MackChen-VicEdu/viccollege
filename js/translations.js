@@ -451,7 +451,39 @@ const translations = {
     footer_policy_kpi: "KPI 绩效审计指标 (KPI Audit)",
     footer_policy_sexual: "反性暴力防范政策",
     footer_policy_complaint: "学生申诉处理规程",
-    footer_policy_disability: "残障学员学术便利保障制度",
     footer_copyright: "版权所有 © 2026 维多利亚国际职业教育学院 (Victoria International College). 保留所有权利。"
   }
 };
+
+// Expose globally
+window.translations = translations;
+
+// Asynchronously pull live translations directly from SQLite Database on startup
+async function fetchDatabaseTranslations() {
+  try {
+    const res = await fetch('/api/translations');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.en && data.zh) {
+      // Merge database strings into translation dictionaries
+      Object.assign(translations.en, data.en);
+      Object.assign(translations.zh, data.zh);
+
+      // Re-apply language to DOM if app.js is already running
+      const curLang = localStorage.getItem('vic_lang') || 'en';
+      if (typeof window.applyLanguage === 'function') {
+        window.applyLanguage(curLang);
+      }
+      if (typeof window.applyDynamicHomepageSections === 'function' && data.sections) {
+        window.homepageSectionsCache = data.sections;
+        window.applyDynamicHomepageSections(data.sections, curLang);
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch SQLite database translations, using built-in defaults:', err);
+  }
+}
+
+// Automatically fetch on script execution
+fetchDatabaseTranslations();
+window.fetchDatabaseTranslations = fetchDatabaseTranslations;

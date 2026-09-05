@@ -667,6 +667,28 @@ Key College Knowledge:
         ''', initial_sections)
         print(f">> Seeded {len(initial_sections)} Dynamic Homepage Sections into SQLite DB.")
 
+    # 8. Site Bilingual Translations Table (English & Chinese text stored in DB)
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS site_translations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        key TEXT UNIQUE NOT NULL,
+        category TEXT DEFAULT 'general',
+        text_en TEXT NOT NULL,
+        text_zh TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    )
+    ''')
+
+    cursor.execute("SELECT COUNT(*) as cnt FROM site_translations")
+    st_row = cursor.fetchone()
+    st_count = st_row['cnt'] if st_row else 0
+    if st_count == 0:
+        try:
+            import seed_translations
+            seed_translations.seed_database()
+        except Exception as se:
+            print(">> Note: Could not auto-run seed_translations:", se)
+
     conn.commit()
     conn.close()
     print(">> SQLite Database initialized at:", DB_PATH)
@@ -1410,6 +1432,7 @@ def admin_stats():
 
     cursor.execute("SELECT COUNT(*) as active_art FROM articles WHERE is_active = 1 AND status = 'active'")
     active_art = cursor.fetchone()['active_art']
+    hidden_art = total_art - active_art
 
     cursor.execute("SELECT COUNT(*) as total_sec FROM homepage_sections")
     total_sec = cursor.fetchone()['total_sec']
@@ -2885,6 +2908,122 @@ def admin_sitemap_status():
         'sitemap_path': '/sitemap.xml',
         'last_updated': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
     })
+
+
+# ==============================================================================
+# Site Translations & Bilingual Content APIs (Stored in SQLite DB)
+# ==============================================================================
+
+@app.route('/api/translations', methods=['GET'])
+def get_site_translations():
+    """
+    Public API: Returns all bilingual site translations and homepage content directly from SQLite DB.
+    Called on page startup to hydrate English and Chinese copy dynamically.
+    """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT key, text_en, text_zh FROM site_translations")
+    rows = cursor.fetchall()
+    
+    en_dict = {}
+    zh_dict = {}
+    for r in rows:
+        en_dict[r['key']] = r['text_en']
+        zh_dict[r['key']] = r['text_zh']
+
+    # Also fetch active homepage sections
+    cursor.execute("SELECT * FROM homepage_sections WHERE is_active = 1 ORDER BY order_index ASC, id ASC")
+    sections = [dict(row) for row in cursor.fetchall()]
+
+    return jsonify({
+        'en': en_dict,
+        'zh': zh_dict,
+        'sections': sections,
+        'count': len(rows),
+        'source': 'sqlite_database'
+    })
+
+@app.route('/api/admin/translations', methods=['GET'])
+def admin_get_translations():
+    """Admin API: List and search all translation strings."""
+    err = require_admin()
+    if err: return err
+
+    category = request.args.get('category', '').strip().lower()
+    search = request.args.get('search', '').strip().lower()
+
+    query = "SELECT * FROM site_translations WHERE 1=1"
+    params = []
+
+    if category and category != 'all':
+        query += " AND category = ?"
+        params.append(category)
+
+    if search:
+        query += " AND (LOWER(key) LIKE ? OR LOWER(text_en) LIKE ? OR LOWER(text_zh) LIKE ?)"
+        params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
+
+    query += " ORDER BY category ASC, key ASC"
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(query, params)
+    translations = [dict(row) for row in cursor.fetchall()]
+
+    return jsonify({
+        'translations': translations,
+        'count': len(translations)
+    })
+
+@app.route('/api/admin/translations/<path:trans_key>', methods=['PUT'])
+def admin_update_translation(trans_key):
+    """Admin API: Update a specific bilingual translation in SQLite DB."""
+    err = require_admin()
+    if err: return err
+
+    data = request.get_json() or {}
+    text_en = data.get('text_en', '').strip()
+    text_zh = data.get('text_zh', '').strip()
+
+    if not text_en and not text_zh:
+        return jsonify({'error': 'Please provide text in at least one language.'}), 400
+
+    db = get_db()
+    cursor = db.cursor()
+    now_str = datetime.utcnow().isoformat()
+
+    cursor.execute("SELECT id FROM site_translations WHERE key = ?", (trans_key,))
+    if cursor.fetchone():
+        db.execute('''
+        UPDATE site_translations
+        SET text_en = ?, text_zh = ?, updated_at = ?
+        WHERE key = ?
+        ''', (text_en, text_zh, now_str, trans_key))
+    else:
+        category = (data.get('category') or 'general').strip()
+        db.execute('''
+        INSERT INTO site_translations (key, category, text_en, text_zh, updated_at)
+        VALUES (?, ?, ?, ?, ?)
+        ''', (trans_key, category, text_en, text_zh, now_str))
+
+    db.commit()
+    return jsonify({
+        'success': True,
+        'message': f'Translation "{trans_key}" saved to database successfully.'
+    })
+
+@app.route('/api/admin/translations/sync', methods=['POST'])
+def admin_sync_translations():
+    """Admin API: Resync translation dictionary from code files into SQLite DB."""
+    err = require_admin()
+    if err: return err
+
+    try:
+        import seed_translations
+        seed_translations.seed_database()
+        return jsonify({'success': True, 'message': 'Translations successfully re-synchronized in SQLite DB.'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # ==============================================================================

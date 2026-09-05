@@ -14,7 +14,7 @@ class TestSEOArticlesAndSitemap(unittest.TestCase):
         cls.client = server.app.test_client()
         server.init_database()
 
-    def get_admin_token(self, email="mack.chen@viccollege.com", password="Admin@123456"):
+    def get_admin_token(self, email="mack.chen@viccollege.com", password="admin123"):
         res = self.client.post('/api/auth/login', json={
             'email': email,
             'password': password
