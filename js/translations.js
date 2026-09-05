@@ -32,7 +32,7 @@ const translations = {
 
     // Hero Section
     hero_badge: "Ontario Registered Career College • 22+ Years of Excellence",
-    hero_title_1: "Job Ready Training for",
+    hero_title_1: "Job ready training for",
     hero_title_highlight: "Careers In-Demand",
     hero_subtitle: "Secure a high-paying, rewarding second career with comprehensive practical training. Complimentary assistance for maximum government grants & funding available.",
     hero_cta_book: "Begin Your Future — Book Consultation",
