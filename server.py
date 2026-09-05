@@ -70,6 +70,370 @@ AUTH_SALT = os.environ.get('AUTH_SALT', 'vic_college_salt_2026')
 def hash_password(password: str) -> str:
     return hashlib.sha256((password + AUTH_SALT).encode('utf-8')).hexdigest()
 
+def format_program_dict(row):
+    """Convert a database row for a program into a clean dict with parsed JSON arrays."""
+    d = dict(row)
+    for json_field in ['bullets_en', 'bullets_zh', 'modules_en', 'modules_zh']:
+        val = d.get(json_field)
+        if val:
+            try:
+                parsed = json.loads(val)
+                d[json_field] = parsed if isinstance(parsed, list) else [parsed]
+            except Exception:
+                d[json_field] = [line.strip() for line in str(val).split('\n') if line.strip()]
+        else:
+            d[json_field] = []
+    return d
+
+def seed_default_programs(cursor, now_str):
+    default_programs = [
+        {
+            'slug': 'psw',
+            'category': 'healthcare',
+            'image_url': 'images/psw.jpg',
+            'badge_en': 'Certificate Program • Ontario Regulated',
+            'badge_zh': '安省官方职业证书 • 紧缺高薪',
+            'title_en': 'NACC Personal Support Worker DE 2022',
+            'title_zh': 'NACC 个人护理护工文凭 (PSW DE 2022)',
+            'desc_en': 'Personal Support Worker Certificate Program contains in class lectures and practicum training. Upon graduating, students will not only have their PSW certificate but also a CPR & First Aid certificate.\n\nThe goal of the Personal Support Worker Program is to help individuals master the required personal and occupational qualities needed to care for people living at home and in long-term care facilities. Students will learn to identify and respond to the physical and emotional needs of clients/consumers.',
+            'desc_zh': '个人支持工作者（PSW）证书课程包含课堂讲座和实习培训。毕业后，学生不仅将获得 PSW 证书，还将获得 CPR 和急救证书。\n\n个人支持工作者课程的目标是帮助个人掌握在家庭和长期护理机构中照顾他人所需的个人和职业素质。',
+            'bullets_en': '[]',
+            'bullets_zh': '[]',
+            'duration_en': '30 Weeks (Classroom + Lab + Practicum)',
+            'duration_zh': '30 周（理论课 + 实验室模拟 + 机构临床实习）',
+            'credential_en': 'NACC PSW Diploma + Standard First Aid & CPR Level C',
+            'credential_zh': '安省 NACC PSW 官方文凭 + CPR / AED 急救证书',
+            'overview_en': 'The Personal Support Worker Certificate Program prepares students to master the required personal and occupational qualities needed to care for individuals in long-term care homes, retirement communities, hospitals, and home care environments.',
+            'overview_zh': 'PSW（Personal Support Worker）是安省长期紧缺的黄金医疗护理职业。维多利亚学院配备先进模拟病房，由安省资深护士名师亲授，包含扎实理论、实操技能及正规养老机构/医院实习。',
+            'modules_en': json.dumps([
+                "PSW Foundations & Individuality of the Person",
+                "Role of the PSW in Healthcare Settings",
+                "Interpersonal Communications & Working Relationships",
+                "Safety and Mobility & Abuse Prevention",
+                "Assisting with Personal Hygiene and Daily Living Activities",
+                "Assisting with Medications & Care Planning",
+                "Cognitive and Mental Health Issues and Brain Disorders",
+                "Clinical Practicum: 300+ Hours in Long-Term Care and Community Care"
+            ], ensure_ascii=False),
+            'modules_zh': json.dumps([
+                "PSW 职业基础与个体照护原则",
+                "安省医疗护理体系与护工职责规范",
+                "医患沟通技巧与跨专业团队协作",
+                "病患安全防护、转运技巧与防虐待规程",
+                "个人卫生照料与日常生活辅助实训",
+                "服药辅助规程与照护计划（Care Plan）执行",
+                "认知障碍、阿尔茨海默症及心理健康支持",
+                "临床实地实习：300+小时安省持牌长期护理院（LTC）实训"
+            ], ensure_ascii=False),
+            'careers_en': 'Personal Support Worker (PSW), Long-term Care Aide, Home Support Worker, Respite Caregiver, Hospital Patient Attendant.',
+            'careers_zh': '养老院私人护理员（PSW）、医院病患护理助理、社区家庭护理员、日间照料中心护理专员。',
+            'outcomes_en': 'High demand across Ontario with starting wages from $20 to $28/hour. Government incentive grants and sign-on bonuses often available.',
+            'outcomes_zh': '安省各公立/私立医疗养老机构长期极度紧缺，时薪高达 $20–$28/小时，福利完善，常年具备全职高薪就业机会。',
+            'display_order': 1,
+            'is_active': 1
+        },
+        {
+            'slug': 'accounting',
+            'category': 'business',
+            'image_url': 'images/accounting.jpg',
+            'badge_en': 'Career Diploma • CPA Mentorship',
+            'badge_zh': '加国高稳定度白领职业文凭',
+            'title_en': 'Accounting, Tax and Payroll',
+            'title_zh': '会计、税务与薪资管理 (Accounting, Tax & Payroll)',
+            'desc_en': 'The program consists of 30 weeks of intensive instructor led hands on training and practical exercises under the supervision of industry-experienced instructors.\n\nOur Computerized Accounting program provides students with solid knowledge and skills to work as a bookkeeper, an accounting assistant, or accounts receivable/ accounts payable clerk, and proficiencies appropriate for careers in accounting and payroll administration.',
+            'desc_zh': '该项目由经验丰富的行业导师指导，包含30周密集实战培训及上机操作练习。\n\n计算机化会计课程为学员提供扎实的专业知识与技能，适合从事全盘簿记员、会计助理、应收应付账款专员以及薪资管理等工作。',
+            'bullets_en': '[]',
+            'bullets_zh': '[]',
+            'duration_en': '30 Weeks (Hands-on Corporate Software)',
+            'duration_zh': '30 周（名师带教 + 真账实操演练）',
+            'credential_en': 'Computerized Accounting, Tax & Payroll Diploma',
+            'credential_zh': '安省认证 Computerized Accounting & Payroll 职业文凭',
+            'overview_en': 'Comprehensive vocational training designed for individuals aiming to work as corporate bookkeepers, payroll coordinators, and tax associates across Canadian commercial enterprises and CPA accounting firms.',
+            'overview_zh': '由加国资深 CPA 及持牌会计师团队授课，针对加拿大本地公司日常全流程账务、员工工资税核算、CRA 个人与公司税申报进行深度全真演练，毕业即具备 2-3 年实际工作经验水准。',
+            'modules_en': json.dumps([
+                "Canadian Financial Accounting Principles & Double-Entry Bookkeeping",
+                "QuickBooks Desktop & QuickBooks Online (QBO) Master Certification",
+                "Sage 50 Cloud Accounting & Enterprise ERP Overview",
+                "Canadian Payroll Administration: CRA Rules, CPP, EI, WSIB, ROE & T4 Filing",
+                "Canadian Taxation Part 1: Personal Tax (T1) & Wealth Planning (Profile / TaxPrep)",
+                "Canadian Taxation Part 2: Corporate Tax (T2), GST/HST Reporting & Audits",
+                "Advanced Excel for Financial Modeling, Pivot Tables, VLOOKUP & Analytics",
+                "Full Cycle Accounting Case Study & Year-end Working Papers"
+            ], ensure_ascii=False),
+            'modules_zh': json.dumps([
+                "加拿大商业会计基础与复式记账法原理",
+                "QuickBooks 桌面版与云端版（QBO）全账套实战",
+                "Sage 50 财务软件企业级应用与库存/往来账管理",
+                "加拿大薪资法规管理：CRA 税务扣缴、CPP、EI、WSIB、ROE 与 T4 表格制作",
+                "加拿大税务实战 1：个人所得税（T1）申报、自雇税收与税务规划（Profile/TaxPrep）",
+                "加拿大税务实战 2：公司税（T2）申报、GST/HST 税务核算及 CRA 审计应对",
+                "高级 Excel 财务建模、数据透视表、VLOOKUP 与商业报表分析",
+                "企业全流程真账实操与年终结账底稿（Working Papers）编制"
+            ], ensure_ascii=False),
+            'careers_en': 'Bookkeeper, Accounts Receivable / Payable Clerk, Payroll Specialist, Tax Preparer, Junior Accountant, Financial Assistant.',
+            'careers_zh': '全盘簿记员（Bookkeeper）、应收应付账款主管、薪资管理专员、报税专员、会计助理。',
+            'outcomes_en': 'High placement rate across small-to-medium businesses and accounting firms with clear progression paths to CPA designation.',
+            'outcomes_zh': '大多伦多地区各类企事业单位常年刚需，就业面极广，工作环境稳定舒适，并为考取 CPA 提供坚实基石。',
+            'display_order': 2,
+            'is_active': 1
+        },
+        {
+            'slug': 'eca',
+            'category': 'education',
+            'image_url': 'images/eca.jpg',
+            'badge_en': 'Career Diploma • Daycare Placement',
+            'badge_zh': '安省热门幼教职业文凭 • 保障实习',
+            'title_en': 'Early Childcare Assistant',
+            'title_zh': '早期幼儿教育助理 (Early Childcare Assistant - ECA)',
+            'desc_en': 'We provide our students with the opportunity for personal growth and success by providing an intimate and friendly learning environment that emphasizes academic & professional excellence. Subjects included in the program:',
+            'desc_zh': '我们通过营造注重学术与专业卓越的温馨友善学习环境，为学生提供个人成长与成功的机会。涵盖科目包括：',
+            'bullets_en': json.dumps([
+                "Interpersonal Communication",
+                "Health, Safety and Nutrition",
+                "Child Development",
+                "Customer Service",
+                "Operations",
+                "Creative Expression",
+                "Field Placement"
+            ], ensure_ascii=False),
+            'bullets_zh': json.dumps([
+                "人际交往沟通技能",
+                "健康、安全与营养管理",
+                "儿童生长与心理发展",
+                "客户与家长服务规范",
+                "日托中心日常运营",
+                "创意表达与艺术启蒙",
+                "安省持牌幼儿园实地实习"
+            ], ensure_ascii=False),
+            'duration_en': '28 Weeks (Classroom Theory + Daycare Placement)',
+            'duration_zh': '28 周（理论课 + 正规持牌日托中心跟岗实习）',
+            'credential_en': 'Early Childcare Assistant Diploma + Child CPR & First Aid',
+            'credential_zh': '安省 ECA 幼教助理文凭 + 儿童急救与 CPR 证书',
+            'overview_en': 'Equips students with the practical competencies, child psychology understanding, and health & safety expertise required to support Early Childhood Educators (ECEs) in licensed Ontario daycare facilities.',
+            'overview_zh': '随着安省日托政策普及，持证幼教助理需求激增。课程系统培养学员在持牌日托中心配合主班幼教（ECE）开展日常照料、安全监管、早期启蒙游戏及家校沟通的专业能力。',
+            'modules_en': json.dumps([
+                "Introduction to Early Childhood Education & Ontario Daycare Regulations",
+                "Child Growth and Development: Infancy to School-Age",
+                "Health, Safety and Nutritional Guidelines in Childcare",
+                "Creative Expressions: Art, Music, Storytelling & Sensory Activities",
+                "Positive Behavior Guidance & Conflict Resolution in Classrooms",
+                "Interpersonal Communications with Parents, Staff and Inspectors",
+                "Observations, Pedagogical Documentation and Program Planning",
+                "Guaranteed Field Placement in Licensed Ontario Childcare Centers (200+ Hours)"
+            ], ensure_ascii=False),
+            'modules_zh': json.dumps([
+                "加拿大幼儿教育发展概况与安省日托管理法规",
+                "婴幼儿至学龄前儿童生理与心理发展阶段特征",
+                "日托中心健康、安全防护、儿童营养与过敏管理",
+                "幼儿创意启蒙活动：绘画、音乐律动、故事会与感统游戏设计",
+                "儿童行为积极引导策略与情商培养技巧",
+                "家园共育沟通技能与多文化背景团队协作",
+                "儿童日常行为观察、成长档案记录与教案编制",
+                "安省持牌正规幼儿园/日托中心 200+ 小时实地跟岗实习"
+            ], ensure_ascii=False),
+            'careers_en': 'Early Childcare Assistant, Daycare Room Assistant, Nursery Assistant, Before/After School Program Leader, Private Family Care Specialist.',
+            'careers_zh': '持证幼教助理（ECA）、幼儿园班级助理、课后托管班（After-School）主管、早教中心活动辅导员。',
+            'outcomes_en': "With Ontario's $10-a-day childcare expansion, certified early childcare staff are in historic high demand across the province.",
+            'outcomes_zh': '政府日托补贴政策推动下全省幼教机构大量扩招，工作稳定，假期充裕，福利待遇良好。',
+            'display_order': 3,
+            'is_active': 1
+        },
+        {
+            'slug': 'acupuncture',
+            'category': 'wellness',
+            'image_url': 'images/acupuncture.jpg',
+            'badge_en': 'Non-Vocational Enrichment Course',
+            'badge_zh': '非职业特色兴趣课程 • 强身健体',
+            'title_en': 'Acupuncture',
+            'title_zh': '中医针灸与传统养生保健课程',
+            'desc_en': 'Acupuncture program is a Non-Vocational Program. This program does not require approval under the Ontario Career Colleges Act, 2005.\n\nOur Acupuncture program is designed for individuals seeking personal interest learning, wellness knowledge, or complementary health education. This program provides foundational theory, traditional concepts, and practical demonstrations for personal enrichment.',
+            'desc_zh': '针灸课程属于非职业性兴趣技能课程，不属于《2005年安大略省职业学院法》管辖范围。\n\n我们的针灸课程专为寻求个人兴趣学习、养生保健知识或自然疗法启蒙的人群设计，提供基础理论、传统观念和实操演示。',
+            'bullets_en': '[]',
+            'bullets_zh': '[]',
+            'duration_en': 'Flexible Schedule (Evening & Weekend Options)',
+            'duration_zh': '灵活课时安排（晚班 / 周末兴趣班）',
+            'credential_en': 'Certificate of Course Completion',
+            'credential_zh': '维多利亚学院结业证书',
+            'overview_en': 'Designed for individuals seeking personal health empowerment, natural wellness knowledge, and traditional healing foundations. Learn meridians, acupressure techniques, and herbal wellness principles.',
+            'overview_zh': '为弘扬传统中医养生精髓、满足大众对自主健康管理与非药物疗法需求打造。深入浅出学习十四经络走形、常用保健要穴、艾灸拔罐及四季节气调养。',
+            'modules_en': json.dumps([
+                "Foundations of Traditional Chinese Medicine (Yin-Yang, Five Elements)",
+                "Major Meridian Channels and Key Acupoint Locations",
+                "Basic Acupressure & Therapeutic Massage Principles",
+                "Moxibustion, Cupping & Non-Invasive Wellness Practices",
+                "Holistic Dietary Therapy & Seasonal Health Maintenance",
+                "Safety, Clean Needle Concepts and Health Sanitation Guidelines"
+            ], ensure_ascii=False),
+            'modules_zh': json.dumps([
+                "中医阴阳五行学说与脏腑经络基础概论",
+                "人体主要经络循行路线与 100+ 常用保健特效穴位精确定位",
+                "实用经络推拿、点穴按摩手法与家庭保健技巧",
+                "艾灸温灸、拔罐疗法、刮痧操作规范与禁忌",
+                "中医体质辨识与四季节气食疗养生调理方案",
+                "操作卫生防护、无菌消毒与家庭安全保健指南"
+            ], ensure_ascii=False),
+            'careers_en': 'Wellness Enthusiast, Holistic Health Consultant, Natural Spa Care Assistant, Personal/Family Health Manager.',
+            'careers_zh': '养生保健爱好者、推拿理疗从业人员技能拓展、家庭健康管理专员。',
+            'outcomes_en': 'Ideal enrichment course for wellness hobbyists, massage therapists, and natural health advocates.',
+            'outcomes_zh': '掌握终身受用的中医养生绝活，调理个人与家人亚健康，拓宽自然健康视野。',
+            'display_order': 4,
+            'is_active': 1
+        },
+        {
+            'slug': 'electrician',
+            'category': 'trades',
+            'image_url': 'images/electrician.jpg',
+            'badge_en': 'Pre-Exam & Apprenticeship Coaching',
+            'badge_zh': '安省持牌技工高薪黄金专业',
+            'title_en': 'Electrician (Construction & Maintenance)',
+            'title_zh': '建筑与维护电工考证培训班 (309A / 442A)',
+            'desc_en': 'Becoming an Electrician in Ontario — Series Classes',
+            'desc_zh': '安省考电工牌照就业系列课程 — 理论结合实战',
+            'bullets_en': json.dumps([
+                "Instructor: working in one of the biggest electrician contractors in Ontario with 20+ years",
+                "Placement in government projects and get real and valuable experiences",
+                "1 v 1 hands-on teaching in official recognized Apprenticeship Base and get solid techniques in a short time",
+                "Exclusive opportunity to be referred to a job after class completion"
+            ], ensure_ascii=False),
+            'bullets_zh': json.dumps([
+                "授课名师：安省 20 余年一线西人大型工程公司项目主管，亲授核心考点",
+                "政府及商业大中型工程实战环境，获取极具含金量的加拿大本土实战经验",
+                "官方认可学徒实训基地 1对1 动手实操教学，短时间内迅速掌握规范操作要领",
+                "结业即享大多伦多地区持牌工程团队与工会直推就业通道"
+            ], ensure_ascii=False),
+            'duration_en': 'Comprehensive Weekend & Fast-Track Intensive',
+            'duration_zh': '考证冲刺班 / 实用周末班（灵活随到随学）',
+            'credential_en': 'Certificate of Pre-Exam Training & Job Referral',
+            'credential_zh': '结业证书 + 红宝书真题库 + 雇主直推信',
+            'overview_en': 'Coached by master electricians with 20+ years of Canadian union, commercial, and residential contracting experience. Combines Canadian Electrical Code (CEC) mastery with hands-on wiring labs.',
+            'overview_zh': '由安省 20 余年一线西人大型工程公司项目主管与资深华人电工名师联袂授课。将加国电气规范（CEC）考点精讲与安省学徒实训基地真机实操融为一体，助学员一次性高效通关拿牌。',
+            'modules_en': json.dumps([
+                "Canadian Electrical Code (CEC) Complete Analysis & Code Book Navigation",
+                "Single-phase and Three-phase AC/DC Circuits & Power Calculations",
+                "Residential Wiring, Service Panels, Grounding & Bonding",
+                "Commercial Conduit Bending, Transformers, Motors & Motor Controls",
+                "Industrial Automation, Relays, Contactors & Control Schematics",
+                "Red Seal 309A / 442A Licensing Examination Question Drills",
+                "1-on-1 Hands-on Labs in Recognized Apprenticeship Training Facility",
+                "Canadian Job Market Navigation, Safety Certification & Employer Referral"
+            ], ensure_ascii=False),
+            'modules_zh': json.dumps([
+                "加拿大电气规范（CEC Code Book）结构深度拆解与查表秘籍",
+                "单相与三相交直流电路分析、负荷计算与变压器选型",
+                "民用住宅电气布线、主配电箱配线、接地与防雷保护",
+                "商业建筑电气施工：各种口径管道弯管（Conduit Bending）、电缆桥架",
+                "工业电机控制（Motor Controls）、继电器控制柜接线与电气原理图识图",
+                "安省 309A / 442A 执照考试核心题库高频考点全真模考解析",
+                "官方认可学徒基地 1对1 动手实操教学，快速累积实战操作技能",
+                "协助申报学徒工时（Apprenticeship Hours）及大多伦多工程项目就业直推"
+            ], ensure_ascii=False),
+            'careers_en': 'Licensed Construction Electrician (309A), Industrial Electrician (442A), Electrical Maintenance Specialist, Solar/Green Energy Installer.',
+            'careers_zh': '安省持牌建筑电工（309A）、工业维护电工（442A）、电气工程承包商、太阳能与新能源技师。',
+            'outcomes_en': 'Top-tier trade with hourly wages ranging from $35 to $55+/hour in Ontario. High demand in commercial and residential developments.',
+            'outcomes_zh': '加国薪资最高的金牌技工之一，持牌时薪普遍达 $35–$55+/小时，工会福利完善，收入稳定抗周期。',
+            'display_order': 5,
+            'is_active': 1
+        },
+        {
+            'slug': 'tech',
+            'category': 'technology',
+            'image_url': 'images/fullstack.jpg',
+            'badge_en': 'Career Diploma • Enterprise Level',
+            'badge_zh': '加国紧缺高薪 IT 职业文凭',
+            'title_en': 'Full Stack Web Technician',
+            'title_zh': '全栈网页开发技术员 (Full Stack Web)',
+            'desc_en': 'This diploma program contains theoretical concepts with practical lab work to ensure graduates have a solid foundation in the following areas: programming fundamentals, system testing, web programming, design concepts, networks, server and database programming.',
+            'desc_zh': '该职业文凭课程将理论概念与高强度实操上机紧密结合，确保毕业生在以下领域奠定坚实基础：编程基础、系统测试、Web前端与后端开发、设计模式、计算机网络、服务器与云端数据库。',
+            'bullets_en': json.dumps([
+                "Core Java",
+                "Advanced Java",
+                "Network Programming",
+                "HTML/CSS/JavaScript",
+                "SpringBoot",
+                "Mybatis",
+                "Spring/Spring MVC",
+                "MySQL",
+                "React/Nodejs/webpack",
+                "Spring Cloud",
+                "Netty",
+                "AWS",
+                "Design Pattern"
+            ], ensure_ascii=False),
+            'bullets_zh': json.dumps([
+                "Core Java 核心编程",
+                "Java 进阶与多线程",
+                "网络高并发编程",
+                "HTML/CSS/JavaScript",
+                "SpringBoot 企业级开发",
+                "Mybatis 数据库持久化",
+                "Spring / Spring MVC",
+                "MySQL 数据库设计与优化",
+                "React / Nodejs / Webpack",
+                "Spring Cloud 微服务架构",
+                "Netty 高性能网络框架",
+                "AWS 云端部署与运维",
+                "企业级设计模式与架构实战"
+            ], ensure_ascii=False),
+            'duration_en': '32 Weeks (Intensive Labs + Commercial Projects)',
+            'duration_zh': '32 周（高强度实战机房 + 商业级项目交付）',
+            'credential_en': 'Full Stack Web Technician Diploma',
+            'credential_zh': '安省教育部认证 Full Stack Web Technician 职业文凭',
+            'overview_en': 'An intensive software engineering diploma blending theoretical computer science foundations with modern enterprise web development, server architecture, cloud platforms, and full-stack project building.',
+            'overview_zh': '紧扣北美一线大厂与金融机构用人标准，从编程底层基础到企业级微服务架构、React 前端开发与 AWS 云端部署，手把手带领学员打造高含金量商业项目作品集。',
+            'modules_en': json.dumps([
+                "Programming Fundamentals & Core Java (OOP, Data Structures, JVM)",
+                "Advanced Java, Multithreading & Network Socket Programming",
+                "Enterprise Backend: Spring Boot 3, Spring Cloud, RESTful APIs, MyBatis",
+                "Database Architecture: MySQL, PostgreSQL, Query Optimization, Redis Caching",
+                "Modern Frontend Architecture: React, Hooks, Redux Toolkit, TypeScript, HTML5/CSS3",
+                "Cloud Infrastructure: AWS (EC2, S3, RDS, Lambda), Docker Containers, CI/CD",
+                "System Design, Software Design Patterns & Agile Development Workflow",
+                "Full Stack Capstone Project: Production-grade E-Commerce / SaaS Platform"
+            ], ensure_ascii=False),
+            'modules_zh': json.dumps([
+                "计算机编程核心与 Java 深度进阶（面向对象、数据结构、JVM 调优）",
+                "多线程高并发网络编程与性能瓶颈诊断",
+                "企业级后端微服务架构：Spring Boot、Spring Cloud、RESTful API、MyBatis",
+                "数据库架构与优化：MySQL 分库分表、PostgreSQL、Redis 缓存与消息队列",
+                "现代前端全家桶：React、TypeScript、Next.js、Tailwind、状态管理",
+                "云原生架构：AWS 云服务（EC2, S3, RDS）、Docker 容器化与 CI/CD 自动化",
+                "软件工程设计模式、系统架构设计与敏捷开发流程",
+                "毕业大项目：工业级大型分布式电商 / 敏捷 SaaS 云平台全栈实战"
+            ], ensure_ascii=False),
+            'careers_en': 'Full Stack Developer, Java Backend Engineer, Frontend React Developer, Web Applications Specialist, Cloud Software Associate.',
+            'careers_zh': '全栈开发工程师（Full Stack Developer）、Java 后端工程师、React 前端工程师、Web 软件技术专员。',
+            'outcomes_en': 'Average entry salary $65,000–$85,000/year. Direct preparation for technical white-boarding and system design interviews.',
+            'outcomes_zh': '加国起薪约 $65,000–$85,000/年。名师辅导 LeetCode 刷题、简历深度技术包装与大厂模拟面试。',
+            'display_order': 6,
+            'is_active': 1
+        }
+    ]
+
+    for p in default_programs:
+        cursor.execute("SELECT id FROM programs WHERE slug = ?", (p['slug'],))
+        if not cursor.fetchone():
+            cursor.execute('''
+            INSERT INTO programs (
+                slug, category, image_url, badge_en, badge_zh, title_en, title_zh,
+                desc_en, desc_zh, bullets_en, bullets_zh, duration_en, duration_zh,
+                credential_en, credential_zh, overview_en, overview_zh,
+                modules_en, modules_zh, careers_en, careers_zh, outcomes_en, outcomes_zh,
+                display_order, is_active, created_at, updated_at
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?
+            )
+            ''', (
+                p['slug'], p['category'], p['image_url'], p['badge_en'], p['badge_zh'], p['title_en'], p['title_zh'],
+                p['desc_en'], p['desc_zh'], p['bullets_en'], p['bullets_zh'], p['duration_en'], p['duration_zh'],
+                p['credential_en'], p['credential_zh'], p['overview_en'], p['overview_zh'],
+                p['modules_en'], p['modules_zh'], p['careers_en'], p['careers_zh'], p['outcomes_en'], p['outcomes_zh'],
+                p['display_order'], p['is_active'], now_str, now_str
+            ))
+
 def init_database():
     """Create database tables and seed default administrator if not exists."""
     conn = sqlite3.connect(DB_PATH)
@@ -511,6 +875,46 @@ Key College Knowledge:
             seed_translations.seed_database()
         except Exception as se:
             print(">> Note: Could not auto-run seed_translations:", se)
+
+    # 8. Dynamic Academic Programs Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS programs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slug TEXT UNIQUE NOT NULL,
+        category TEXT DEFAULT 'general',
+        image_url TEXT,
+        badge_en TEXT,
+        badge_zh TEXT,
+        title_en TEXT NOT NULL,
+        title_zh TEXT NOT NULL,
+        desc_en TEXT,
+        desc_zh TEXT,
+        bullets_en TEXT,
+        bullets_zh TEXT,
+        duration_en TEXT,
+        duration_zh TEXT,
+        credential_en TEXT,
+        credential_zh TEXT,
+        overview_en TEXT,
+        overview_zh TEXT,
+        modules_en TEXT,
+        modules_zh TEXT,
+        careers_en TEXT,
+        careers_zh TEXT,
+        outcomes_en TEXT,
+        outcomes_zh TEXT,
+        display_order INTEGER DEFAULT 0,
+        is_active INTEGER DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    )
+    ''')
+
+    cursor.execute("SELECT COUNT(*) as cnt FROM programs")
+    prog_row = cursor.fetchone()
+    prog_cnt = prog_row['cnt'] if prog_row else 0
+    if prog_cnt == 0:
+        seed_default_programs(cursor, now_str)
 
     conn.commit()
     conn.close()
@@ -1257,6 +1661,11 @@ def admin_stats():
     active_art = cursor.fetchone()['active_art']
     hidden_art = total_art - active_art
 
+    cursor.execute("SELECT COUNT(*) as total_prog FROM programs")
+    total_prog = cursor.fetchone()['total_prog']
+    cursor.execute("SELECT COUNT(*) as active_prog FROM programs WHERE is_active = 1")
+    active_prog = cursor.fetchone()['active_prog']
+
     cursor.execute("SELECT value FROM settings WHERE key = 'openai_api_key'")
     key_row = cursor.fetchone()
     has_key = bool(key_row and key_row['value'].strip())
@@ -1274,6 +1683,8 @@ def admin_stats():
         'total_articles': total_art,
         'active_articles': active_art,
         'hidden_articles': hidden_art,
+        'total_programs': total_prog,
+        'active_programs': active_prog,
         'sitemap_urls': 5 + active_art,
         'has_api_key': has_key,
         'current_model': model
@@ -2727,6 +3138,381 @@ def admin_sitemap_status():
         'sitemap_path': '/sitemap.xml',
         'last_updated': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
     })
+
+
+# ==============================================================================
+# Dynamic Academic Programs Management APIs (Public & Admin CRUD)
+# ==============================================================================
+
+@app.route('/api/programs', methods=['GET'])
+def get_public_programs():
+    """
+    Public API: Returns all active academic programs ordered by display_order.
+    Used for dynamic homepage rendering, navigation dropdowns, and modal deep-dives.
+    """
+    db = get_db()
+    cursor = db.cursor()
+    category = request.args.get('category', '').strip().lower()
+
+    query = "SELECT * FROM programs WHERE is_active = 1"
+    params = []
+    if category and category != 'all':
+        query += " AND category = ?"
+        params.append(category)
+
+    query += " ORDER BY display_order ASC, id ASC"
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+    programs = [format_program_dict(r) for r in rows]
+
+    return jsonify({
+        'success': True,
+        'programs': programs,
+        'count': len(programs)
+    })
+
+@app.route('/api/programs/<identifier>', methods=['GET'])
+def get_public_program(identifier):
+    """Public API: Get single active program by ID or slug."""
+    db = get_db()
+    cursor = db.cursor()
+    if identifier.isdigit():
+        cursor.execute("SELECT * FROM programs WHERE id = ? AND is_active = 1", (int(identifier),))
+    else:
+        cursor.execute("SELECT * FROM programs WHERE slug = ? AND is_active = 1", (identifier.lower(),))
+    
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Program not found or is currently inactive.'}), 404
+
+    return jsonify({
+        'success': True,
+        'program': format_program_dict(row)
+    })
+
+@app.route('/api/admin/programs', methods=['GET'])
+def admin_get_programs():
+    """Admin API: Return all programs (active and inactive) with optional filtering."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+
+    search = request.args.get('search', '').strip().lower()
+    category = request.args.get('category', '').strip().lower()
+    status = request.args.get('status', '').strip().lower()
+
+    query = "SELECT * FROM programs WHERE 1=1"
+    params = []
+
+    if category and category != 'all':
+        query += " AND category = ?"
+        params.append(category)
+
+    if status == 'active':
+        query += " AND is_active = 1"
+    elif status == 'inactive':
+        query += " AND is_active = 0"
+
+    if search:
+        query += " AND (LOWER(title_en) LIKE ? OR LOWER(title_zh) LIKE ? OR LOWER(slug) LIKE ? OR LOWER(category) LIKE ?)"
+        params.extend([f"%{search}%", f"%{search}%", f"%{search}%", f"%{search}%"])
+
+    query += " ORDER BY display_order ASC, id ASC"
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+    programs = [format_program_dict(r) for r in rows]
+
+    return jsonify({
+        'success': True,
+        'programs': programs,
+        'count': len(programs)
+    })
+
+@app.route('/api/admin/programs', methods=['POST'])
+def admin_create_program():
+    """Admin API: Create a new academic program."""
+    err = require_admin()
+    if err: return err
+
+    data = request.get_json() or {}
+    title_en = (data.get('title_en') or '').strip()
+    title_zh = (data.get('title_zh') or '').strip()
+
+    if not title_en:
+        return jsonify({'error': 'Program title in English is required.'}), 400
+    if not title_zh:
+        title_zh = title_en
+
+    slug_input = (data.get('slug') or '').strip().lower()
+    if not slug_input:
+        slug_input = slugify(title_en)
+    slug = re.sub(r'[^a-z0-9_-]', '', slug_input.replace(' ', '-'))
+    if not slug:
+        slug = f"prog-{int(time.time())}"
+
+    db = get_db()
+    cursor = db.cursor()
+
+    # Ensure unique slug
+    cursor.execute("SELECT id FROM programs WHERE slug = ?", (slug,))
+    if cursor.fetchone():
+        slug = f"{slug}-{int(time.time()) % 10000}"
+
+    category = (data.get('category') or 'general').strip().lower()
+    image_url = (data.get('image_url') or 'images/fullstack.jpg').strip()
+    badge_en = (data.get('badge_en') or '').strip()
+    badge_zh = (data.get('badge_zh') or '').strip()
+    desc_en = (data.get('desc_en') or '').strip()
+    desc_zh = (data.get('desc_zh') or '').strip()
+
+    def process_array_field(val):
+        if isinstance(val, list):
+            return json.dumps([str(x).strip() for x in val if str(x).strip()], ensure_ascii=False)
+        elif isinstance(val, str):
+            lines = [l.strip() for l in val.split('\n') if l.strip()]
+            return json.dumps(lines, ensure_ascii=False)
+        return '[]'
+
+    bullets_en = process_array_field(data.get('bullets_en'))
+    bullets_zh = process_array_field(data.get('bullets_zh'))
+    duration_en = (data.get('duration_en') or '').strip()
+    duration_zh = (data.get('duration_zh') or '').strip()
+    credential_en = (data.get('credential_en') or '').strip()
+    credential_zh = (data.get('credential_zh') or '').strip()
+    overview_en = (data.get('overview_en') or '').strip()
+    overview_zh = (data.get('overview_zh') or '').strip()
+    modules_en = process_array_field(data.get('modules_en'))
+    modules_zh = process_array_field(data.get('modules_zh'))
+    careers_en = (data.get('careers_en') or '').strip()
+    careers_zh = (data.get('careers_zh') or '').strip()
+    outcomes_en = (data.get('outcomes_en') or '').strip()
+    outcomes_zh = (data.get('outcomes_zh') or '').strip()
+
+    cursor.execute("SELECT MAX(display_order) as max_ord FROM programs")
+    max_ord_row = cursor.fetchone()
+    max_ord = max_ord_row['max_ord'] if max_ord_row and max_ord_row['max_ord'] is not None else 0
+    display_order = int(data.get('display_order') if data.get('display_order') is not None else max_ord + 1)
+    is_active = int(data.get('is_active', 1))
+
+    now_str = datetime.utcnow().isoformat()
+
+    cursor.execute('''
+    INSERT INTO programs (
+        slug, category, image_url, badge_en, badge_zh, title_en, title_zh,
+        desc_en, desc_zh, bullets_en, bullets_zh, duration_en, duration_zh,
+        credential_en, credential_zh, overview_en, overview_zh,
+        modules_en, modules_zh, careers_en, careers_zh, outcomes_en, outcomes_zh,
+        display_order, is_active, created_at, updated_at
+    ) VALUES (
+        ?, ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?
+    )
+    ''', (
+        slug, category, image_url, badge_en, badge_zh, title_en, title_zh,
+        desc_en, desc_zh, bullets_en, bullets_zh, duration_en, duration_zh,
+        credential_en, credential_zh, overview_en, overview_zh,
+        modules_en, modules_zh, careers_en, careers_zh, outcomes_en, outcomes_zh,
+        display_order, is_active, now_str, now_str
+    ))
+    db.commit()
+    new_id = cursor.lastrowid
+
+    cursor.execute("SELECT * FROM programs WHERE id = ?", (new_id,))
+    created_row = cursor.fetchone()
+
+    return jsonify({
+        'success': True,
+        'id': new_id,
+        'slug': slug,
+        'program': format_program_dict(created_row),
+        'message': f'Program "{title_en}" created successfully.'
+    }), 201
+
+@app.route('/api/admin/programs/<int:prog_id>', methods=['GET'])
+def admin_get_program(prog_id):
+    """Admin API: Get single program by ID."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM programs WHERE id = ?", (prog_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Program not found.'}), 404
+
+    return jsonify({
+        'success': True,
+        'program': format_program_dict(row)
+    })
+
+@app.route('/api/admin/programs/<int:prog_id>', methods=['PUT'])
+def admin_update_program(prog_id):
+    """Admin API: Update an existing academic program."""
+    err = require_admin()
+    if err: return err
+
+    data = request.get_json() or {}
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("SELECT * FROM programs WHERE id = ?", (prog_id,))
+    curr = cursor.fetchone()
+    if not curr:
+        return jsonify({'error': 'Program not found.'}), 404
+
+    def process_array_field(val):
+        if isinstance(val, list):
+            return json.dumps([str(x).strip() for x in val if str(x).strip()], ensure_ascii=False)
+        elif isinstance(val, str):
+            lines = [l.strip() for l in val.split('\n') if l.strip()]
+            return json.dumps(lines, ensure_ascii=False)
+        return None
+
+    updates = []
+    params = []
+
+    fields_mapping = [
+        ('slug', lambda v: re.sub(r'[^a-z0-9_-]', '', str(v).strip().lower().replace(' ', '-'))),
+        ('category', lambda v: str(v).strip().lower()),
+        ('image_url', lambda v: str(v).strip()),
+        ('badge_en', lambda v: str(v).strip()),
+        ('badge_zh', lambda v: str(v).strip()),
+        ('title_en', lambda v: str(v).strip()),
+        ('title_zh', lambda v: str(v).strip()),
+        ('desc_en', lambda v: str(v).strip()),
+        ('desc_zh', lambda v: str(v).strip()),
+        ('duration_en', lambda v: str(v).strip()),
+        ('duration_zh', lambda v: str(v).strip()),
+        ('credential_en', lambda v: str(v).strip()),
+        ('credential_zh', lambda v: str(v).strip()),
+        ('overview_en', lambda v: str(v).strip()),
+        ('overview_zh', lambda v: str(v).strip()),
+        ('careers_en', lambda v: str(v).strip()),
+        ('careers_zh', lambda v: str(v).strip()),
+        ('outcomes_en', lambda v: str(v).strip()),
+        ('outcomes_zh', lambda v: str(v).strip()),
+        ('display_order', lambda v: int(v)),
+        ('is_active', lambda v: int(v))
+    ]
+
+    for key, transform in fields_mapping:
+        if key in data and data[key] is not None:
+            val = transform(data[key])
+            if key == 'slug' and val != curr['slug']:
+                # Check uniqueness
+                cursor.execute("SELECT id FROM programs WHERE slug = ? AND id != ?", (val, prog_id))
+                if cursor.fetchone():
+                    return jsonify({'error': f'Slug "{val}" is already in use by another program.'}), 400
+            updates.append(f"{key} = ?")
+            params.append(val)
+
+    for array_key in ['bullets_en', 'bullets_zh', 'modules_en', 'modules_zh']:
+        if array_key in data and data[array_key] is not None:
+            json_val = process_array_field(data[array_key])
+            if json_val is not None:
+                updates.append(f"{array_key} = ?")
+                params.append(json_val)
+
+    if not updates:
+        return jsonify({'message': 'No changes detected.'})
+
+    updates.append("updated_at = ?")
+    params.append(datetime.utcnow().isoformat())
+    params.append(prog_id)
+
+    query = f"UPDATE programs SET {', '.join(updates)} WHERE id = ?"
+    db.execute(query, params)
+    db.commit()
+
+    cursor.execute("SELECT * FROM programs WHERE id = ?", (prog_id,))
+    updated_row = cursor.fetchone()
+
+    return jsonify({
+        'success': True,
+        'program': format_program_dict(updated_row),
+        'message': f'Program "{data.get("title_en") or curr["title_en"]}" updated successfully.'
+    })
+
+@app.route('/api/admin/programs/<int:prog_id>/toggle-status', methods=['PATCH'])
+def admin_toggle_program_status(prog_id):
+    """Admin API: 1-click toggle active/inactive status for a program."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id, title_en, is_active FROM programs WHERE id = ?", (prog_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Program not found.'}), 404
+
+    new_active = 0 if row['is_active'] == 1 else 1
+    now_str = datetime.utcnow().isoformat()
+    db.execute("UPDATE programs SET is_active = ?, updated_at = ? WHERE id = ?", (new_active, now_str, prog_id))
+    db.commit()
+
+    status_str = "ACTIVE (Visible on website)" if new_active == 1 else "INACTIVE (Hidden from website)"
+    return jsonify({
+        'success': True,
+        'is_active': new_active,
+        'message': f'Program "{row["title_en"]}" is now {status_str}.'
+    })
+
+@app.route('/api/admin/programs/<int:prog_id>', methods=['DELETE'])
+def admin_delete_program(prog_id):
+    """Admin API: Delete an academic program."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT title_en FROM programs WHERE id = ?", (prog_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Program not found.'}), 404
+
+    db.execute("DELETE FROM programs WHERE id = ?", (prog_id,))
+    db.commit()
+
+    return jsonify({
+        'success': True,
+        'message': f'Program "{row["title_en"]}" deleted successfully.'
+    })
+
+@app.route('/api/admin/programs/reorder', methods=['POST'])
+def admin_reorder_programs():
+    """Admin API: Reorder academic programs display order."""
+    err = require_admin()
+    if err: return err
+
+    data = request.get_json() or {}
+    orders = data.get('orders') or data.get('ordered_ids') or []
+
+    if not orders or not isinstance(orders, list):
+        return jsonify({'error': 'Invalid orders payload. Expected array of {id, display_order} or array of IDs.'}), 400
+
+    db = get_db()
+    now_str = datetime.utcnow().isoformat()
+
+    for idx, item in enumerate(orders):
+        if isinstance(item, dict) and 'id' in item:
+            p_id = int(item['id'])
+            order_num = int(item.get('display_order', idx + 1))
+        elif isinstance(item, int) or (isinstance(item, str) and item.isdigit()):
+            p_id = int(item)
+            order_num = idx + 1
+        else:
+            continue
+        db.execute("UPDATE programs SET display_order = ?, updated_at = ? WHERE id = ?", (order_num, now_str, p_id))
+
+    db.commit()
+    return jsonify({'success': True, 'message': 'Programs order updated successfully.'})
 
 
 # ==============================================================================

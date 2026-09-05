@@ -10,6 +10,7 @@
   let allUsers = [];
   let allChatLogs = [];
   let allArticles = [];
+  let allAdminPrograms = [];
   let currentPreviewArticle = null;
 
   const fetchApi = (url, opts) => {
@@ -73,6 +74,7 @@
           this.loadStats();
           this.loadUsers();
           this.loadKnowledge();
+          this.loadPrograms();
           this.loadSEOArticles();
           this.loadAISettings();
           this.loadChatLogs();
@@ -108,6 +110,7 @@
       if (tabId === 'overview') this.loadStats();
       if (tabId === 'users') this.loadUsers();
       if (tabId === 'knowledge') this.loadKnowledge();
+      if (tabId === 'programs') this.loadPrograms();
       if (tabId === 'seo-articles') this.loadSEOArticles();
       if (tabId === 'ai-settings') this.loadAISettings();
       if (tabId === 'chat-logs') this.loadChatLogs();
@@ -290,6 +293,69 @@
       }
       if (kbCategoryFilter) {
         kbCategoryFilter.addEventListener('change', () => this.loadKnowledge());
+      }
+
+      // 3c. Dynamic Academic Programs Events
+      const btnCreateProg = document.getElementById('btn-create-program');
+      const progModal = document.getElementById('modal-program-editor');
+      const closeProgModalBtns = document.querySelectorAll('.js-close-prog-modal');
+      const progForm = document.getElementById('form-program-editor');
+      const btnProgTabEn = document.getElementById('btn-prog-tab-en');
+      const btnProgTabZh = document.getElementById('btn-prog-tab-zh');
+      const paneProgEn = document.getElementById('prog-pane-en');
+      const paneProgZh = document.getElementById('prog-pane-zh');
+
+      if (btnCreateProg) {
+        btnCreateProg.onclick = () => this.openProgramEditor();
+      }
+
+      closeProgModalBtns.forEach(btn => {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          if (progModal) progModal.classList.remove('active');
+        };
+      });
+
+      if (btnProgTabEn && btnProgTabZh) {
+        btnProgTabEn.onclick = () => {
+          btnProgTabEn.classList.add('active');
+          btnProgTabEn.style.borderBottom = '3px solid var(--vic-red)';
+          btnProgTabEn.style.color = 'var(--vic-red)';
+          btnProgTabZh.classList.remove('active');
+          btnProgTabZh.style.borderBottom = '3px solid transparent';
+          btnProgTabZh.style.color = '#64748B';
+          if (paneProgEn) paneProgEn.style.display = 'block';
+          if (paneProgZh) paneProgZh.style.display = 'none';
+        };
+
+        btnProgTabZh.onclick = () => {
+          btnProgTabZh.classList.add('active');
+          btnProgTabZh.style.borderBottom = '3px solid var(--vic-red)';
+          btnProgTabZh.style.color = 'var(--vic-red)';
+          btnProgTabEn.classList.remove('active');
+          btnProgTabEn.style.borderBottom = '3px solid transparent';
+          btnProgTabEn.style.color = '#64748B';
+          if (paneProgZh) paneProgZh.style.display = 'block';
+          if (paneProgEn) paneProgEn.style.display = 'none';
+        };
+      }
+
+      if (progForm) {
+        progForm.addEventListener('submit', (e) => this.saveProgram(e));
+      }
+
+      const progSearchInput = document.getElementById('prog-search-input');
+      const progCategoryFilter = document.getElementById('prog-category-filter');
+      const progStatusFilter = document.getElementById('prog-status-filter');
+
+      if (progSearchInput) {
+        progSearchInput.addEventListener('input', () => this.loadPrograms());
+      }
+      if (progCategoryFilter) {
+        progCategoryFilter.addEventListener('change', () => this.loadPrograms());
+      }
+      if (progStatusFilter) {
+        progStatusFilter.addEventListener('change', () => this.loadPrograms());
       }
 
       // Universal Backdrop click to close modals
@@ -770,6 +836,8 @@
         const data = await res.json();
         if (res.ok) {
           document.getElementById('stat-total-users').textContent = data.total_users || 0;
+          const progStatEl = document.getElementById('stat-total-programs');
+          if (progStatEl) progStatEl.textContent = data.total_programs || 0;
           const kbStatEl = document.getElementById('stat-kb-articles');
           if (kbStatEl) kbStatEl.textContent = data.knowledge_articles || 0;
           const totalArtEl = document.getElementById('stat-total-articles');
@@ -1216,6 +1284,387 @@
       if (modal) {
         modal.classList.add('active');
         this.showToast(`Pre-filled Q&A from Log #${log.id}. Review and save!`, 'info');
+      }
+    },
+
+    // =========================================================================
+    // Dynamic Academic Programs Management Methods
+    // =========================================================================
+
+    async loadPrograms() {
+      const tbody = document.getElementById('programs-tbody');
+      const search = document.getElementById('prog-search-input')?.value.toLowerCase().trim() || '';
+      const category = document.getElementById('prog-category-filter')?.value || 'all';
+      const status = document.getElementById('prog-status-filter')?.value || 'all';
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi('/api/admin/programs', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (res.ok && data.programs) {
+          allAdminPrograms = data.programs;
+
+          const filtered = allAdminPrograms.filter(p => {
+            const matchSearch = !search ||
+              (p.title_en && p.title_en.toLowerCase().includes(search)) ||
+              (p.title_zh && p.title_zh.toLowerCase().includes(search)) ||
+              (p.slug && p.slug.toLowerCase().includes(search)) ||
+              (p.category && p.category.toLowerCase().includes(search));
+            const matchCategory = category === 'all' || p.category === category;
+            const matchStatus = status === 'all' ||
+              (status === 'active' && p.is_active === 1) ||
+              (status === 'inactive' && p.is_active === 0);
+            return matchSearch && matchCategory && matchStatus;
+          });
+
+          this.renderProgramsTable(filtered);
+        }
+      } catch (e) {
+        if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center; padding: 24px;">Failed to load programs: ${e.message}</td></tr>`;
+      }
+    },
+
+    renderProgramsTable(programs) {
+      const tbody = document.getElementById('programs-tbody');
+      if (!tbody) return;
+
+      if (!programs || programs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 36px; color:#888;">
+          <i class="fa-solid fa-graduation-cap" style="font-size: 28px; margin-bottom: 8px; color: #cbd5e1; display: block;"></i>
+          No academic programs found. Click "Add New Program" to create one.
+        </td></tr>`;
+        return;
+      }
+
+      const categoryLabels = {
+        healthcare: '🩺 Healthcare',
+        technology: '💻 Technology',
+        business: '📊 Business & Tax',
+        education: '👶 Early Education',
+        trades: '⚡ Trades & Tech',
+        wellness: '🌿 Wellness',
+        general: '🎓 General'
+      };
+
+      tbody.innerHTML = programs.map((prog, index) => {
+        const isActive = prog.is_active === 1;
+        const statusBadge = isActive
+          ? `<span class="badge-status-active" style="display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:6px; font-size:12px; font-weight:700; background:#DCFCE7; color:#15803D;"><i class="fa-solid fa-circle-check"></i> Active</span>`
+          : `<span class="badge-status-hidden" style="display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:6px; font-size:12px; font-weight:700; background:#F1F5F9; color:#64748B;"><i class="fa-solid fa-eye-slash"></i> Inactive</span>`;
+
+        const isFirst = index === 0;
+        const isLast = index === programs.length - 1;
+
+        return `
+          <tr>
+            <td style="text-align: center;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                <button type="button" class="btn-table-action js-move-prog-up" data-id="${prog.id}" ${isFirst ? 'disabled style="opacity:0.3; cursor:default;"' : 'title="Move Up" style="padding:2px 6px; font-size:11px;"'}>
+                  <i class="fa-solid fa-chevron-up"></i>
+                </button>
+                <span style="font-weight: 700; font-size: 13px; color: #334155;">#${prog.display_order || (index + 1)}</span>
+                <button type="button" class="btn-table-action js-move-prog-down" data-id="${prog.id}" ${isLast ? 'disabled style="opacity:0.3; cursor:default;"' : 'title="Move Down" style="padding:2px 6px; font-size:11px;"'}>
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
+              </div>
+            </td>
+            <td style="text-align: center;">
+              <img src="${prog.image_url || 'images/fullstack.jpg'}" alt="${this.escapeHtml(prog.title_en)}" style="width: 52px; height: 38px; object-fit: cover; border-radius: 6px; border: 1px solid #E2E8F0;" onerror="this.src='images/fullstack.jpg'">
+            </td>
+            <td>
+              <div style="font-weight: 700; color: #1E293B; font-size: 14px; margin-bottom: 2px;">
+                ${this.escapeHtml(prog.title_en || 'Untitled Program')}
+              </div>
+              <div style="font-size: 12.5px; color: #64748B;">
+                ${this.escapeHtml(prog.title_zh || '')}
+              </div>
+              ${prog.badge_en ? `<span style="display:inline-block; margin-top:4px; font-size:10.5px; padding:2px 6px; background:#FEE2E2; color:#B91C1C; border-radius:4px; font-weight:600;">${this.escapeHtml(prog.badge_en)}</span>` : ''}
+            </td>
+            <td>
+              <span style="font-size: 12.5px; font-weight: 600; color: #334155;">
+                ${categoryLabels[prog.category] || prog.category}
+              </span>
+              <div style="font-size: 11px; color: #94A3B8; font-family: monospace;">
+                slug: <code>${this.escapeHtml(prog.slug)}</code>
+              </div>
+            </td>
+            <td style="text-align: center;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                ${statusBadge}
+                <button type="button" class="js-toggle-prog-btn" data-id="${prog.id}" style="border: none; background: none; color: #2563EB; font-size: 11px; text-decoration: underline; cursor: pointer; padding: 0;">
+                  ${isActive ? 'Make Inactive' : 'Make Active'}
+                </button>
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <div style="display: flex; justify-content: flex-end; gap: 6px; align-items: center;">
+                <button type="button" class="btn-table-action js-edit-prog-btn" data-id="${prog.id}" title="Edit Program" style="background:#F8FAFC; border:1px solid #E2E8F0; padding:6px 9px; border-radius:6px; cursor:pointer;">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button type="button" class="btn-table-action js-delete-prog-btn" data-id="${prog.id}" title="Delete Program" style="background:#FFF1F2; border:1px solid #FECDD3; color:#DC2626; padding:6px 9px; border-radius:6px; cursor:pointer;">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Bind row actions
+      tbody.querySelectorAll('.js-move-prog-up').forEach(btn => {
+        btn.onclick = () => this.moveProgramOrder(parseInt(btn.dataset.id), 'up');
+      });
+      tbody.querySelectorAll('.js-move-prog-down').forEach(btn => {
+        btn.onclick = () => this.moveProgramOrder(parseInt(btn.dataset.id), 'down');
+      });
+      tbody.querySelectorAll('.js-toggle-prog-btn').forEach(btn => {
+        btn.onclick = () => this.toggleProgramStatus(parseInt(btn.dataset.id));
+      });
+      tbody.querySelectorAll('.js-edit-prog-btn').forEach(btn => {
+        btn.onclick = () => this.openProgramEditor(parseInt(btn.dataset.id));
+      });
+      tbody.querySelectorAll('.js-delete-prog-btn').forEach(btn => {
+        btn.onclick = () => this.deleteProgram(parseInt(btn.dataset.id));
+      });
+    },
+
+    async openProgramEditor(progId = null) {
+      const modal = document.getElementById('modal-program-editor');
+      const form = document.getElementById('form-program-editor');
+      if (!modal || !form) return;
+
+      // Reset to English tab view
+      const btnEn = document.getElementById('btn-prog-tab-en');
+      if (btnEn) btnEn.click();
+
+      if (progId) {
+        try {
+          const token = window.VicAuth.getToken();
+          const res = await fetchApi(`/api/admin/programs/${progId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await this.safeJson(res);
+          if (!res.ok || !data.program) throw new Error(data.error || 'Failed to load program');
+
+          const p = data.program;
+          document.getElementById('prog-id').value = p.id;
+          document.getElementById('prog-modal-title').innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: var(--vic-red);"></i> Edit Program #${p.id} (${this.escapeHtml(p.slug)})`;
+          document.getElementById('prog-slug').value = p.slug || '';
+          document.getElementById('prog-category').value = p.category || 'healthcare';
+          document.getElementById('prog-image-url').value = p.image_url || '';
+          document.getElementById('prog-order').value = p.display_order || 1;
+          document.getElementById('prog-is-active').checked = p.is_active === 1;
+
+          // English fields
+          document.getElementById('prog-title-en').value = p.title_en || '';
+          document.getElementById('prog-badge-en').value = p.badge_en || '';
+          document.getElementById('prog-desc-en').value = p.desc_en || '';
+          document.getElementById('prog-bullets-en').value = Array.isArray(p.bullets_en) ? p.bullets_en.join('\n') : (p.bullets_en || '');
+          document.getElementById('prog-duration-en').value = p.duration_en || '';
+          document.getElementById('prog-credential-en').value = p.credential_en || '';
+          document.getElementById('prog-overview-en').value = p.overview_en || '';
+          document.getElementById('prog-modules-en').value = Array.isArray(p.modules_en) ? p.modules_en.join('\n') : (p.modules_en || '');
+          document.getElementById('prog-careers-en').value = p.careers_en || '';
+          document.getElementById('prog-outcomes-en').value = p.outcomes_en || '';
+
+          // Chinese fields
+          document.getElementById('prog-title-zh').value = p.title_zh || '';
+          document.getElementById('prog-badge-zh').value = p.badge_zh || '';
+          document.getElementById('prog-desc-zh').value = p.desc_zh || '';
+          document.getElementById('prog-bullets-zh').value = Array.isArray(p.bullets_zh) ? p.bullets_zh.join('\n') : (p.bullets_zh || '');
+          document.getElementById('prog-duration-zh').value = p.duration_zh || '';
+          document.getElementById('prog-credential-zh').value = p.credential_zh || '';
+          document.getElementById('prog-overview-zh').value = p.overview_zh || '';
+          document.getElementById('prog-modules-zh').value = Array.isArray(p.modules_zh) ? p.modules_zh.join('\n') : (p.modules_zh || '');
+          document.getElementById('prog-careers-zh').value = p.careers_zh || '';
+          document.getElementById('prog-outcomes-zh').value = p.outcomes_zh || '';
+
+          document.getElementById('btn-save-program').textContent = 'Update Program';
+          modal.classList.add('active');
+        } catch (err) {
+          this.showToast(err.message, 'error');
+        }
+      } else {
+        // Create new
+        form.reset();
+        document.getElementById('prog-id').value = '';
+        document.getElementById('prog-modal-title').innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: var(--vic-red);"></i> Add New Academic Program`;
+        document.getElementById('prog-order').value = allAdminPrograms.length + 1;
+        document.getElementById('prog-is-active').checked = true;
+        document.getElementById('btn-save-program').textContent = 'Create Program';
+        modal.classList.add('active');
+      }
+    },
+
+    async saveProgram(e) {
+      if (e) e.preventDefault();
+      const progId = document.getElementById('prog-id').value;
+      const slug = document.getElementById('prog-slug').value.trim();
+      const category = document.getElementById('prog-category').value;
+      const imageUrl = document.getElementById('prog-image-url').value.trim();
+      const displayOrder = parseInt(document.getElementById('prog-order').value, 10) || 1;
+      const isActive = document.getElementById('prog-is-active').checked ? 1 : 0;
+
+      // English fields
+      const titleEn = document.getElementById('prog-title-en').value.trim();
+      const badgeEn = document.getElementById('prog-badge-en').value.trim();
+      const descEn = document.getElementById('prog-desc-en').value.trim();
+      const bulletsEnText = document.getElementById('prog-bullets-en').value;
+      const bulletsEn = bulletsEnText.split('\n').map(s => s.trim()).filter(Boolean);
+      const durationEn = document.getElementById('prog-duration-en').value.trim();
+      const credentialEn = document.getElementById('prog-credential-en').value.trim();
+      const overviewEn = document.getElementById('prog-overview-en').value.trim();
+      const modulesEnText = document.getElementById('prog-modules-en').value;
+      const modulesEn = modulesEnText.split('\n').map(s => s.trim()).filter(Boolean);
+      const careersEn = document.getElementById('prog-careers-en').value.trim();
+      const outcomesEn = document.getElementById('prog-outcomes-en').value.trim();
+
+      // Chinese fields
+      const titleZh = document.getElementById('prog-title-zh').value.trim();
+      const badgeZh = document.getElementById('prog-badge-zh').value.trim();
+      const descZh = document.getElementById('prog-desc-zh').value.trim();
+      const bulletsZhText = document.getElementById('prog-bullets-zh').value;
+      const bulletsZh = bulletsZhText.split('\n').map(s => s.trim()).filter(Boolean);
+      const durationZh = document.getElementById('prog-duration-zh').value.trim();
+      const credentialZh = document.getElementById('prog-credential-zh').value.trim();
+      const overviewZh = document.getElementById('prog-overview-zh').value.trim();
+      const modulesZhText = document.getElementById('prog-modules-zh').value;
+      const modulesZh = modulesZhText.split('\n').map(s => s.trim()).filter(Boolean);
+      const careersZh = document.getElementById('prog-careers-zh').value.trim();
+      const outcomesZh = document.getElementById('prog-outcomes-zh').value.trim();
+
+      if (!slug || !titleEn) {
+        this.showToast('Please provide at least a slug and English title for the program.', 'warning');
+        return;
+      }
+
+      const payload = {
+        slug,
+        category,
+        image_url: imageUrl,
+        display_order: displayOrder,
+        is_active: isActive,
+        title_en: titleEn,
+        badge_en: badgeEn,
+        desc_en: descEn,
+        bullets_en: bulletsEn,
+        duration_en: durationEn,
+        credential_en: credentialEn,
+        overview_en: overviewEn,
+        modules_en: modulesEn,
+        careers_en: careersEn,
+        outcomes_en: outcomesEn,
+        title_zh: titleZh,
+        badge_zh: badgeZh,
+        desc_zh: descZh,
+        bullets_zh: bulletsZh,
+        duration_zh: durationZh,
+        credential_zh: credentialZh,
+        overview_zh: overviewZh,
+        modules_zh: modulesZh,
+        careers_zh: careersZh,
+        outcomes_zh: outcomesZh
+      };
+
+      try {
+        const token = window.VicAuth.getToken();
+        const method = progId ? 'PUT' : 'POST';
+        const url = progId ? `/api/admin/programs/${progId}` : '/api/admin/programs';
+
+        const res = await fetchApi(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to save program');
+
+        this.showToast(data.message || 'Program saved successfully!', 'success');
+        const modal = document.getElementById('modal-program-editor');
+        if (modal) modal.classList.remove('active');
+
+        this.loadPrograms();
+        this.loadStats();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
+    },
+
+    async toggleProgramStatus(progId) {
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/programs/${progId}/toggle-status`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to toggle program status');
+
+        this.showToast(data.message, data.is_active === 1 ? 'success' : 'info');
+        this.loadPrograms();
+        this.loadStats();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
+    },
+
+    async deleteProgram(progId) {
+      if (!confirm(`Are you sure you want to permanently delete program #${progId}? This will remove it from the homepage and API.`)) return;
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/programs/${progId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to delete program');
+
+        this.showToast(data.message || 'Program deleted successfully.', 'success');
+        this.loadPrograms();
+        this.loadStats();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
+    },
+
+    async moveProgramOrder(progId, direction) {
+      const idx = allAdminPrograms.findIndex(p => p.id === progId);
+      if (idx === -1) return;
+
+      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (targetIdx < 0 || targetIdx >= allAdminPrograms.length) return;
+
+      // Swap in list
+      const reorderedList = [...allAdminPrograms];
+      const temp = reorderedList[idx];
+      reorderedList[idx] = reorderedList[targetIdx];
+      reorderedList[targetIdx] = temp;
+
+      const orderedIds = reorderedList.map(p => p.id);
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi('/api/admin/programs/reorder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ ordered_ids: orderedIds })
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to update program order');
+
+        this.showToast('Program order updated!', 'success');
+        this.loadPrograms();
+      } catch (err) {
+        this.showToast(err.message, 'error');
       }
     },
 

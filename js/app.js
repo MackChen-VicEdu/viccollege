@@ -268,11 +268,26 @@ const testimonialsList = [
 
 let testIndex = 0;
 
+// Dynamic programs store
+let dynamicProgramsList = [];
+
+// Helper HTML escaping for public app
+function escapeAppHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
   initLanguage();
   initTestimonialNav();
   initModals();
+  loadDynamicPrograms();
   initPublicArticles();
   initConsultationForm();
   initMobileMenu();
@@ -336,6 +351,12 @@ function applyLanguage(lang) {
       el.placeholder = langData[key];
     }
   });
+
+  // Update dynamic programs cards and navigation if loaded
+  if (dynamicProgramsList && dynamicProgramsList.length > 0) {
+    renderDynamicPrograms(lang);
+    updateProgramNavigationAndDropdowns(lang);
+  }
 
   // Update language button labels
   document.querySelectorAll('.js-lang-toggle').forEach(btn => {
@@ -684,5 +705,138 @@ function openPublicArticleModal(article) {
 
   modal.classList.add('active');
 }
+
+// 8. Dynamic Academic Programs Loader & Renderer
+async function loadDynamicPrograms() {
+  const container = document.getElementById('programs-dynamic-container');
+  try {
+    const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs') : '/api/programs';
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+
+    if (res.ok && data.programs && data.programs.length > 0) {
+      dynamicProgramsList = data.programs;
+
+      // Populate programDetailsData for the deep-dive popup modal
+      dynamicProgramsList.forEach(p => {
+        programDetailsData[p.slug] = {
+          en: {
+            title: p.title_en || '',
+            badge: p.badge_en || '',
+            duration: p.duration_en || '',
+            credential: p.credential_en || '',
+            overview: p.overview_en || '',
+            modules: Array.isArray(p.modules_en) ? p.modules_en : [],
+            careers: p.careers_en || '',
+            outcomes: p.outcomes_en || ''
+          },
+          zh: {
+            title: p.title_zh || p.title_en || '',
+            badge: p.badge_zh || p.badge_en || '',
+            duration: p.duration_zh || p.duration_en || '',
+            credential: p.credential_zh || p.credential_en || '',
+            overview: p.overview_zh || p.overview_en || '',
+            modules: Array.isArray(p.modules_zh) && p.modules_zh.length > 0 ? p.modules_zh : (Array.isArray(p.modules_en) ? p.modules_en : []),
+            careers: p.careers_zh || p.careers_en || '',
+            outcomes: p.outcomes_zh || p.outcomes_en || ''
+          }
+        };
+      });
+
+      renderDynamicPrograms(currentLanguage);
+      updateProgramNavigationAndDropdowns(currentLanguage);
+    }
+  } catch (err) {
+    console.warn('Failed to load dynamic programs:', err);
+  }
+}
+
+function renderDynamicPrograms(lang = currentLanguage) {
+  const container = document.getElementById('programs-dynamic-container');
+  if (!container || !dynamicProgramsList || dynamicProgramsList.length === 0) return;
+
+  container.innerHTML = dynamicProgramsList.map((prog, index) => {
+    const isReverse = index % 2 === 1;
+    const rowClass = isReverse ? 'program-row reverse-layout' : 'program-row';
+    const title = (lang === 'zh' ? prog.title_zh : prog.title_en) || prog.title_en || '';
+    const desc = (lang === 'zh' ? prog.desc_zh : prog.desc_en) || prog.desc_en || '';
+    const bullets = (lang === 'zh' ? prog.bullets_zh : prog.bullets_en) || prog.bullets_en || [];
+    const btnText = lang === 'zh' ? '了解更多' : 'Learn More';
+    const imgUrl = prog.image_url || 'images/fullstack.jpg';
+
+    let bulletsHtml = '';
+    if (Array.isArray(bullets) && bullets.length > 0) {
+      const isSingleCol = bullets.length <= 4;
+      bulletsHtml = `
+        <ul class="program-bullet-list" ${isSingleCol ? 'style="grid-template-columns: 1fr;"' : ''}>
+          ${bullets.map(b => `<li>${escapeAppHtml(b)}</li>`).join('')}
+        </ul>
+      `;
+    }
+
+    return `
+      <!-- Program ${index + 1}: ${escapeAppHtml(prog.slug)} -->
+      <div id="${escapeAppHtml(prog.slug)}" class="${rowClass}">
+        <div class="program-img-wrapper">
+          <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+          <div class="vic-watermark-tag">VIC COLLEGE</div>
+        </div>
+        <div class="program-info-col">
+          <h2 class="program-heading">${escapeAppHtml(title)}</h2>
+          <div class="vic-divider"></div>
+          <p class="program-text">${escapeAppHtml(desc)}</p>
+          ${bulletsHtml}
+          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="${escapeAppHtml(prog.slug)}">
+            <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Re-bind modal click events for dynamically generated buttons
+  container.querySelectorAll('.js-open-prog-modal').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const progKey = btn.getAttribute('data-program');
+      openProgramModal(progKey);
+    });
+  });
+}
+
+function updateProgramNavigationAndDropdowns(lang = currentLanguage) {
+  if (!dynamicProgramsList || dynamicProgramsList.length === 0) return;
+
+  // 1. Header Dropdown
+  const headerDropdown = document.querySelector('.main-nav-item .nav-dropdown');
+  if (headerDropdown) {
+    headerDropdown.innerHTML = dynamicProgramsList.map(p => {
+      const title = (lang === 'zh' ? p.title_zh : p.title_en) || p.title_en;
+      return `<a href="#${p.slug}">${escapeAppHtml(title)}</a>`;
+    }).join('');
+  }
+
+  // 2. Consultation Dropdown
+  const consultSelect = document.getElementById('consult-program');
+  if (consultSelect) {
+    const selectedVal = consultSelect.value;
+    const defaultOptionText = lang === 'zh' ? '-- 请选择意向专业 --' : '-- Select a Program --';
+    consultSelect.innerHTML = `<option value="">${defaultOptionText}</option>` + 
+      dynamicProgramsList.map(p => {
+        const title = (lang === 'zh' ? p.title_zh : p.title_en) || p.title_en;
+        return `<option value="${p.slug}" ${p.slug === selectedVal ? 'selected' : ''}>${escapeAppHtml(title)}</option>`;
+      }).join('');
+  }
+
+  // 3. Footer Program Links
+  const footerList = document.querySelector('.footer-prog-list');
+  if (footerList) {
+    footerList.innerHTML = dynamicProgramsList.map(p => {
+      const title = (lang === 'zh' ? p.title_zh : p.title_en) || p.title_en;
+      return `<li><a href="#${p.slug}">${escapeAppHtml(title)}</a></li>`;
+    }).join('');
+  }
+}
+
 
 

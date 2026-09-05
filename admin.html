@@ -93,6 +93,10 @@
           <i class="fa-solid fa-book-open"></i>
           <span>Knowledge Base</span>
         </button>
+        <button type="button" class="admin-tab-btn" data-tab="programs">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Academic Programs</span>
+        </button>
         <button type="button" class="admin-tab-btn" data-tab="seo-articles">
           <i class="fa-solid fa-newspaper"></i>
           <span>SEO &amp; GEO Articles</span>
@@ -116,6 +120,13 @@
             <div class="stat-info">
               <span class="stat-label">Total Users</span>
               <h3 id="stat-total-users">--</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Academic Programs</span>
+              <h3 id="stat-total-programs">--</h3>
             </div>
           </div>
           <div class="stat-card">
@@ -306,6 +317,70 @@
               <tbody id="kb-tbody">
                 <tr>
                   <td colspan="6" style="text-align: center; padding: 30px;">Loading knowledge articles...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab: Dynamic Academic Programs Management -->
+      <section id="tab-programs" class="admin-tab-content">
+        <div class="admin-box">
+          <div class="admin-box-header user-header-flex">
+            <div>
+              <h3><i class="fa-solid fa-graduation-cap" style="color: var(--vic-red);"></i> Academic Programs Management</h3>
+              <p>Manage vocational and enrichment programs, customize English &amp; Chinese copy, homepage highlight cards, and curriculum modules.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn-admin-primary" id="btn-create-program">
+                <i class="fa-solid fa-plus"></i> Add New Program
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Toolbar -->
+          <div class="admin-toolbar" style="margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
+            <div class="search-wrap" style="flex: 1; min-width: 260px;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="prog-search-input" placeholder="Search programs by title, slug, or category...">
+            </div>
+            <div class="filter-group">
+              <select id="prog-category-filter">
+                <option value="all">All Categories</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="technology">Technology</option>
+                <option value="business">Business &amp; Tax</option>
+                <option value="education">Early Education</option>
+                <option value="trades">Trades &amp; Technical</option>
+                <option value="wellness">Wellness &amp; Health</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <select id="prog-status-filter">
+                <option value="all">All Statuses</option>
+                <option value="active">🟢 Active (Visible on Live Site)</option>
+                <option value="inactive">🔒 Inactive (Hidden)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Programs Table -->
+          <div class="table-responsive">
+            <table class="admin-table" id="programs-table">
+              <thead>
+                <tr>
+                  <th style="width: 75px; text-align: center;">Order</th>
+                  <th style="width: 75px; text-align: center;">Image</th>
+                  <th style="width: 270px;">Program Title (EN / 中文)</th>
+                  <th style="width: 150px;">Slug &amp; Category</th>
+                  <th style="width: 130px; text-align: center;">Status</th>
+                  <th style="width: 160px; text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="programs-tbody">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 30px;">Loading academic programs...</td>
                 </tr>
               </tbody>
             </table>
@@ -855,6 +930,201 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Academic Program Editor Modal (Bilingual EN / ZH) -->
+  <div id="modal-program-editor" class="vic-auth-modal-backdrop">
+    <div class="vic-auth-modal-box" style="max-width: 880px; max-height: 90vh; overflow-y: auto;">
+      <button type="button" class="vic-auth-close js-close-prog-modal"><i class="fa-solid fa-xmark"></i></button>
+      <div class="vic-auth-modal-header">
+        <h3 id="prog-modal-title"><i class="fa-solid fa-graduation-cap" style="color: var(--vic-red);"></i> Edit Academic Program</h3>
+        <p>Configure program details for the live homepage showcase cards and deep-dive modal in both English and Chinese.</p>
+      </div>
+
+      <form id="form-program-editor">
+        <input type="hidden" id="prog-id" value="">
+
+        <!-- Basic Properties Card -->
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 16px 20px; margin-bottom: 20px;">
+          <h4 style="margin: 0 0 12px; font-size: 13.5px; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">
+            <i class="fa-solid fa-sliders"></i> General Program Settings
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+            <div class="auth-input-group" style="margin: 0;">
+              <label for="prog-slug">URL / Identifier Slug* (e.g. psw, tech, accounting)</label>
+              <input type="text" id="prog-slug" required placeholder="e.g. fullstack">
+            </div>
+            <div class="auth-input-group" style="margin: 0;">
+              <label for="prog-category">Academic Category*</label>
+              <select id="prog-category" required>
+                <option value="healthcare">Healthcare &amp; Nursing</option>
+                <option value="technology">Technology &amp; Computer Science</option>
+                <option value="business">Business, Tax &amp; Accounting</option>
+                <option value="education">Early Childhood Education</option>
+                <option value="trades">Trades &amp; Apprenticeship</option>
+                <option value="wellness">Wellness &amp; Health</option>
+                <option value="general">General Programs</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; align-items: center;">
+            <div class="auth-input-group" style="margin: 0;">
+              <label for="prog-image-url">Cover Image Path / URL</label>
+              <input type="text" id="prog-image-url" placeholder="images/fullstack.jpg">
+            </div>
+            <div class="auth-input-group" style="margin: 0;">
+              <label for="prog-order">Display Order</label>
+              <input type="number" id="prog-order" min="1" max="99" value="1">
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 20px;">
+              <input type="checkbox" id="prog-is-active" checked style="width: 18px; height: 18px; cursor: pointer;">
+              <label for="prog-is-active" style="font-size: 13.5px; font-weight: 600; color: #1E293B; cursor: pointer; margin: 0;">Active on Site</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Language Tabs Bar -->
+        <div style="display: flex; gap: 8px; border-bottom: 2px solid #E2E8F0; margin-bottom: 20px;">
+          <button type="button" id="btn-prog-tab-en" class="btn-admin-tab active" style="padding: 10px 20px; font-weight: 700; border: none; background: none; border-bottom: 3px solid var(--vic-red); color: var(--vic-red); cursor: pointer;">
+            <i class="fa-solid fa-earth-americas"></i> English Content (EN)
+          </button>
+          <button type="button" id="btn-prog-tab-zh" class="btn-admin-tab" style="padding: 10px 20px; font-weight: 600; border: none; background: none; border-bottom: 3px solid transparent; color: #64748B; cursor: pointer;">
+            <i class="fa-solid fa-language"></i> 中文内容 (ZH)
+          </button>
+        </div>
+
+        <!-- English Pane -->
+        <div id="prog-pane-en" class="prog-lang-pane">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 12px;">
+            <div class="auth-input-group">
+              <label for="prog-title-en">Program Title (EN)*</label>
+              <input type="text" id="prog-title-en" required placeholder="e.g. Full Stack Web Technician">
+            </div>
+            <div class="auth-input-group">
+              <label for="prog-badge-en">Badge / Tag (EN)</label>
+              <input type="text" id="prog-badge-en" placeholder="e.g. Career Diploma • Enterprise Level">
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label for="prog-desc-en">Homepage Showcase Description (EN)</label>
+            <textarea id="prog-desc-en" rows="3" placeholder="Description shown on the homepage 2-column program showcase card..."></textarea>
+          </div>
+
+          <div class="auth-input-group">
+            <label for="prog-bullets-en">Homepage Highlight Bullet Points (EN) — <em>One bullet per line</em></label>
+            <textarea id="prog-bullets-en" rows="4" placeholder="Core Java&#10;Spring Boot 3&#10;React / TypeScript&#10;AWS Cloud"></textarea>
+          </div>
+
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #CBD5E1;">
+            <h4 style="margin: 0 0 12px; font-size: 13px; color: #475569; text-transform: uppercase;">
+              <i class="fa-solid fa-circle-info"></i> Popup Modal Deep-Dive Details (EN)
+            </h4>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+              <div class="auth-input-group">
+                <label for="prog-duration-en">Duration (EN)</label>
+                <input type="text" id="prog-duration-en" placeholder="e.g. 32 Weeks (Intensive Labs + Commercial Projects)">
+              </div>
+              <div class="auth-input-group">
+                <label for="prog-credential-en">Awarded Credential (EN)</label>
+                <input type="text" id="prog-credential-en" placeholder="e.g. Full Stack Web Technician Diploma">
+              </div>
+            </div>
+
+            <div class="auth-input-group">
+              <label for="prog-overview-en">Detailed Program Overview (EN)</label>
+              <textarea id="prog-overview-en" rows="3" placeholder="Full overview displayed when users click 'Learn More'..."></textarea>
+            </div>
+
+            <div class="auth-input-group">
+              <label for="prog-modules-en">Curriculum Modules (EN) — <em>One module per line</em></label>
+              <textarea id="prog-modules-en" rows="4" placeholder="Programming Fundamentals &amp; Core Java&#10;Enterprise Backend: Spring Boot 3&#10;Modern Frontend: React &amp; TypeScript"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <div class="auth-input-group">
+                <label for="prog-careers-en">Target Careers (EN)</label>
+                <input type="text" id="prog-careers-en" placeholder="e.g. Full Stack Developer, Java Engineer">
+              </div>
+              <div class="auth-input-group">
+                <label for="prog-outcomes-en">Salary / Industry Outcomes (EN)</label>
+                <input type="text" id="prog-outcomes-en" placeholder="e.g. Average starting salary $65,000–$85,000/year.">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chinese Pane -->
+        <div id="prog-pane-zh" class="prog-lang-pane" style="display: none;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 12px;">
+            <div class="auth-input-group">
+              <label for="prog-title-zh">专业名称 (中文)*</label>
+              <input type="text" id="prog-title-zh" placeholder="例如：全栈网页开发技术员 (Full Stack Web)">
+            </div>
+            <div class="auth-input-group">
+              <label for="prog-badge-zh">专业标签 / 亮点 (中文)</label>
+              <input type="text" id="prog-badge-zh" placeholder="例如：加国紧缺高薪 IT 职业文凭">
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label for="prog-desc-zh">首页展示卡片简述 (中文)</label>
+            <textarea id="prog-desc-zh" rows="3" placeholder="显示在首页两栏展示区的主要课程介绍..."></textarea>
+          </div>
+
+          <div class="auth-input-group">
+            <label for="prog-bullets-zh">首页展示核心亮点 (中文) — <em>每行一条亮点</em></label>
+            <textarea id="prog-bullets-zh" rows="4" placeholder="Core Java 核心编程&#10;SpringBoot 企业级微服务&#10;React / Next.js 全家桶&#10;AWS 云端部署与架构"></textarea>
+          </div>
+
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #CBD5E1;">
+            <h4 style="margin: 0 0 12px; font-size: 13px; color: #475569; text-transform: uppercase;">
+              <i class="fa-solid fa-circle-info"></i> 弹窗详情介绍 (中文)
+            </h4>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+              <div class="auth-input-group">
+                <label for="prog-duration-zh">学制与课时 (中文)</label>
+                <input type="text" id="prog-duration-zh" placeholder="例如：32 周（高强度实战机房 + 商业级项目交付）">
+              </div>
+              <div class="auth-input-group">
+                <label for="prog-credential-zh">毕业文凭与证书 (中文)</label>
+                <input type="text" id="prog-credential-zh" placeholder="例如：安省教育部认证 Full Stack Web Technician 职业文凭">
+              </div>
+            </div>
+
+            <div class="auth-input-group">
+              <label for="prog-overview-zh">深度专业介绍 (中文)</label>
+              <textarea id="prog-overview-zh" rows="3" placeholder="点击'了解更多'弹窗内展示的详细专业背景介绍..."></textarea>
+            </div>
+
+            <div class="auth-input-group">
+              <label for="prog-modules-zh">课程教学模块 (中文) — <em>每行一个模块</em></label>
+              <textarea id="prog-modules-zh" rows="4" placeholder="计算机编程核心与 Java 深度进阶&#10;企业级后端微服务架构：Spring Boot &amp; Spring Cloud&#10;现代前端全家桶：React 与 TypeScript 实战"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <div class="auth-input-group">
+                <label for="prog-careers-zh">就业方向与岗位 (中文)</label>
+                <input type="text" id="prog-careers-zh" placeholder="例如：全栈开发工程师、Java 后端开发、React 前端开发">
+              </div>
+              <div class="auth-input-group">
+                <label for="prog-outcomes-zh">薪资水平与行业前景 (中文)</label>
+                <input type="text" id="prog-outcomes-zh" placeholder="例如：加国起薪约 $65,000–$85,000/年，大厂名师模拟面试。">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #E2E8F0;">
+          <button type="button" class="btn-admin-secondary js-close-prog-modal">Cancel</button>
+          <button type="submit" class="btn-admin-primary" id="btn-save-program">Save Program</button>
+        </div>
+      </form>
     </div>
   </div>
 
