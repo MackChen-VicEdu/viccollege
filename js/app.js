@@ -794,9 +794,15 @@ function renderDynamicPrograms(lang = currentLanguage) {
           <div class="vic-divider"></div>
           <p class="program-text">${escapeAppHtml(desc)}</p>
           ${bulletsHtml}
-          <button type="button" class="btn-learn-more js-open-prog-modal" data-program="${escapeAppHtml(prog.slug)}">
-            <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
-          </button>
+          ${prog.slug === 'psw' ? `
+            <a href="personal-support-worker-online-psw-course.html" class="btn-learn-more">
+              <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          ` : `
+            <button type="button" class="btn-learn-more js-open-prog-modal" data-program="${escapeAppHtml(prog.slug)}">
+              <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          `}
         </div>
       </div>
     `;

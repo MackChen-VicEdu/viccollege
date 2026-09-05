@@ -3934,6 +3934,13 @@ def serve_admin():
 def serve_article(slug=None):
     return send_from_directory(BASE_DIR, 'article.html')
 
+@app.route('/personal-support-worker-online-psw-course')
+@app.route('/personal-support-worker-online-psw-course/')
+@app.route('/personal-support-worker-online-psw-course.html')
+@app.route('/psw-course')
+def serve_psw_course_page():
+    return send_from_directory(BASE_DIR, 'personal-support-worker-online-psw-course.html')
+
 @app.route('/<path:path>')
 def serve_static(path):
     if path.startswith('api/'):
