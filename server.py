@@ -1909,8 +1909,8 @@ def init_database():
             (
                 'programs',
                 'NACC Personal Support Worker (PSW) DE 2022 Certificate Program',
-                'psw, personal support worker, healthcare, nursing home, clinic, practicum placement, cpr, first aid, nacc, caregiving, hospital, medical',
-                'The NACC Personal Support Worker (PSW) DE 2022 Certificate Program consists of intensive classroom theory and hands-on clinical practicum placement in top Ontario nursing homes and healthcare facilities. Graduates receive their NACC PSW Certificate, Standard First Aid & CPR Level C certification. High employment demand across hospitals, long-term care homes, and community healthcare with $20-$28/hr starting wage. Financial aid and Second Career grants are applicable.',
+                'psw, personal support worker, healthcare, nursing home, clinic, practicum placement, cpr, first aid, nacc, caregiving, hospital, medical, duration, how long, 23 weeks',
+                'The NACC Personal Support Worker (PSW) DE 2022 Certificate Program is an intensive 23-week accredited program consisting of online/classroom theory, hands-on clinical lab simulations, and 300+ hours of guaranteed clinical practicum placement in top Ontario nursing homes and healthcare facilities. Graduates receive their official NACC PSW Certificate, Standard First Aid & CPR Level C certification. High employment demand across hospitals, long-term care homes, and community healthcare with $20-$28/hr starting wage. Better Jobs Ontario government funding grants (up to $28,000+) are applicable.',
                 2, now_str, now_str
             ),
             (
@@ -2029,7 +2029,7 @@ def init_database():
   <li><strong>100% Tuition & Exam Fees</strong> for the accredited NACC PSW DE 2022 Certificate program</li>
   <li><strong>Required Medical Textbooks, Scrubs & Clinical Supplies</strong></li>
   <li><strong>Monthly Transportation & Childcare Allowances</strong></li>
-  <li><strong>Basic Living Allowance Support</strong> during your 30 weeks of training</li>
+  <li><strong>Basic Living Allowance Support</strong> during your 23 weeks of training</li>
 </ul>
 
 <blockquote>
@@ -2037,7 +2037,7 @@ def init_database():
 </blockquote>
 
 <h3>Hands-on Clinical Practicum in Top Ontario Facilities</h3>
-<p>Our comprehensive 30-week program includes standard classroom theory, simulation lab practice at our North York and Markham campuses, and <strong>300+ hours of guaranteed clinical placement</strong> in leading long-term care facilities. Graduates receive both the NACC PSW Certificate and Standard First Aid & CPR Level C credentials.</p>
+<p>Our comprehensive 23-week program includes standard classroom theory, simulation lab practice at our North York and Markham campuses, and <strong>300+ hours of guaranteed clinical placement</strong> in leading long-term care facilities. Graduates receive both the NACC PSW Certificate and Standard First Aid & CPR Level C credentials.</p>
 
 <h3>North York & Markham Campus Locations</h3>
 <p>Conveniently accessible by TTC and YRT transit:</p>
@@ -2235,6 +2235,13 @@ Key College Knowledge:
             cursor.execute("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)", (k, v, now_str))
 
     cursor.execute("UPDATE settings SET value = 'true' WHERE key = 'require_login'")
+
+    # Ensure system_prompt accurately reflects 23 weeks for PSW
+    cursor.execute("SELECT value FROM settings WHERE key = 'system_prompt'")
+    curr_sp_row = cursor.fetchone()
+    if curr_sp_row and 'PSW DE 2022): 30 weeks' in curr_sp_row['value']:
+        fixed_sp = curr_sp_row['value'].replace('PSW DE 2022): 30 weeks', 'PSW DE 2022): 23 weeks')
+        cursor.execute("UPDATE settings SET value = ?, updated_at = ? WHERE key = 'system_prompt'", (fixed_sp, now_str))
 
     # Drop legacy homepage_sections table if exists
     cursor.execute("DROP TABLE IF EXISTS homepage_sections")
@@ -2967,7 +2974,7 @@ def generate_local_knowledge_reply(query: str) -> str:
     </div>
     <div class="chat-compare-field">
       <span class="chat-compare-label">学制周期:</span>
-      <span class="chat-compare-value">快速职业大专文凭 (30-32周，如 PSW 护工、全栈 IT、会计税务)</span>
+      <span class="chat-compare-value">快速职业大专文凭 (23-32周，如 23周 PSW 护工、32周 全栈 IT、30周 会计税务)</span>
     </div>
   </div>
 
@@ -3027,7 +3034,7 @@ def generate_local_knowledge_reply(query: str) -> str:
     </div>
     <div class="chat-compare-field">
       <span class="chat-compare-label">Duration:</span>
-      <span class="chat-compare-value">Fast-track career diplomas (30-32 weeks, PSW, IT, Accounting)</span>
+      <span class="chat-compare-value">Fast-track career diplomas (23-32 weeks, e.g. 23-week PSW, 32-week IT, 30-week Accounting)</span>
     </div>
   </div>
 
@@ -3818,7 +3825,7 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
 
 <h3>2. 助学金可申请哪些维多利亚职业文凭？</h3>
 <ul>
-  <li>🩺 <strong>NACC Personal Support Worker (PSW DE 2022) 医疗护工文凭</strong>（30周，高薪紧缺）</li>
+  <li>🩺 <strong>NACC Personal Support Worker (PSW DE 2022) 医疗护工文凭</strong>（23周，高薪紧缺）</li>
   <li>💻 <strong>Full Stack Web Technician 全栈开发技术员文凭</strong>（32周，起薪 $65k-$85k）</li>
   <li>📊 <strong>Accounting, Tax and Payroll 会计与税务管理文凭</strong>（30周，CPA 带教）</li>
   <li>👶 <strong>Early Childcare Assistant (ECA) 幼教助理文凭</strong>（28周，持牌托儿所实习）</li>
@@ -3844,7 +3851,7 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
 
 <h3>2. Approved Career Diplomas at Victoria College</h3>
 <ul>
-  <li>🩺 <strong>NACC Personal Support Worker (PSW DE 2022):</strong> 30 weeks with guaranteed clinical practicum.</li>
+  <li>🩺 <strong>NACC Personal Support Worker (PSW DE 2022):</strong> 23 weeks with guaranteed clinical practicum.</li>
   <li>💻 <strong>Full Stack Web Technician:</strong> 32 weeks, Java, React, TypeScript, AWS cloud.</li>
   <li>📊 <strong>Accounting, Tax and Payroll Administration:</strong> 30 weeks with CPA mentorship.</li>
   <li>👶 <strong>Early Childcare Assistant (ECA):</strong> 28 weeks with licensed daycare placement.</li>
