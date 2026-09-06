@@ -82,7 +82,10 @@
 
           // Check URL query parameters or hash to jump straight to a tab
           const urlParams = new URLSearchParams(window.location.search);
-          const targetTab = urlParams.get('tab') || (window.location.hash ? window.location.hash.replace('#', '').replace('tab-', '') : null);
+          let targetTab = urlParams.get('tab') || (window.location.hash ? window.location.hash.replace('#', '').replace('tab-', '') : null);
+          if (!targetTab && (urlParams.get('edit') || urlParams.get('edit_program') || urlParams.get('edit_slug'))) {
+            targetTab = 'programs';
+          }
 
           if (targetTab && document.getElementById(`tab-${targetTab}`)) {
             this.switchTab(targetTab);
@@ -1413,6 +1416,17 @@
           });
 
           this.renderProgramsTable(filtered);
+
+          // Check if edit query parameter exists (e.g. ?edit=psw or ?edit_program=psw or ?edit=1)
+          const urlParams = new URLSearchParams(window.location.search);
+          const editTarget = (urlParams.get('edit') || urlParams.get('edit_program') || urlParams.get('edit_slug') || '').toLowerCase().trim();
+          if (editTarget && !this._autoEditOpened) {
+            this._autoEditOpened = true;
+            const targetProg = allAdminPrograms.find(p => (p.slug && p.slug.toLowerCase() === editTarget) || String(p.id) === editTarget);
+            if (targetProg) {
+              setTimeout(() => this.openProgramEditor(targetProg.id), 200);
+            }
+          }
         }
       } catch (e) {
         if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center; padding: 24px;">Failed to load programs: ${e.message}</td></tr>`;
@@ -1451,7 +1465,7 @@
         const isLast = index === programs.length - 1;
 
         return `
-          <tr>
+          <tr id="prog-row-${prog.id}" data-slug="${this.escapeHtml(prog.slug || '')}">
             <td style="text-align: center;">
               <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
                 <button type="button" class="btn-table-action js-move-prog-up" data-id="${prog.id}" ${isFirst ? 'disabled style="opacity:0.3; cursor:default;"' : 'title="Move Up" style="padding:2px 6px; font-size:11px;"'}>
@@ -1492,11 +1506,11 @@
               </div>
             </td>
             <td style="text-align: right;">
-              <div style="display: flex; justify-content: flex-end; gap: 6px; align-items: center;">
-                <button type="button" class="btn-table-action js-edit-prog-btn" data-id="${prog.id}" title="Edit Program" style="background:#F8FAFC; border:1px solid #E2E8F0; padding:6px 9px; border-radius:6px; cursor:pointer;">
-                  <i class="fa-solid fa-pen-to-square"></i> Edit
+              <div style="display: flex; justify-content: flex-end; gap: 8px; align-items: center;">
+                <button type="button" class="btn-table-action js-edit-prog-btn" data-id="${prog.id}" title="Edit Program Content" style="background:#EFF6FF; border:1px solid #BFDBFE; color:#1D4ED8; font-weight:700; padding:6px 14px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:12.5px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                  <i class="fa-solid fa-pen-to-square" style="color:#2563EB;"></i> Edit
                 </button>
-                <button type="button" class="btn-table-action js-delete-prog-btn" data-id="${prog.id}" title="Delete Program" style="background:#FFF1F2; border:1px solid #FECDD3; color:#DC2626; padding:6px 9px; border-radius:6px; cursor:pointer;">
+                <button type="button" class="btn-table-action js-delete-prog-btn" data-id="${prog.id}" title="Delete Program" style="background:#FFF1F2; border:1px solid #FECDD3; color:#DC2626; padding:6px 10px; border-radius:6px; cursor:pointer;">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               </div>
@@ -1562,6 +1576,114 @@
           document.getElementById('prog-careers-en').value = p.careers_en || '';
           document.getElementById('prog-outcomes-en').value = p.outcomes_en || '';
 
+          const parseDetail = (val) => {
+            if (!val) return {};
+            if (typeof val === 'object') return val;
+            try {
+              let parsed = JSON.parse(val);
+              while (typeof parsed === 'string') parsed = JSON.parse(parsed);
+              return typeof parsed === 'object' && parsed !== null ? parsed : {};
+            } catch (e) {
+              return {};
+            }
+          };
+
+          // English landing page detail fields
+          const dEn = parseDetail(p.detail_json_en);
+          const heroEn = dEn.hero || {};
+          const statsEn = Array.isArray(dEn.stats) ? dEn.stats : [];
+          const whyEn = dEn.why_choose || {};
+          const pillarsEn = Array.isArray(whyEn.pillars) ? whyEn.pillars : [];
+          const credEn = dEn.credentials || {};
+          const credItemsEn = Array.isArray(credEn.items) ? credEn.items : [];
+          const pracEn = dEn.practicum || {};
+          const admEn = dEn.admissions || {};
+          const admItemsEn = Array.isArray(admEn.items) ? admEn.items : [];
+          const snapEn = dEn.snapshot || {};
+          const grantEn = dEn.grants || {};
+          const faqsEn = Array.isArray(dEn.faqs) ? dEn.faqs : [];
+
+          const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+
+          setVal('prog-detail-hero-lead-en', heroEn.lead || p.overview_en || '');
+          setVal('prog-stat1-val-en', statsEn[0]?.value || p.duration_en || '23 Weeks');
+          setVal('prog-stat1-lbl-en', statsEn[0]?.label || 'Hybrid Theory + Lab + 310+ Hrs Practicum');
+          setVal('prog-stat2-val-en', statsEn[1]?.value || '$20 – $28 / hr');
+          setVal('prog-stat2-lbl-en', statsEn[1]?.label || 'Average Starting Wage Across GTA Facilities');
+          setVal('prog-stat3-val-en', statsEn[2]?.value || 'High Placement Rate');
+          setVal('prog-stat3-lbl-en', statsEn[2]?.label || 'Direct LTC Nursing Home Clinical Placement');
+          setVal('prog-stat4-val-en', statsEn[3]?.value || '$28,000+ Grant');
+          setVal('prog-stat4-lbl-en', statsEn[3]?.label || 'Second Career / Better Jobs Ontario Eligible');
+
+          setVal('prog-why-title-en', whyEn.title || 'Why Choose a Career as a Personal Support Worker?');
+          setVal('prog-why-desc-en', whyEn.subtitle || '');
+          setVal('prog-p1-title-en', pillarsEn[0]?.title || '');
+          setVal('prog-p1-desc-en', pillarsEn[0]?.desc || '');
+          setVal('prog-p2-title-en', pillarsEn[1]?.title || '');
+          setVal('prog-p2-desc-en', pillarsEn[1]?.desc || '');
+          setVal('prog-p3-title-en', pillarsEn[2]?.title || '');
+          setVal('prog-p3-desc-en', pillarsEn[2]?.desc || '');
+          setVal('prog-p4-title-en', pillarsEn[3]?.title || '');
+          setVal('prog-p4-desc-en', pillarsEn[3]?.desc || '');
+
+          setVal('prog-cred-title-en', credEn.title || 'Credentials & Certifications Awarded');
+          setVal('prog-cred-desc-en', credEn.subtitle || '');
+          setVal('prog-c1-title-en', credItemsEn[0]?.title || '');
+          setVal('prog-c1-desc-en', credItemsEn[0]?.desc || '');
+          setVal('prog-c2-title-en', credItemsEn[1]?.title || '');
+          setVal('prog-c2-desc-en', credItemsEn[1]?.desc || '');
+          setVal('prog-c3-title-en', credItemsEn[2]?.title || '');
+          setVal('prog-c3-desc-en', credItemsEn[2]?.desc || '');
+          setVal('prog-c4-title-en', credItemsEn[3]?.title || '');
+          setVal('prog-c4-desc-en', credItemsEn[3]?.desc || '');
+
+          const formatModulesToText = (mods) => {
+            if (!Array.isArray(mods)) return '';
+            return mods.map(m => {
+              if (typeof m === 'string') return m;
+              if (typeof m === 'object' && m !== null) {
+                const title = m.title || m.name || '';
+                const hours = m.hours ? ` (${m.hours})` : '';
+                const desc = m.desc || m.description || '';
+                if (title && desc) return `${title}${hours}: ${desc}`;
+                if (title) return `${title}${hours}`;
+                if (desc) return desc;
+              }
+              return '';
+            }).filter(Boolean).join('\n');
+          };
+
+          const currEn = dEn.curriculum || {};
+          const currModulesEn = (Array.isArray(dEn.curriculum_modules) && dEn.curriculum_modules.length > 0)
+            ? dEn.curriculum_modules
+            : (Array.isArray(currEn.modules) && currEn.modules.length > 0 ? currEn.modules : (Array.isArray(p.modules_en) ? p.modules_en : []));
+
+          setVal('prog-curr-title-en', currEn.title || dEn.curriculum_title || 'Official NACC Curriculum Modules (15 Subjects)');
+          setVal('prog-curr-desc-en', currEn.desc || dEn.curriculum_desc || 'Our comprehensive curriculum covers all 15 core vocational modules mandated by the National Association of Career Colleges (NACC) and Ontario Ministry guidelines:');
+          setVal('prog-curr-modules-en', formatModulesToText(currModulesEn));
+
+          setVal('prog-prac-title-en', pracEn.title || 'Hands-on Clinical Practicum Placement');
+          setVal('prog-prac-desc-en', pracEn.desc || '');
+          setVal('prog-prac-box-title-en', pracEn.box_title || 'Direct Hire from Practicum');
+          setVal('prog-prac-box-desc-en', pracEn.box_desc || '');
+
+          setVal('prog-adm-title-en', admEn.title || 'Admission Requirements');
+          setVal('prog-adm-items-en', admItemsEn.join('\n'));
+
+          setVal('prog-snap-del-en', snapEn.delivery || 'Hybrid (Online + Lab)');
+          setVal('prog-snap-prac-en', snapEn.practicum || '310+ Hours (Guaranteed)');
+          setVal('prog-snap-loc-en', snapEn.locations || 'Markham / North York');
+          setVal('prog-snap-hot-en', snapEn.hotline || '416-665-6668');
+
+          setVal('prog-grant-badge-en', grantEn.badge || 'GOVERNMENT GRANTS');
+          setVal('prog-grant-title-en', grantEn.title || 'Get Up to $28,000+ Grant');
+          setVal('prog-grant-amount-en', grantEn.amount || '$28,000+');
+          setVal('prog-grant-desc-en', grantEn.description || '');
+          setVal('prog-grant-btn-en', grantEn.button_text || 'Check Eligibility Now');
+
+          const faqsToText = (items) => (items || []).map(it => `Q: ${it.q || it.question || ''}\nA: ${it.a || it.answer || ''}`).join('\n\n');
+          setVal('prog-faqs-en', faqsToText(faqsEn));
+
           // Chinese fields
           document.getElementById('prog-title-zh').value = p.title_zh || '';
           document.getElementById('prog-badge-zh').value = p.badge_zh || '';
@@ -1573,6 +1695,82 @@
           document.getElementById('prog-modules-zh').value = Array.isArray(p.modules_zh) ? p.modules_zh.join('\n') : (p.modules_zh || '');
           document.getElementById('prog-careers-zh').value = p.careers_zh || '';
           document.getElementById('prog-outcomes-zh').value = p.outcomes_zh || '';
+
+          // Chinese landing page detail fields
+          const dZh = parseDetail(p.detail_json_zh);
+          const heroZh = dZh.hero || {};
+          const statsZh = Array.isArray(dZh.stats) ? dZh.stats : [];
+          const whyZh = dZh.why_choose || {};
+          const pillarsZh = Array.isArray(whyZh.pillars) ? whyZh.pillars : [];
+          const credZh = dZh.credentials || {};
+          const credItemsZh = Array.isArray(credZh.items) ? credZh.items : [];
+          const currZh = dZh.curriculum || {};
+          const currModulesZh = (Array.isArray(dZh.curriculum_modules) && dZh.curriculum_modules.length > 0)
+            ? dZh.curriculum_modules
+            : (Array.isArray(currZh.modules) && currZh.modules.length > 0 ? currZh.modules : (Array.isArray(p.modules_zh) ? p.modules_zh : []));
+          const pracZh = dZh.practicum || {};
+          const admZh = dZh.admissions || {};
+          const admItemsZh = Array.isArray(admZh.items) ? admZh.items : [];
+          const snapZh = dZh.snapshot || {};
+          const grantZh = dZh.grants || {};
+          const faqsZh = Array.isArray(dZh.faqs) ? dZh.faqs : [];
+
+          setVal('prog-detail-hero-lead-zh', heroZh.lead || p.overview_zh || '');
+          setVal('prog-stat1-val-zh', statsZh[0]?.value || p.duration_zh || '23 周');
+          setVal('prog-stat1-lbl-zh', statsZh[0]?.label || '网课理论 + 校区实操 + 310+小时临床实习');
+          setVal('prog-stat2-val-zh', statsZh[1]?.value || '$20 – $28 / 小时');
+          setVal('prog-stat2-lbl-zh', statsZh[1]?.label || '大多伦多地区医疗养老机构平均起薪');
+          setVal('prog-stat3-val-zh', statsZh[2]?.value || '高就业率');
+          setVal('prog-stat3-lbl-zh', statsZh[2]?.label || '签约长期护理院/医院对口直推');
+          setVal('prog-stat4-val-zh', statsZh[3]?.value || '$28,000+ 补贴');
+          setVal('prog-stat4-lbl-zh', statsZh[3]?.label || '符合 Better Jobs Ontario 政府全额资助');
+
+          setVal('prog-why-title-zh', whyZh.title || '为什么选择成为个人护理护工 (PSW)？');
+          setVal('prog-why-desc-zh', whyZh.subtitle || '');
+          setVal('prog-p1-title-zh', pillarsZh[0]?.title || '');
+          setVal('prog-p1-desc-zh', pillarsZh[0]?.desc || '');
+          setVal('prog-p2-title-zh', pillarsZh[1]?.title || '');
+          setVal('prog-p2-desc-zh', pillarsZh[1]?.desc || '');
+          setVal('prog-p3-title-zh', pillarsZh[2]?.title || '');
+          setVal('prog-p3-desc-zh', pillarsZh[2]?.desc || '');
+          setVal('prog-p4-title-zh', pillarsZh[3]?.title || '');
+          setVal('prog-p4-desc-zh', pillarsZh[3]?.desc || '');
+
+          setVal('prog-cred-title-zh', credZh.title || '官方认证毕业文凭与资格证书');
+          setVal('prog-cred-desc-zh', credZh.subtitle || '');
+          setVal('prog-c1-title-zh', credItemsZh[0]?.title || '');
+          setVal('prog-c1-desc-zh', credItemsZh[0]?.desc || '');
+          setVal('prog-c2-title-zh', credItemsZh[1]?.title || '');
+          setVal('prog-c2-desc-zh', credItemsZh[1]?.desc || '');
+          setVal('prog-c3-title-zh', credItemsZh[2]?.title || '');
+          setVal('prog-c3-desc-zh', credItemsZh[2]?.desc || '');
+          setVal('prog-c4-title-zh', credItemsZh[3]?.title || '');
+          setVal('prog-c4-desc-zh', credItemsZh[3]?.desc || '');
+
+          setVal('prog-curr-title-zh', currZh.title || dZh.curriculum_title || '官方 NACC 教学大纲（15 门专业核心科目）');
+          setVal('prog-curr-desc-zh', currZh.desc || dZh.curriculum_desc || '全面覆盖加拿大职业学院协会（NACC）与安省教育部大纲规定的 15 门职业核心课程：');
+          setVal('prog-curr-modules-zh', formatModulesToText(currModulesZh));
+
+          setVal('prog-prac-title-zh', pracZh.title || '安省持牌正规养老机构临床实习');
+          setVal('prog-prac-desc-zh', pracZh.desc || '');
+          setVal('prog-prac-box-title-zh', pracZh.box_title || '实习基地直接留用高就业率');
+          setVal('prog-prac-box-desc-zh', pracZh.box_desc || '');
+
+          setVal('prog-adm-title-zh', admZh.title || '入学报读条件与要求');
+          setVal('prog-adm-items-zh', admItemsZh.join('\n'));
+
+          setVal('prog-snap-del-zh', snapZh.delivery || '混成教学（线上理论 + 校区实训）');
+          setVal('prog-snap-prac-zh', snapZh.practicum || '310+ 小时（100% 对口安排）');
+          setVal('prog-snap-loc-zh', snapZh.locations || '万锦总校区 / 北约克校区');
+          setVal('prog-snap-hot-zh', snapZh.hotline || '416-665-6668');
+
+          setVal('prog-grant-badge-zh', grantZh.badge || '安省政府培训资助');
+          setVal('prog-grant-title-zh', grantZh.title || '申请最高 $28,000+ 政府助学金');
+          setVal('prog-grant-amount-zh', grantZh.amount || '$28,000+');
+          setVal('prog-grant-desc-zh', grantZh.description || '');
+          setVal('prog-grant-btn-zh', grantZh.button_text || '立即免费评估资格');
+
+          setVal('prog-faqs-zh', faqsToText(faqsZh));
 
           document.getElementById('btn-save-program').textContent = 'Update Program';
           modal.classList.add('active');
@@ -1628,10 +1826,205 @@
       const careersZh = document.getElementById('prog-careers-zh').value.trim();
       const outcomesZh = document.getElementById('prog-outcomes-zh').value.trim();
 
+      const getVal = (id) => (document.getElementById(id)?.value || '').trim();
+
+      const textToFaqs = (text) => {
+        if (!text) return [];
+        const blocks = text.split(/\n\s*\n/);
+        const result = [];
+        for (const block of blocks) {
+          const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+          let q = '', a = '';
+          for (const line of lines) {
+            if (/^q:\s*/i.test(line)) {
+              q = line.replace(/^q:\s*/i, '').trim();
+            } else if (/^a:\s*/i.test(line)) {
+              a = line.replace(/^a:\s*/i, '').trim();
+            } else if (q && !a) {
+              q += ' ' + line;
+            } else if (a) {
+              a += ' ' + line;
+            } else if (!q) {
+              q = line;
+            }
+          }
+          if (q) result.push({ q, a });
+        }
+        return result;
+      };
+
+      const parseModulesTextToStructured = (text) => {
+        if (!text) return [];
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+        return lines.map((line, idx) => {
+          const colonIdx = line.indexOf(':');
+          if (colonIdx > 0) {
+            let titlePart = line.substring(0, colonIdx).trim();
+            const descPart = line.substring(colonIdx + 1).trim();
+            let hours = '';
+            const hoursMatch = titlePart.match(/\(([^)]*(?:hours|hrs|学时|课时)[^)]*)\)/i);
+            if (hoursMatch) {
+              hours = hoursMatch[1];
+              titlePart = titlePart.replace(hoursMatch[0], '').trim();
+            }
+            return {
+              num: idx + 1,
+              title: titlePart,
+              hours: hours,
+              desc: descPart
+            };
+          }
+          return {
+            num: idx + 1,
+            title: line,
+            hours: '',
+            desc: ''
+          };
+        });
+      };
+
+      const parsedCurrModulesEn = parseModulesTextToStructured(getVal('prog-curr-modules-en'));
+      const parsedCurrModulesZh = parseModulesTextToStructured(getVal('prog-curr-modules-zh'));
+
+      const detailJsonEn = {
+        hero: {
+          badge: badgeEn,
+          title: titleEn,
+          lead: getVal('prog-detail-hero-lead-en') || overviewEn
+        },
+        stats: [
+          { value: getVal('prog-stat1-val-en') || durationEn, label: getVal('prog-stat1-lbl-en') || 'Hybrid Theory + Lab + 310+ Hrs Practicum' },
+          { value: getVal('prog-stat2-val-en') || '$20 – $28 / hr', label: getVal('prog-stat2-lbl-en') || 'Average Starting Wage Across GTA Facilities' },
+          { value: getVal('prog-stat3-val-en') || 'High Placement Rate', label: getVal('prog-stat3-lbl-en') || 'Direct LTC Nursing Home Clinical Placement' },
+          { value: getVal('prog-stat4-val-en') || '$28,000+ Grant', label: getVal('prog-stat4-lbl-en') || 'Second Career / Better Jobs Ontario Eligible' }
+        ],
+        why_choose: {
+          title: getVal('prog-why-title-en') || 'Why Choose a Career as a Personal Support Worker?',
+          subtitle: getVal('prog-why-desc-en'),
+          pillars: [
+            { title: getVal('prog-p1-title-en') || 'Abundant Job Opportunities', desc: getVal('prog-p1-desc-en') },
+            { title: getVal('prog-p2-title-en') || 'Personal Fulfillment', desc: getVal('prog-p2-desc-en') },
+            { title: getVal('prog-p3-title-en') || 'Competitive Compensation', desc: getVal('prog-p3-desc-en') },
+            { title: getVal('prog-p4-title-en') || 'Flexible Hybrid Learning', desc: getVal('prog-p4-desc-en') }
+          ]
+        },
+        credentials: {
+          title: getVal('prog-cred-title-en') || 'Credentials & Certifications Awarded',
+          subtitle: getVal('prog-cred-desc-en'),
+          items: [
+            { title: getVal('prog-c1-title-en') || 'NACC PSW Official Diploma', desc: getVal('prog-c1-desc-en') },
+            { title: getVal('prog-c2-title-en') || 'Standard First Aid & CPR Level C', desc: getVal('prog-c2-desc-en') },
+            { title: getVal('prog-c3-title-en') || 'GPA Dementia Care Certificate', desc: getVal('prog-c3-desc-en') },
+            { title: getVal('prog-c4-title-en') || 'Guaranteed Clinical Practicum', desc: getVal('prog-c4-desc-en') }
+          ]
+        },
+        curriculum: {
+          title: getVal('prog-curr-title-en') || 'Official NACC Curriculum Modules (15 Subjects)',
+          desc: getVal('prog-curr-desc-en') || 'Our comprehensive curriculum covers all 15 core vocational modules mandated by the National Association of Career Colleges (NACC) and Ontario Ministry guidelines:',
+          modules: parsedCurrModulesEn
+        },
+        curriculum_modules: parsedCurrModulesEn,
+        practicum: {
+          title: getVal('prog-prac-title-en') || 'Hands-on Clinical Practicum Placement',
+          desc: getVal('prog-prac-desc-en'),
+          box_title: getVal('prog-prac-box-title-en') || 'Direct Hire from Practicum',
+          box_desc: getVal('prog-prac-box-desc-en')
+        },
+        admissions: {
+          title: getVal('prog-adm-title-en') || 'Admission Requirements',
+          items: getVal('prog-adm-items-en').split('\n').map(s => s.trim()).filter(Boolean)
+        },
+        snapshot: {
+          delivery: getVal('prog-snap-del-en') || 'Hybrid (Online + Lab)',
+          practicum: getVal('prog-snap-prac-en') || '310+ Hours (Guaranteed)',
+          locations: getVal('prog-snap-loc-en') || 'Markham / North York',
+          hotline: getVal('prog-snap-hot-en') || '416-665-6668'
+        },
+        grants: {
+          badge: getVal('prog-grant-badge-en') || 'GOVERNMENT GRANTS',
+          title: getVal('prog-grant-title-en') || 'Get Up to $28,000+ Grant',
+          amount: getVal('prog-grant-amount-en') || '$28,000+',
+          description: getVal('prog-grant-desc-en'),
+          button_text: getVal('prog-grant-btn-en') || 'Check Eligibility Now'
+        },
+        faqs: textToFaqs(getVal('prog-faqs-en'))
+      };
+
+      const detailJsonZh = {
+        hero: {
+          badge: badgeZh,
+          title: titleZh,
+          lead: getVal('prog-detail-hero-lead-zh') || overviewZh
+        },
+        stats: [
+          { value: getVal('prog-stat1-val-zh') || durationZh, label: getVal('prog-stat1-lbl-zh') || '网课理论 + 校区实操 + 310+小时临床实习' },
+          { value: getVal('prog-stat2-val-zh') || '$20 – $28 / 小时', label: getVal('prog-stat2-lbl-zh') || '大多伦多地区医疗养老机构平均起薪' },
+          { value: getVal('prog-stat3-val-zh') || '高就业率', label: getVal('prog-stat3-lbl-zh') || '签约长期护理院/医院对口直推' },
+          { value: getVal('prog-stat4-val-zh') || '$28,000+ 补贴', label: getVal('prog-stat4-lbl-zh') || '符合 Better Jobs Ontario 政府全额资助' }
+        ],
+        why_choose: {
+          title: getVal('prog-why-title-zh') || '为什么选择成为个人护理护工 (PSW)？',
+          subtitle: getVal('prog-why-desc-zh'),
+          pillars: [
+            { title: getVal('prog-p1-title-zh') || '就业机会极多', desc: getVal('prog-p1-desc-zh') },
+            { title: getVal('prog-p2-title-zh') || '职业成就感高', desc: getVal('prog-p2-desc-zh') },
+            { title: getVal('prog-p3-title-zh') || '薪酬待遇优厚', desc: getVal('prog-p3-desc-zh') },
+            { title: getVal('prog-p4-title-zh') || '灵活线上学习', desc: getVal('prog-p4-desc-zh') }
+          ]
+        },
+        credentials: {
+          title: getVal('prog-cred-title-zh') || '官方认证毕业文凭与资格证书',
+          subtitle: getVal('prog-cred-desc-zh'),
+          items: [
+            { title: getVal('prog-c1-title-zh') || 'NACC PSW 官方职业文凭', desc: getVal('prog-c1-desc-zh') },
+            { title: getVal('prog-c2-title-zh') || '标准急救与 CPR Level C 证书', desc: getVal('prog-c2-desc-zh') },
+            { title: getVal('prog-c3-title-zh') || 'GPA 失智症长者关怀认证', desc: getVal('prog-c3-desc-zh') },
+            { title: getVal('prog-c4-title-zh') || '100% 保障正规机构临床实习', desc: getVal('prog-c4-desc-zh') }
+          ]
+        },
+        curriculum: {
+          title: getVal('prog-curr-title-zh') || '官方 NACC 教学大纲（15 门专业核心科目）',
+          desc: getVal('prog-curr-desc-zh') || '全面覆盖加拿大职业学院协会（NACC）与安省教育部大纲规定的 15 门职业核心课程：',
+          modules: parsedCurrModulesZh
+        },
+        curriculum_modules: parsedCurrModulesZh,
+        practicum: {
+          title: getVal('prog-prac-title-zh') || '安省持牌正规养老机构临床实习',
+          desc: getVal('prog-prac-desc-zh'),
+          box_title: getVal('prog-prac-box-title-zh') || '实习基地直接留用高就业率',
+          box_desc: getVal('prog-prac-box-desc-zh')
+        },
+        admissions: {
+          title: getVal('prog-adm-title-zh') || '入学报读条件与要求',
+          items: getVal('prog-adm-items-zh').split('\n').map(s => s.trim()).filter(Boolean)
+        },
+        snapshot: {
+          delivery: getVal('prog-snap-del-zh') || '混成教学（线上理论 + 校区实训）',
+          practicum: getVal('prog-snap-prac-zh') || '310+ 小时（100% 对口安排）',
+          locations: getVal('prog-snap-loc-zh') || '万锦总校区 / 北约克校区',
+          hotline: getVal('prog-snap-hot-zh') || '416-665-6668'
+        },
+        grants: {
+          badge: getVal('prog-grant-badge-zh') || '安省政府培训资助',
+          title: getVal('prog-grant-title-zh') || '申请最高 $28,000+ 政府助学金',
+          amount: getVal('prog-grant-amount-zh') || '$28,000+',
+          description: getVal('prog-grant-desc-zh'),
+          button_text: getVal('prog-grant-btn-zh') || '立即免费评估资格'
+        },
+        faqs: textToFaqs(getVal('prog-faqs-zh'))
+      };
+
       if (!slug || !titleEn) {
         this.showToast('Please provide at least a slug and English title for the program.', 'warning');
         return;
       }
+
+      const finalModulesEn = (modulesEn && modulesEn.length > 0)
+        ? modulesEn
+        : (parsedCurrModulesEn.length > 0 ? parsedCurrModulesEn.map(m => m.desc ? `${m.title}: ${m.desc}` : m.title) : []);
+      const finalModulesZh = (modulesZh && modulesZh.length > 0)
+        ? modulesZh
+        : (parsedCurrModulesZh.length > 0 ? parsedCurrModulesZh.map(m => m.desc ? `${m.title}: ${m.desc}` : m.title) : []);
 
       const payload = {
         slug,
@@ -1646,9 +2039,10 @@
         duration_en: durationEn,
         credential_en: credentialEn,
         overview_en: overviewEn,
-        modules_en: modulesEn,
+        modules_en: finalModulesEn,
         careers_en: careersEn,
         outcomes_en: outcomesEn,
+        detail_json_en: detailJsonEn,
         title_zh: titleZh,
         badge_zh: badgeZh,
         desc_zh: descZh,
@@ -1656,10 +2050,18 @@
         duration_zh: durationZh,
         credential_zh: credentialZh,
         overview_zh: overviewZh,
-        modules_zh: modulesZh,
+        modules_zh: finalModulesZh,
         careers_zh: careersZh,
-        outcomes_zh: outcomesZh
+        outcomes_zh: outcomesZh,
+        detail_json_zh: detailJsonZh
       };
+
+      const saveBtn = document.getElementById('btn-save-program');
+      const originalBtnText = saveBtn ? saveBtn.textContent : 'Save Program';
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      }
 
       try {
         const token = window.VicAuth.getToken();
@@ -1685,6 +2087,11 @@
         this.loadStats();
       } catch (err) {
         this.showToast(err.message, 'error');
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = originalBtnText;
+        }
       }
     },
 

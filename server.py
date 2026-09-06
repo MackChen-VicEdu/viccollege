@@ -53,6 +53,10 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+    if request.path.startswith('/api/'):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
     return response
 
 @app.route('/api', methods=['OPTIONS'])
@@ -70,6 +74,192 @@ AUTH_SALT = os.environ.get('AUTH_SALT', 'vic_college_salt_2026')
 def hash_password(password: str) -> str:
     return hashlib.sha256((password + AUTH_SALT).encode('utf-8')).hexdigest()
 
+def get_default_psw_detail_en():
+    return {
+        "hero": {
+            "badge": "Accredited Career Diploma • NACC PSW DE 2022",
+            "title": "Become a Compassionate & Skilled Caregiver with our Online & Hybrid PSW Program",
+            "lead": "Transform lives with a fulfilling healthcare career. The NACC Personal Support Worker (PSW DE 2022) Certificate Program consists of intensive online theory, hands-on clinical lab simulations, and guaranteed clinical practicum placements in top Ontario nursing homes and long-term care facilities."
+        },
+        "stats": [
+            {"value": "23 Weeks", "label": "Hybrid Theory + Lab + 310+ Hrs Practicum"},
+            {"value": "$20 – $28 / hr", "label": "Average Starting Wage Across GTA Facilities"},
+            {"value": "High Placement Rate", "label": "Direct LTC Nursing Home Clinical Placement"},
+            {"value": "$28,000+ Grant", "label": "Second Career / Better Jobs Ontario Eligible"}
+        ],
+        "why_choose": {
+            "title": "Why Choose a Career as a Personal Support Worker?",
+            "subtitle": "Personal Support Workers (PSWs) are among the most essential and respected healthcare professionals in Canada. With Ontario's rapidly aging population and growing healthcare infrastructure, certified PSWs enjoy unmatched job security, flexible shifts, and meaningful daily patient impact.",
+            "pillars": [
+                {"title": "Abundant Job Opportunities", "desc": "PSWs are in extreme high demand across Ontario hospitals, long-term care homes (LTC), retirement residences, and home healthcare agencies, ensuring rapid job placement upon graduation."},
+                {"title": "Personal Fulfillment", "desc": "Make a genuine difference every day by providing compassionate, dignified physical and emotional care that directly enhances the independence and quality of life for seniors and patients."},
+                {"title": "Competitive Compensation", "desc": "Earn competitive hourly wages ($20–$28/hr) with opportunities for shift premiums, overtime, union benefits, comprehensive dental/medical plans, and paid vacation time."},
+                {"title": "Flexible Hybrid Learning", "desc": "Study live interactive theory online from home, paired with hands-on practice in our fully equipped on-campus hospital simulation lab in Markham & North York."}
+            ]
+        },
+        "credentials": {
+            "title": "Credentials & Certifications Awarded",
+            "subtitle": "Upon successful completion of the course and national examination, graduates receive official industry-recognized credentials:",
+            "items": [
+                {"title": "NACC PSW Official Diploma", "desc": "National Association of Career Colleges certified credential recognized nationwide across Canadian healthcare employers."},
+                {"title": "Standard First Aid & CPR Level C", "desc": "Certified CPR/AED life support training required for all healthcare and long-term care clinical settings."},
+                {"title": "GPA Dementia Care Certificate", "desc": "Gentle Persuasive Approaches (GPA) certification for managing responsive behaviors in seniors with dementia."},
+                {"title": "Guaranteed Clinical Practicum", "desc": "Over 310 hours of hands-on placement in accredited Ontario nursing homes and community care agencies."}
+            ]
+        },
+        "practicum": {
+            "title": "Hands-on Clinical Practicum Placement",
+            "desc": "Victoria International College coordinates 100% of your clinical placements. You will gain real-world experience under the direct mentorship of Registered Nurses (RNs) and Registered Practical Nurses (RPNs).",
+            "box_title": "Direct Hire from Practicum",
+            "box_desc": "Over 85% of our graduates receive permanent job offers directly from their clinical placement facility before graduation!"
+        },
+        "admissions": {
+            "title": "Admission Requirements",
+            "items": [
+                "Ontario Secondary School Diploma (OSSD / Grade 12) or Canadian / International equivalent evaluation.",
+                "Mature Student Status: 18 years of age or older with passing score on the Wonderlic Scholastic Level Exam (administered free on campus).",
+                "Clear Vulnerable Sector Police Check (VSS).",
+                "Standard Medical & Immunization Clearance Form (TB 2-step test, Hepatitis B, Influenza, COVID-19).",
+                "Proficiency in English communication."
+            ]
+        },
+        "curriculum": {
+            "title": "Official NACC Curriculum Modules (15 Subjects)",
+            "desc": "Our comprehensive curriculum covers all 15 core vocational modules mandated by the National Association of Career Colleges (NACC) and Ontario Ministry guidelines:"
+        },
+        "curriculum_modules": [
+            {"num": 1, "title": "PSW Foundations", "desc": "Role, responsibilities, scope of practice, legal boundaries & healthcare ethics."},
+            {"num": 2, "title": "Safety and Mobility", "desc": "Body mechanics, ergonomics, patient transfer techniques, infection control & WHMIS."},
+            {"num": 3, "title": "Body Systems & Anatomy", "desc": "Comprehensive overview of human anatomy, physiology, aging processes & vital signs."},
+            {"num": 4, "title": "Assisting with Personal Hygiene", "desc": "Bed baths, oral hygiene, skin integrity prevention, grooming & dignity care."},
+            {"num": 5, "title": "Abuse and Neglect", "desc": "Identification, institutional abuse reporting protocols & client rights advocacy."},
+            {"num": 6, "title": "Household Management, Nutrition & Hydration", "desc": "Meal planning, special dietary requirements, therapeutic diets & feeding assistance."},
+            {"num": 7, "title": "Care Planning & Documentation", "desc": "Restorative care goals, electronic health documentation (EHR) & reporting to RNs/RPNs."},
+            {"num": 8, "title": "Assisting the Family / Growth & Development", "desc": "Family dynamics, child development, supportive care across the lifespan."},
+            {"num": 9, "title": "Assisting the Dying Person", "desc": "Palliative care, end-of-life comfort, hospice support & bereavement protocols."},
+            {"num": 10, "title": "Assisting with Medications", "desc": "Pharmacological routes, medication reminders, blister packs & error reporting."},
+            {"num": 11, "title": "Cognitive & Mental Health Issues", "desc": "Alzheimer's disease, dementia care, depression, delirium & acquired brain injuries."},
+            {"num": 12, "title": "Common Health Conditions", "desc": "Diabetes, cardiovascular diseases, stroke, respiratory conditions, arthritis & cancer care."},
+            {"num": 13, "title": "Gentle Persuasive Approaches (GPA)", "desc": "Evidence-based dementia de-escalation techniques & patient-centered behavioral care."},
+            {"num": 14, "title": "Clinical Placement (Facility - 200+ Hours)", "desc": "Supervised on-site practicum in accredited Ontario Long-Term Care (LTC) nursing homes."},
+            {"num": 15, "title": "Clinical Placement (Community - 110+ Hours)", "desc": "Hands-on in-home patient support with community healthcare agencies."}
+        ],
+        "grants": {
+            "badge": "GOVERNMENT GRANTS",
+            "title": "Get Up to $28,000+ Grant",
+            "description": "Study PSW with zero out-of-pocket tuition. Eligible candidates may qualify for up to $28,000+ through Better Jobs Ontario covering tuition, books, and living expenses.",
+            "amount": "$28,000+",
+            "button_text": "Check Eligibility Now"
+        },
+        "snapshot": {
+            "delivery": "Hybrid (Online + Lab)",
+            "practicum": "310+ Hours (Guaranteed)",
+            "locations": "Markham / North York",
+            "hotline": "416-665-6668"
+        },
+        "faqs": [
+            {"q": "Can I study the PSW program online from home?", "a": "Yes! All theory lectures are delivered live online with interactive instructors. Hands-on clinical lab simulations are conducted on campus, followed by your guaranteed nursing home practicum."},
+            {"q": "How long is the PSW program?", "a": "The program is 23 weeks in total, including interactive online classroom theory, on-campus lab training, and 310+ hours of guaranteed clinical placements."},
+            {"q": "Are there government grants available for this program?", "a": "Yes! The program is eligible for Better Jobs Ontario (formerly Second Career) offering up to $28,000+ in non-repayable grants covering tuition, books, transportation, and living allowance for qualified candidates."},
+            {"q": "Do you help with job placement after graduation?", "a": "Absolutely. Victoria College provides 1-on-1 resume workshops, employer networking, and direct placement coordination with our partner LTC homes and healthcare agencies."},
+            {"q": "What credentials will I receive upon completion?", "a": "You will receive the official NACC Personal Support Worker DE 2022 Diploma, Standard First Aid & CPR Level C, and Gentle Persuasive Approaches (GPA) certification."},
+            {"q": "What are the admission requirements?", "a": "Ontario Secondary School Diploma (OSSD) or equivalent, or passing a Wonderlic / college entrance assessment (18+ mature student), plus medical immunizations and police record check for clinical placement."}
+        ]
+    }
+
+def get_default_psw_detail_zh():
+    return {
+        "hero": {
+            "badge": "安省官方职业文凭 • NACC PSW DE 2022",
+            "title": "成为备受尊重的专业医护人员 • 在线+实操混成制 PSW 护工课程",
+            "lead": "开启崇高而稳定的医疗保健职业生涯。NACC 个人护理护工（PSW DE 2022）职业文凭课程包含线上互动理论、校区模拟病房实训以及安省正规长期护理院（LTC）实地临床带薪/跟岗实习。"
+        },
+        "stats": [
+            {"value": "23 周", "label": "网课理论 + 校区实操 + 310+小时临床实习"},
+            {"value": "$20 – $28 / 小时", "label": "大多伦多地区医疗养老机构平均起薪"},
+            {"value": "高就业率", "label": "签约长期护理院/医院对口直推"},
+            {"value": "$28,000+ 补贴", "label": "符合 Better Jobs Ontario 政府全额资助"}
+        ],
+        "why_choose": {
+            "title": "为什么选择成为个人护理护工 (PSW)？",
+            "subtitle": "个人护理员（PSW）是加拿大医疗保健体系中极度刚需且备受尊敬的专业人员。随着安省人口老龄化加剧，持证 PSW 享有无可比拟的就业稳定性、灵活排班与极佳的福利待遇。",
+            "pillars": [
+                {"title": "就业机会极多", "desc": "安省医院、长期护理院（LTC）、养老社区及家庭护理机构常年极度紧缺，毕业即对口就业。"},
+                {"title": "职业成就感高", "desc": "用专业与爱心提供身体与心理照料，真正改善长者与病患的生活质量，赢得社会尊重。"},
+                {"title": "薪酬待遇优厚", "desc": "起薪 $20–$28/小时，享晚夜班补贴、加班津贴、工会医疗保险、牙医保险及带薪年假。"},
+                {"title": "灵活线上学习", "desc": "在家参加实时名师直播授课，结合万锦与北约克校区先进模拟病房实操演练。"}
+            ]
+        },
+        "credentials": {
+            "title": "官方认证毕业文凭与资格证书",
+            "subtitle": "顺利完成全部课程与全国统考后，毕业生将获得加国医疗行业高度认可的权威资质：",
+            "items": [
+                {"title": "NACC PSW 官方职业文凭", "desc": "加拿大全国职业学院协会（NACC）认证文凭，全加医疗护理机构通用认可。"},
+                {"title": "标准急救与 CPR Level C 证书", "desc": "安省长期护理院与医院临床工作必备的官方急救与 AED 心肺复苏认证。"},
+                {"title": "GPA 失智症长者关怀认证", "desc": "Gentle Persuasive Approaches (GPA) 官方认证，掌握阿尔茨海默症应对技能。"},
+                {"title": "100% 保障正规机构临床实习", "desc": "310+小时安省持牌长期护理院与社区家庭护理实地跟岗临床带教实训。"}
+            ]
+        },
+        "practicum": {
+            "title": "安省持牌正规养老机构临床实习",
+            "desc": "维多利亚学院负责全流程对口安排 100% 临床实习岗位，由安省持牌注册护士（RN / RPN）亲自带教，迅速积累加国本土医护实战经验。",
+            "box_title": "实习基地直接留用高就业率",
+            "box_desc": "超过 85% 的毕业生在临床实习期间直接获得实习机构正式录用聘书（Job Offer）！"
+        },
+        "admissions": {
+            "title": "入学报读条件与要求",
+            "items": [
+                "安省高中毕业证书（OSSD / 12年级）或加国及海外同等学历评估认证。",
+                "成熟学生入学通道：年满 18 周岁，并通过学院 Wonderlic 入学能力测评（校区免费测评）。",
+                "提供合格的无犯罪记录弱势群体筛查证明（Vulnerable Sector Check）。",
+                "完成标准医疗体检与疫苗接种表（TB 结核双结皮试、乙肝、流感、COVID-19 疫苗）。",
+                "具备基础英语沟通与理解能力。"
+            ]
+        },
+        "curriculum": {
+            "title": "官方 NACC 教学大纲（15 门专业核心科目）",
+            "desc": "全面覆盖加拿大职业学院协会（NACC）与安省教育部大纲规定的 15 门职业核心课程："
+        },
+        "curriculum_modules": [
+            {"num": 1, "title": "PSW 基础通论", "desc": "角色职责、工作范围、法律规范与职业道德准则。"},
+            {"num": 2, "title": "安全与行动协助", "desc": "人体力学、病患安全搬移技巧、感染控制与 WHMIS 危险品安全。"},
+            {"num": 3, "title": "人体系统与解剖", "desc": "人体各大生理系统结构、老化生理过程与生命体征测量。"},
+            {"num": 4, "title": "个人卫生护理", "desc": "床上擦浴、口腔护理、压疮防范、仪容修饰与尊严护理。"},
+            {"num": 5, "title": "虐待与忽视防范", "desc": "识别迹象、法定上报流程与长者权益保护。"},
+            {"num": 6, "title": "家政管理、营养与补水", "desc": "餐食规划、特殊治疗饮食调配与辅助进食。"},
+            {"num": 7, "title": "护理计划与文书记录", "desc": "康复护理目标制定、电子医疗记录 (EHR) 及向注册护士汇报。"},
+            {"num": 8, "title": "家庭协助与成长发育", "desc": "家庭人际互动、儿童发育心理与全生命周期关怀。"},
+            {"num": 9, "title": "临终关怀护理", "desc": "姑息治疗、临终身心舒适护理、安宁疗护与家属哀伤辅导。"},
+            {"num": 10, "title": "药物协助管理", "desc": "给药途径认知、服药提醒、药盒管理与差错防范上报。"},
+            {"num": 11, "title": "认知与心理健康护理", "desc": "阿尔茨海默病、失智症护理、抑郁症、谵妄与脑损伤照护。"},
+            {"num": 12, "title": "常见健康疾病照护", "desc": "糖尿病、心血管疾病、中风后遗症、呼吸系统疾病、关节炎与癌症照护。"},
+            {"num": 13, "title": "温和劝导疗法 (GPA)", "desc": "失智症情绪疏导技巧与以患者为中心的行为应对。"},
+            {"num": 14, "title": "长者院临床实习（机构 - 200+小时）", "desc": "在安省认证长期护理院（LTC）进行带教实战。"},
+            {"num": 15, "title": "社区上门实习（社区 - 110+小时）", "desc": "跟随社区医疗机构进行上门长者与病患照护。"}
+        ],
+        "grants": {
+            "badge": "安省政府培训资助",
+            "title": "申请最高 $28,000+ 政府助学金",
+            "description": "符合条件的安省居民最高可申请 $28,000+ 加币政府全额无偿培训补助（Better Jobs Ontario），100% 覆盖学费、书本费、交通及学习期间基本生活费。",
+            "amount": "$28,000+",
+            "button_text": "立即免费评估资格"
+        },
+        "snapshot": {
+            "delivery": "混成教学（线上理论 + 校区实训）",
+            "practicum": "310+ 小时（100% 对口安排）",
+            "locations": "万锦总校区 / 北约克校区",
+            "hotline": "416-665-6668"
+        },
+        "faqs": [
+            {"q": "PSW 课程可以在家线上学习吗？", "a": "可以！所有理论课程均采用线上名师实时互动直播教学，配合校区模拟病房实操实训及养老机构实地临床实习。"},
+            {"q": "PSW 课程需要读多久？", "a": "课程总计 23 周，涵盖线上理论课、校区模拟病房集训及 310+ 小时正规机构临床实习。"},
+            {"q": "我可以申请政府学费补贴吗？", "a": "可以！本课程符合安省 Better Jobs Ontario（原第二职业 Second Career）政府资助计划，合资格者最高可获 $28,000+ 无需偿还的政府补贴。"},
+            {"q": "毕业后学校会推荐实习和工作吗？", "a": "是的。维多利亚学院提供一对一简历修改、模拟面试，并直接向长期合作的安省 LTC 养老院及医疗机构直推就业。"},
+            {"q": "毕业能获得哪些官方证书？", "a": "毕业将获得安省教育部备案的 NACC PSW 官方文凭、标准急救与 CPR Level C 证书，以及 GPA 温和说服法失智症关怀认证。"},
+            {"q": "报读课程有什么入学要求？", "a": "具备安省高中文凭（OSSD）或同等学历，或年满 18 周岁通过学院成熟学生入学测评，并完成体检疫苗及无犯罪记录证明。"}
+        ]
+    }
+
 def format_program_dict(row):
     """Convert a database row for a program into a clean dict with parsed JSON arrays."""
     d = dict(row)
@@ -83,6 +273,24 @@ def format_program_dict(row):
                 d[json_field] = [line.strip() for line in str(val).split('\n') if line.strip()]
         else:
             d[json_field] = []
+
+    for detail_field in ['detail_json_en', 'detail_json_zh']:
+        val = d.get(detail_field)
+        if val:
+            if isinstance(val, dict):
+                d[detail_field] = val
+            elif isinstance(val, str):
+                try:
+                    parsed = json.loads(val)
+                    while isinstance(parsed, str):
+                        parsed = json.loads(parsed)
+                    d[detail_field] = parsed if isinstance(parsed, dict) else {}
+                except Exception:
+                    d[detail_field] = {}
+            else:
+                d[detail_field] = {}
+        else:
+            d[detail_field] = {}
     return d
 
 def seed_default_programs(cursor, now_str):
@@ -106,29 +314,45 @@ def seed_default_programs(cursor, now_str):
             'overview_en': 'The Personal Support Worker Certificate Program prepares students to master the required personal and occupational qualities needed to care for individuals in long-term care homes, retirement communities, hospitals, and home care environments.',
             'overview_zh': 'PSW（Personal Support Worker）是安省长期紧缺的黄金医疗护理职业。维多利亚学院配备先进模拟病房，由安省资深护士名师亲授，包含扎实理论、实操技能及正规养老机构/医院实习。',
             'modules_en': json.dumps([
-                "PSW Foundations & Individuality of the Person",
-                "Role of the PSW in Healthcare Settings",
-                "Interpersonal Communications & Working Relationships",
-                "Safety and Mobility & Abuse Prevention",
-                "Assisting with Personal Hygiene and Daily Living Activities",
-                "Assisting with Medications & Care Planning",
-                "Cognitive and Mental Health Issues and Brain Disorders",
-                "Clinical Practicum: 300+ Hours in Long-Term Care and Community Care"
+                "PSW Foundations: Role, responsibilities, scope of practice, legal boundaries & healthcare ethics.",
+                "Safety and Mobility: Body mechanics, ergonomics, patient transfer techniques, infection control & WHMIS.",
+                "Body Systems & Anatomy: Comprehensive overview of human anatomy, physiology, aging processes & vital signs.",
+                "Assisting with Personal Hygiene: Bed baths, oral hygiene, skin integrity prevention, grooming & dignity care.",
+                "Abuse and Neglect: Identification, institutional abuse reporting protocols & client rights advocacy.",
+                "Household Management, Nutrition & Hydration: Meal planning, special dietary requirements, therapeutic diets & feeding assistance.",
+                "Care Planning & Documentation: Restorative care goals, electronic health documentation (EHR) & reporting to RNs/RPNs.",
+                "Assisting the Family / Growth & Development: Family dynamics, child development, supportive care across the lifespan.",
+                "Assisting the Dying Person: Palliative care, end-of-life comfort, hospice support & bereavement protocols.",
+                "Assisting with Medications: Pharmacological routes, medication reminders, blister packs & error reporting.",
+                "Cognitive & Mental Health Issues: Alzheimer's disease, dementia care, depression, delirium & acquired brain injuries.",
+                "Common Health Conditions: Diabetes, cardiovascular diseases, stroke, respiratory conditions, arthritis & cancer care.",
+                "Gentle Persuasive Approaches (GPA): Evidence-based dementia de-escalation techniques & patient-centered behavioral care.",
+                "Clinical Placement (Facility - 200+ Hours): Supervised on-site practicum in accredited Ontario Long-Term Care (LTC) nursing homes.",
+                "Clinical Placement (Community - 110+ Hours): Hands-on in-home patient support with community healthcare agencies."
             ], ensure_ascii=False),
             'modules_zh': json.dumps([
-                "PSW 职业基础与个体照护原则",
-                "安省医疗护理体系与护工职责规范",
-                "医患沟通技巧与跨专业团队协作",
-                "病患安全防护、转运技巧与防虐待规程",
-                "个人卫生照料与日常生活辅助实训",
-                "服药辅助规程与照护计划（Care Plan）执行",
-                "认知障碍、阿尔茨海默症及心理健康支持",
-                "临床实地实习：300+小时安省持牌长期护理院（LTC）实训"
+                "PSW 基础通论: 角色职责、工作范围、法律规范与职业道德准则。",
+                "安全与行动协助: 人体力学、病患安全搬移技巧、感染控制与 WHMIS 危险品安全。",
+                "人体系统与解剖: 人体各大生理系统结构、老化生理过程与生命体征测量。",
+                "个人卫生护理: 床上擦浴、口腔护理、压疮防范、仪容修饰与尊严护理。",
+                "虐待与忽视防范: 识别迹象、法定上报流程与长者权益保护。",
+                "家政管理、营养与补水: 餐食规划、特殊治疗饮食调配与辅助进食。",
+                "护理计划与文书记录: 康复护理目标制定、电子医疗记录 (EHR) 及向注册护士汇报。",
+                "家庭协助与成长发育: 家庭人际互动、儿童发育心理与全生命周期关怀。",
+                "临终关怀护理: 姑息治疗、临终身心舒适护理、安宁疗护与家属哀伤辅导。",
+                "药物协助管理: 给药途径认知、服药提醒、药盒管理与差错防范上报。",
+                "认知与心理健康护理: 阿尔茨海默病、失智症护理、抑郁症、谵妄与脑损伤照护。",
+                "常见健康疾病照护: 糖尿病、心血管疾病、中风后遗症、呼吸系统疾病、关节炎与癌症照护。",
+                "温和劝导疗法 (GPA): 失智症情绪疏导技巧与以患者为中心的行为应对。",
+                "长者院临床实习（机构 - 200+小时）: 在安省认证长期护理院（LTC）进行带教实战。",
+                "社区上门实习（社区 - 110+小时）: 跟随社区医疗机构进行上门长者与病患照护。"
             ], ensure_ascii=False),
             'careers_en': 'Personal Support Worker (PSW), Long-term Care Aide, Home Support Worker, Respite Caregiver, Hospital Patient Attendant.',
             'careers_zh': '养老院私人护理员（PSW）、医院病患护理助理、社区家庭护理员、日间照料中心护理专员。',
             'outcomes_en': 'High demand across Ontario with starting wages from $20 to $28/hour. Government incentive grants and sign-on bonuses often available.',
             'outcomes_zh': '安省各公立/私立医疗养老机构长期极度紧缺，时薪高达 $20–$28/小时，福利完善，常年具备全职高薪就业机会。',
+            'detail_json_en': json.dumps(get_default_psw_detail_en(), ensure_ascii=False),
+            'detail_json_zh': json.dumps(get_default_psw_detail_zh(), ensure_ascii=False),
             'display_order': 1,
             'is_active': 1
         },
@@ -934,6 +1158,8 @@ Key College Knowledge:
         careers_zh TEXT,
         outcomes_en TEXT,
         outcomes_zh TEXT,
+        detail_json_en TEXT,
+        detail_json_zh TEXT,
         display_order INTEGER DEFAULT 0,
         is_active INTEGER DEFAULT 1,
         created_at TEXT NOT NULL,
@@ -941,10 +1167,28 @@ Key College Knowledge:
     )
     ''')
 
+    # Auto-migration for detail_json_en and detail_json_zh
+    cursor.execute("PRAGMA table_info(programs)")
+    prog_cols = [c['name'] for c in cursor.fetchall()]
+    if 'detail_json_en' not in prog_cols:
+        cursor.execute("ALTER TABLE programs ADD COLUMN detail_json_en TEXT")
+    if 'detail_json_zh' not in prog_cols:
+        cursor.execute("ALTER TABLE programs ADD COLUMN detail_json_zh TEXT")
+
     cursor.execute("SELECT COUNT(*) as cnt FROM programs")
     prog_row = cursor.fetchone()
     prog_cnt = prog_row['cnt'] if prog_row else 0
     if prog_cnt == 0:
+        seed_default_programs(cursor, now_str)
+    else:
+        # Check if PSW has detail_json_en populated
+        cursor.execute("SELECT id, detail_json_en FROM programs WHERE slug = 'psw'")
+        psw_db_row = cursor.fetchone()
+        if psw_db_row and (not psw_db_row['detail_json_en'] or psw_db_row['detail_json_en'] == '{}'):
+            cursor.execute(
+                "UPDATE programs SET detail_json_en = ?, detail_json_zh = ? WHERE slug = 'psw'",
+                (json.dumps(get_default_psw_detail_en(), ensure_ascii=False), json.dumps(get_default_psw_detail_zh(), ensure_ascii=False))
+            )
         seed_default_programs(cursor, now_str)
 
     # 9. Dynamic Job Fair & Events Table
@@ -3374,6 +3618,8 @@ def admin_create_program():
     careers_zh = (data.get('careers_zh') or '').strip()
     outcomes_en = (data.get('outcomes_en') or '').strip()
     outcomes_zh = (data.get('outcomes_zh') or '').strip()
+    detail_json_en = json.dumps(data.get('detail_json_en') or {}, ensure_ascii=False) if isinstance(data.get('detail_json_en'), dict) else (data.get('detail_json_en') or '{}')
+    detail_json_zh = json.dumps(data.get('detail_json_zh') or {}, ensure_ascii=False) if isinstance(data.get('detail_json_zh'), dict) else (data.get('detail_json_zh') or '{}')
 
     cursor.execute("SELECT MAX(display_order) as max_ord FROM programs")
     max_ord_row = cursor.fetchone()
@@ -3389,12 +3635,14 @@ def admin_create_program():
         desc_en, desc_zh, bullets_en, bullets_zh, duration_en, duration_zh,
         credential_en, credential_zh, overview_en, overview_zh,
         modules_en, modules_zh, careers_en, careers_zh, outcomes_en, outcomes_zh,
+        detail_json_en, detail_json_zh,
         display_order, is_active, created_at, updated_at
     ) VALUES (
         ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?,
+        ?, ?,
         ?, ?, ?, ?
     )
     ''', (
@@ -3402,6 +3650,7 @@ def admin_create_program():
         desc_en, desc_zh, bullets_en, bullets_zh, duration_en, duration_zh,
         credential_en, credential_zh, overview_en, overview_zh,
         modules_en, modules_zh, careers_en, careers_zh, outcomes_en, outcomes_zh,
+        detail_json_en, detail_json_zh,
         display_order, is_active, now_str, now_str
     ))
     db.commit()
@@ -3503,6 +3752,18 @@ def admin_update_program(prog_id):
             if json_val is not None:
                 updates.append(f"{array_key} = ?")
                 params.append(json_val)
+
+    for detail_key in ['detail_json_en', 'detail_json_zh']:
+        if detail_key in data and data[detail_key] is not None:
+            val = data[detail_key]
+            if isinstance(val, dict):
+                json_str = json.dumps(val, ensure_ascii=False)
+            elif isinstance(val, str):
+                json_str = val.strip()
+            else:
+                json_str = '{}'
+            updates.append(f"{detail_key} = ?")
+            params.append(json_str)
 
     if not updates:
         return jsonify({'message': 'No changes detected.'})

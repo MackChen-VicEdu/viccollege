@@ -368,6 +368,12 @@
           <span class="lang-label" data-i18n="lang_btn">中文</span>
           <span class="lang-badge lang-current">EN</span>
         </button>
+        <a href="admin.html?tab=programs&edit=psw" class="desktop-only"
+          style="margin-left: 10px; display: inline-flex; align-items: center; gap: 6px; background: rgba(220, 38, 38, 0.08); border: 1px solid rgba(220, 38, 38, 0.25); color: #dc2626; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s;"
+          title="Edit this program in the Admin Portal">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Edit Program</span>
+        </a>
       </div>
 
       <!-- Mobile Hamburger Button -->
@@ -391,13 +397,17 @@
       </button>
     </div>
 
-    <div style="margin-bottom: 20px;">
+    <div style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;">
       <button type="button" class="lang-switcher-vic js-lang-toggle" style="width: 100%; justify-content: center;"
         aria-label="Toggle language">
         <i class="fa-solid fa-globe"></i>
         <span class="lang-label" data-i18n="lang_btn">中文</span>
         <span class="lang-badge lang-current">EN</span>
       </button>
+      <a href="admin.html?tab=programs&edit=psw"
+        style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #dc2626; color: #fff; padding: 10px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 13.5px;">
+        <i class="fa-solid fa-pen-to-square"></i> Edit Program in Admin
+      </a>
     </div>
 
     <nav class="mobile-nav-links" id="psw-mobile-nav-links">
@@ -413,14 +423,24 @@
   <!-- Hero Banner -->
   <section class="prog-page-hero">
     <div class="container">
-      <div class="prog-breadcrumb">
-        <a href="index.html#home"><i class="fa-solid fa-house"></i> <span data-i18n="psw_bread_home">Home</span></a>
-        <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
-        <a href="index.html#programs"><span data-i18n="psw_bread_programs">Programs</span></a>
-        <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
-        <a href="index.html#programs"><span data-i18n="psw_bread_health">Healthcare</span></a>
-        <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
-        <span id="psw-bread-curr" data-i18n="psw_bread_curr">NACC Personal Support Worker DE 2022</span>
+      <div class="prog-breadcrumb" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <a href="index.html#home"><i class="fa-solid fa-house"></i> <span data-i18n="psw_bread_home">Home</span></a>
+          <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
+          <a href="index.html#programs"><span data-i18n="psw_bread_programs">Programs</span></a>
+          <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
+          <a href="index.html#programs"><span data-i18n="psw_bread_health">Healthcare</span></a>
+          <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
+          <span id="psw-bread-curr" data-i18n="psw_bread_curr">NACC Personal Support Worker DE 2022</span>
+        </div>
+        <a href="admin.html?tab=programs&edit=psw"
+          style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(8px); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.4); padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-decoration: none; transition: background 0.2s;"
+          onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+          onmouseout="this.style.background='rgba(255,255,255,0.18)'"
+          title="Open Admin Portal to edit this program">
+          <i class="fa-solid fa-pen-to-square" style="color: #fbbf24;"></i>
+          <span>Edit This Page</span>
+        </a>
       </div>
 
       <span class="prog-hero-badge" id="psw-hero-badge" data-i18n="psw_hero_badge">Accredited Career Diploma • NACC PSW DE 2022</span>
@@ -444,20 +464,20 @@
       <!-- Quick Stats -->
       <div class="prog-hero-stats-grid">
         <div class="prog-stat-card">
-          <span class="prog-stat-val" id="psw-stat-duration" data-i18n="psw_stat_1_val">23 Weeks</span>
-          <span class="prog-stat-lbl" data-i18n="psw_stat_1_lbl">Hybrid Theory + Lab + 310+ Hrs Practicum</span>
+          <span class="prog-stat-val" id="psw-stat-1-val" data-i18n="psw_stat_1_val">23 Weeks</span>
+          <span class="prog-stat-lbl" id="psw-stat-1-lbl" data-i18n="psw_stat_1_lbl">Hybrid Theory + Lab + 310+ Hrs Practicum</span>
         </div>
         <div class="prog-stat-card">
-          <span class="prog-stat-val" data-i18n="psw_stat_2_val">$20 – $28 / hr</span>
-          <span class="prog-stat-lbl" data-i18n="psw_stat_2_lbl">Average Starting Wage Across GTA Facilities</span>
+          <span class="prog-stat-val" id="psw-stat-2-val" data-i18n="psw_stat_2_val">$20 – $28 / hr</span>
+          <span class="prog-stat-lbl" id="psw-stat-2-lbl" data-i18n="psw_stat_2_lbl">Average Starting Wage Across GTA Facilities</span>
         </div>
         <div class="prog-stat-card">
-          <span class="prog-stat-val" data-i18n="psw_stat_3_val">High Placement Rate</span>
-          <span class="prog-stat-lbl" data-i18n="psw_stat_3_lbl">Direct LTC Nursing Home Clinical Placement</span>
+          <span class="prog-stat-val" id="psw-stat-3-val" data-i18n="psw_stat_3_val">High Placement Rate</span>
+          <span class="prog-stat-lbl" id="psw-stat-3-lbl" data-i18n="psw_stat_3_lbl">Direct LTC Nursing Home Clinical Placement</span>
         </div>
         <div class="prog-stat-card">
-          <span class="prog-stat-val" data-i18n="psw_stat_4_val">$28,000+ Grant</span>
-          <span class="prog-stat-lbl" data-i18n="psw_stat_4_lbl">Second Career / Better Jobs Ontario Eligible</span>
+          <span class="prog-stat-val" id="psw-stat-4-val" data-i18n="psw_stat_4_val">$28,000+ Grant</span>
+          <span class="prog-stat-lbl" id="psw-stat-4-lbl" data-i18n="psw_stat_4_lbl">Second Career / Better Jobs Ontario Eligible</span>
         </div>
       </div>
     </div>
@@ -472,15 +492,15 @@
 
         <!-- 1. Why Become a PSW -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-heart-pulse"></i> <span data-i18n="psw_why_title">Why
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-heart-pulse"></i> <span id="psw-why-title" data-i18n="psw_why_title">Why
               Choose a Career as a Personal Support Worker?</span></h2>
-          <p style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_why_desc">
+          <p id="psw-why-desc" style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_why_desc">
             Personal Support Workers (PSWs) are among the most essential and respected healthcare professionals in
             Canada. With Ontario's rapidly aging population and growing healthcare infrastructure, certified PSWs enjoy
             unmatched job security, flexible shifts, and meaningful daily patient impact.
           </p>
 
-          <div class="prog-pillar-grid">
+          <div class="prog-pillar-grid" id="psw-pillars-grid">
             <div class="prog-pillar-item">
               <div class="prog-pillar-icon"><i class="fa-solid fa-briefcase-medical"></i></div>
               <h3 class="prog-pillar-title" data-i18n="psw_pillar_1_title">Abundant Job Opportunities</h3>
@@ -521,13 +541,13 @@
 
         <!-- 2. Program Structure & Credentials -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-certificate"></i> <span
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-certificate"></i> <span id="psw-cred-title"
               data-i18n="psw_cred_title">Credentials &amp; Certifications Awarded</span></h2>
-          <p style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_cred_desc">
+          <p id="psw-cred-desc" style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_cred_desc">
             Upon successful completion of the course and national examination, graduates receive official
             industry-recognized credentials:
           </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 18px;">
+          <div id="psw-credentials-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 18px;">
             <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px;">
               <h4 style="color: #1e3a8a; margin-bottom: 6px; font-size: 15px;"><i class="fa-solid fa-award"></i> <span
                   data-i18n="psw_c1_title">NACC PSW Official Diploma</span></h4>
@@ -559,9 +579,9 @@
 
         <!-- 3. Complete Curriculum Modules -->
         <section id="curriculum" class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-book-medical"></i> <span
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-book-medical"></i> <span id="psw-curr-title"
               data-i18n="psw_curr_title">Official NACC Curriculum Modules (15 Subjects)</span></h2>
-          <p style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_curr_desc">
+          <p id="psw-curr-desc" style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_curr_desc">
             Our comprehensive curriculum covers all 15 core vocational modules mandated by the National Association of
             Career Colleges (NACC) and Ontario Ministry guidelines:
           </p>
@@ -617,17 +637,17 @@
 
         <!-- 4. Clinical Placement & Practicum Network -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-hospital-user"></i> <span
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-hospital-user"></i> <span id="psw-prac-title"
               data-i18n="psw_prac_title">Hands-on Clinical Practicum Placement</span></h2>
-          <p style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_prac_desc">
+          <p id="psw-prac-desc" style="font-size: 15px; color: #475569; line-height: 1.65;" data-i18n="psw_prac_desc">
             Victoria International College coordinates 100% of your clinical placements. You will gain real-world
             experience under the direct mentorship of Registered Nurses (RNs) and Registered Practical Nurses (RPNs).
           </p>
           <div
             style="background: #f8fafc; border-left: 4px solid var(--vic-red); padding: 18px 20px; border-radius: 0 8px 8px 0; margin-top: 16px;">
-            <h4 style="color: var(--vic-dark); margin-bottom: 6px; font-size: 15px;" data-i18n="psw_prac_box_title">
+            <h4 id="psw-prac-box-title" style="color: var(--vic-dark); margin-bottom: 6px; font-size: 15px;" data-i18n="psw_prac_box_title">
               Direct Hire from Practicum</h4>
-            <p style="font-size: 13.5px; color: #475569; margin: 0; line-height: 1.55;" data-i18n="psw_prac_box_desc">
+            <p id="psw-prac-box-desc" style="font-size: 13.5px; color: #475569; margin: 0; line-height: 1.55;" data-i18n="psw_prac_box_desc">
               Over <strong>85%</strong> of our graduates receive permanent job offers directly from their clinical
               placement facility before graduation!
             </p>
@@ -636,9 +656,9 @@
 
         <!-- 5. Admission Requirements -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-clipboard-check"></i> <span
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-clipboard-check"></i> <span id="psw-adm-title"
               data-i18n="psw_adm_title">Admission Requirements</span></h2>
-          <ul style="padding-left: 20px; font-size: 14.5px; color: #334155; line-height: 1.85;">
+          <ul id="psw-admissions-list" style="padding-left: 20px; font-size: 14.5px; color: #334155; line-height: 1.85;">
             <li data-i18n="psw_adm_1">Ontario Secondary School Diploma (OSSD / Grade 12) or Canadian / International
               equivalent evaluation.</li>
             <li data-i18n="psw_adm_2"><strong>Mature Student Status:</strong> 18 years of age or older with passing
@@ -652,53 +672,55 @@
 
         <!-- 6. FAQs -->
         <section class="prog-section-card">
-          <h2 class="prog-sec-heading"><i class="fa-solid fa-circle-question"></i> <span
+          <h2 class="prog-sec-heading"><i class="fa-solid fa-circle-question"></i> <span id="psw-faq-title"
               data-i18n="psw_faq_title">Frequently Asked Questions</span></h2>
-          <div class="faq-accordion-item">
-            <div class="faq-accordion-header" onclick="toggleFaq(this)">
-              <span data-i18n="psw_faq_q1">Can I get government funding (Better Jobs Ontario) to cover my
-                tuition?</span>
-              <i class="fa-solid fa-angle-down"></i>
+          <div id="psw-faq-list">
+            <div class="faq-accordion-item">
+              <div class="faq-accordion-header" onclick="toggleFaq(this)">
+                <span data-i18n="psw_faq_q1">Can I get government funding (Better Jobs Ontario) to cover my
+                  tuition?</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </div>
+              <div class="faq-accordion-body" data-i18n="psw_faq_a1">
+                Yes! Eligible candidates (unemployed, laid-off, former EI recipients, self-employed, gig workers, or
+                low-income PR/Citizens) can qualify for up to <strong>$28,000+</strong> in non-repayable government grants
+                covering 100% of tuition, books, transportation, and living allowance. Our advisors assist you throughout
+                the entire application process free of charge.
+              </div>
             </div>
-            <div class="faq-accordion-body" data-i18n="psw_faq_a1">
-              Yes! Eligible candidates (unemployed, laid-off, former EI recipients, self-employed, gig workers, or
-              low-income PR/Citizens) can qualify for up to <strong>$28,000+</strong> in non-repayable government grants
-              covering 100% of tuition, books, transportation, and living allowance. Our advisors assist you throughout
-              the entire application process free of charge.
-            </div>
-          </div>
 
-          <div class="faq-accordion-item">
-            <div class="faq-accordion-header" onclick="toggleFaq(this)">
-              <span data-i18n="psw_faq_q2">How long does the PSW course take to complete?</span>
-              <i class="fa-solid fa-angle-down"></i>
+            <div class="faq-accordion-item">
+              <div class="faq-accordion-header" onclick="toggleFaq(this)">
+                <span data-i18n="psw_faq_q2">How long does the PSW course take to complete?</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </div>
+              <div class="faq-accordion-body" data-i18n="psw_faq_a2">
+                The program takes <strong>23 weeks</strong> to complete (including online theory, hands-on lab training,
+                and guaranteed clinical practicum).
+              </div>
             </div>
-            <div class="faq-accordion-body" data-i18n="psw_faq_a2">
-              The program takes <strong>23 weeks</strong> to complete (including online theory, hands-on lab training,
-              and guaranteed clinical practicum).
-            </div>
-          </div>
 
-          <div class="faq-accordion-item">
-            <div class="faq-accordion-header" onclick="toggleFaq(this)">
-              <span data-i18n="psw_faq_q3">Do I need to find my own clinical placement?</span>
-              <i class="fa-solid fa-angle-down"></i>
+            <div class="faq-accordion-item">
+              <div class="faq-accordion-header" onclick="toggleFaq(this)">
+                <span data-i18n="psw_faq_q3">Do I need to find my own clinical placement?</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </div>
+              <div class="faq-accordion-body" data-i18n="psw_faq_a3">
+                No! Our dedicated clinical placement coordinators handle the entire placement process and assign you to
+                one of our accredited partner long-term care facilities and community health organizations across the GTA.
+              </div>
             </div>
-            <div class="faq-accordion-body" data-i18n="psw_faq_a3">
-              No! Our dedicated clinical placement coordinators handle the entire placement process and assign you to
-              one of our accredited partner long-term care facilities and community health organizations across the GTA.
-            </div>
-          </div>
 
-          <div class="faq-accordion-item">
-            <div class="faq-accordion-header" onclick="toggleFaq(this)">
-              <span data-i18n="psw_faq_q4">What is the starting salary for PSWs in Ontario?</span>
-              <i class="fa-solid fa-angle-down"></i>
-            </div>
-            <div class="faq-accordion-body" data-i18n="psw_faq_a4">
-              PSWs in Ontario typically earn between <strong>$20.00 to $28.00 per hour</strong>, with additional
-              government hourly retention wage enhancements, overtime opportunities, and comprehensive employee benefits
-              in unionized hospitals and nursing homes.
+            <div class="faq-accordion-item">
+              <div class="faq-accordion-header" onclick="toggleFaq(this)">
+                <span data-i18n="psw_faq_q4">What is the starting salary for PSWs in Ontario?</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </div>
+              <div class="faq-accordion-body" data-i18n="psw_faq_a4">
+                PSWs in Ontario typically earn between <strong>$20.00 to $28.00 per hour</strong>, with additional
+                government hourly retention wage enhancements, overtime opportunities, and comprehensive employee benefits
+                in unionized hospitals and nursing homes.
+              </div>
             </div>
           </div>
         </section>
@@ -711,17 +733,17 @@
 
           <!-- Free Grant Assessment Card -->
           <div class="sidebar-grant-card">
-            <span
+            <span id="psw-side-grant-badge"
               style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 700; margin-bottom: 10px;"
               data-i18n="psw_side_grant_badge">GOVERNMENT GRANTS</span>
-            <h3 style="color: #ffffff; margin-bottom: 8px; font-size: 1.3rem;" data-i18n="psw_side_grant_title">Get Up
+            <h3 id="psw-side-grant-title" style="color: #ffffff; margin-bottom: 8px; font-size: 1.3rem;" data-i18n="psw_side_grant_title">Get Up
               to $28,000+ Grant</h3>
-            <p style="color: #dbeafe; font-size: 13.5px; line-height: 1.5; margin-bottom: 18px;"
+            <p id="psw-side-grant-desc" style="color: #dbeafe; font-size: 13.5px; line-height: 1.5; margin-bottom: 18px;"
               data-i18n="psw_side_grant_desc">
               Study PSW with zero out-of-pocket tuition. Book a 100% free eligibility assessment with our funding
               specialists today.
             </p>
-            <a href="#consultation-booking" class="btn-vic-red"
+            <a href="#consultation-booking" id="psw-side-grant-btn" class="btn-vic-red"
               style="background: #ffffff; color: #1e3a8a; font-weight: 800; padding: 12px 20px; border-radius: 6px; text-decoration: none; display: block;"
               data-i18n="psw_side_grant_btn">Check Eligibility Now</a>
           </div>
@@ -747,21 +769,21 @@
               </li>
               <li
                 style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong data-i18n="psw_side_del_lbl">Delivery:</strong></span> <span
+                <span><strong data-i18n="psw_side_del_lbl">Delivery:</strong></span> <span id="psw-side-delivery"
                   data-i18n="psw_side_del_val">Hybrid (Online + Lab)</span>
               </li>
               <li
                 style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong data-i18n="psw_side_p_lbl">Practicum:</strong></span> <span
+                <span><strong data-i18n="psw_side_p_lbl">Practicum:</strong></span> <span id="psw-side-practicum"
                   data-i18n="psw_side_p_val">310+ Hours (Guaranteed)</span>
               </li>
               <li
                 style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                <span><strong data-i18n="psw_side_loc_lbl">Locations:</strong></span> <span
+                <span><strong data-i18n="psw_side_loc_lbl">Locations:</strong></span> <span id="psw-side-locations"
                   data-i18n="psw_side_loc_val">Markham / North York</span>
               </li>
               <li style="display: flex; justify-content: space-between;">
-                <span><strong data-i18n="psw_side_hot_lbl">Hotline:</strong></span> <a href="tel:416-665-6668"
+                <span><strong data-i18n="psw_side_hot_lbl">Hotline:</strong></span> <a href="tel:416-665-6668" id="psw-side-hotline"
                   style="color: var(--vic-red); font-weight: 700; text-decoration: none;">416-665-6668</a>
               </li>
             </ul>
@@ -879,12 +901,28 @@
 
       </div>
 
-      <div class="footer-bottom-bar">
+      <div class="footer-bottom-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <span data-i18n="footer_copyright">Copyright © 2026 VICTORIA INTERNATIONAL COLLEGE OF BUSINESS &amp; TECHNOLOGY.
           All rights reserved.</span>
+        <div style="font-size: 12.5px;">
+          <a href="/admin#programs" style="color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#94a3b8'">
+            <i class="fa-solid fa-lock" style="font-size: 11px;"></i> Staff / Admin Portal
+          </a>
+        </div>
       </div>
     </div>
   </footer>
+
+  <!-- Quick Admin Edit Floating Shortcut (Links directly to PSW program editor in Admin) -->
+  <div id="quick-admin-edit-badge" style="position: fixed; bottom: 24px; left: 24px; z-index: 9999;">
+    <a href="admin.html?tab=programs&edit=psw" title="Open Admin Portal to Edit Programs, Copy &amp; Media"
+      style="display: inline-flex; align-items: center; gap: 8px; background: #0f172a; color: #ffffff; padding: 10px 18px; border-radius: 24px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1.5px solid rgba(255,255,255,0.25); transition: transform 0.2s, background 0.2s;"
+      onmouseover="this.style.transform='translateY(-2px)'; this.style.background='#1e293b';"
+      onmouseout="this.style.transform='none'; this.style.background='#0f172a';">
+      <i class="fa-solid fa-pen-to-square" style="color: #f59e0b; font-size: 14px;"></i>
+      <span>Edit PSW in Admin</span>
+    </a>
+  </div>
 
   <!-- Scripts -->
   <script src="js/translations.js"></script>
@@ -944,8 +982,9 @@
     async function loadPswPageDynamicData() {
       // Fetch PSW program details
       try {
-        const pswApiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs/psw') : '/api/programs/psw';
-        const res = await fetch(pswApiUrl);
+        const rawUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs/psw') : '/api/programs/psw';
+        const pswApiUrl = rawUrl + (rawUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+        const res = await fetch(pswApiUrl, { cache: 'no-store' });
         const data = await res.json();
         if (res.ok && data.success && data.program) {
           pswDynamicData = data.program;
@@ -957,8 +996,9 @@
 
       // Fetch all active programs for navigation dropdowns and footer
       try {
-        const progsApiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs') : '/api/programs';
-        const res = await fetch(progsApiUrl);
+        const rawUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs') : '/api/programs';
+        const progsApiUrl = rawUrl + (rawUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+        const res = await fetch(progsApiUrl, { cache: 'no-store' });
         const data = await res.json();
         if (res.ok && data.success && Array.isArray(data.programs)) {
           allProgramsList = data.programs;
@@ -969,43 +1009,264 @@
       }
     }
 
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
     // 2. Render Dynamic PSW Content from DB
     function renderDynamicPswContent(lang = currentLanguage) {
       if (!pswDynamicData) return;
 
+      const parseDetail = (val) => {
+        if (!val) return {};
+        if (typeof val === 'object') return val;
+        try {
+          let parsed = JSON.parse(val);
+          while (typeof parsed === 'string') parsed = JSON.parse(parsed);
+          return typeof parsed === 'object' && parsed !== null ? parsed : {};
+        } catch (e) {
+          return {};
+        }
+      };
+
       const isZh = lang === 'zh';
+      const detailZh = parseDetail(pswDynamicData.detail_json_zh);
+      const detailEn = parseDetail(pswDynamicData.detail_json_en);
+      const detail = isZh ? (Object.keys(detailZh).length > 0 ? detailZh : detailEn) : (Object.keys(detailEn).length > 0 ? detailEn : detailZh);
       const title = (isZh ? pswDynamicData.title_zh : pswDynamicData.title_en) || pswDynamicData.title_en;
       const badge = (isZh ? pswDynamicData.badge_zh : pswDynamicData.badge_en) || pswDynamicData.badge_en;
-      const overview = (isZh ? pswDynamicData.overview_zh : pswDynamicData.overview_en) || (isZh ? pswDynamicData.desc_zh : pswDynamicData.desc_en) || '';
+      const heroLead = detail.hero?.lead || (isZh ? pswDynamicData.overview_zh : pswDynamicData.overview_en) || (isZh ? pswDynamicData.desc_zh : pswDynamicData.desc_en) || '';
       const duration = (isZh ? pswDynamicData.duration_zh : pswDynamicData.duration_en) || pswDynamicData.duration_en;
       const credential = (isZh ? pswDynamicData.credential_zh : pswDynamicData.credential_en) || pswDynamicData.credential_en;
 
-      // Update Hero Badge
+      // 1. Hero Section
       const badgeEl = document.getElementById('psw-hero-badge');
-      if (badgeEl && badge) badgeEl.textContent = badge;
+      if (badgeEl && (detail.hero?.badge || badge)) badgeEl.textContent = detail.hero?.badge || badge;
 
-      // Update Hero Title
       const titleEl = document.getElementById('psw-hero-title');
-      if (titleEl && title) titleEl.textContent = title;
+      if (titleEl && (detail.hero?.title || title)) titleEl.textContent = detail.hero?.title || title;
 
-      // Update Hero Lead / Overview
       const leadEl = document.getElementById('psw-hero-lead');
-      if (leadEl && overview) leadEl.textContent = overview;
+      if (leadEl && heroLead) leadEl.textContent = heroLead;
 
-      // Update Stat Duration
-      const durationStatEl = document.getElementById('psw-stat-duration');
-      if (durationStatEl && duration) durationStatEl.textContent = duration;
+      const breadCurrEl = document.getElementById('psw-bread-curr');
+      if (breadCurrEl && title) breadCurrEl.textContent = title;
 
-      // Update Sidebar Snapshot Duration & Credential
+      // 2. Quick Stats Bar
+      const stats = Array.isArray(detail.stats) ? detail.stats : [];
+      if (stats.length > 0) {
+        stats.forEach((st, idx) => {
+          const valEl = document.getElementById(`psw-stat-${idx + 1}-val`);
+          const lblEl = document.getElementById(`psw-stat-${idx + 1}-lbl`);
+          if (valEl && st.value) valEl.textContent = st.value;
+          if (lblEl && st.label) lblEl.textContent = st.label;
+        });
+      } else {
+        const dStat = document.getElementById('psw-stat-1-val');
+        if (dStat && duration) dStat.textContent = duration;
+      }
+
+      // 3. Why Choose Section
+      if (detail.why_choose) {
+        const whyTitleEl = document.getElementById('psw-why-title');
+        if (whyTitleEl && detail.why_choose.title) whyTitleEl.textContent = detail.why_choose.title;
+
+        const whyDescEl = document.getElementById('psw-why-desc');
+        if (whyDescEl && detail.why_choose.subtitle) whyDescEl.textContent = detail.why_choose.subtitle;
+
+        if (Array.isArray(detail.why_choose.pillars) && detail.why_choose.pillars.length > 0) {
+          const pillarsGrid = document.getElementById('psw-pillars-grid');
+          if (pillarsGrid) {
+            const icons = ['fa-briefcase-medical', 'fa-hand-holding-heart', 'fa-sack-dollar', 'fa-laptop-medical'];
+            pillarsGrid.innerHTML = detail.why_choose.pillars.map((pil, idx) => `
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid ${icons[idx % icons.length]}"></i></div>
+                <h3 class="prog-pillar-title">${escapeHtml(pil.title || '')}</h3>
+                <p class="prog-pillar-desc">${escapeHtml(pil.desc || '')}</p>
+              </div>
+            `).join('');
+          }
+        }
+      }
+
+      // 4. Credentials & Certifications Section
+      if (detail.credentials) {
+        const credTitle = document.getElementById('psw-cred-title');
+        if (credTitle && detail.credentials.title) credTitle.textContent = detail.credentials.title;
+
+        const credDesc = document.getElementById('psw-cred-desc');
+        if (credDesc && detail.credentials.subtitle) credDesc.textContent = detail.credentials.subtitle;
+
+        if (Array.isArray(detail.credentials.items) && detail.credentials.items.length > 0) {
+          const credGrid = document.getElementById('psw-credentials-grid');
+          if (credGrid) {
+            const bgStyles = [
+              { bg: '#eff6ff', border: '#bfdbfe', color: '#1e3a8a', subColor: '#3b82f6', icon: 'fa-award' },
+              { bg: '#fef2f2', border: '#fecaca', color: '#991b1b', subColor: '#dc2626', icon: 'fa-kit-medical' },
+              { bg: '#f0fdf4', border: '#bbf7d0', color: '#166534', subColor: '#16a34a', icon: 'fa-brain' },
+              { bg: '#faf5ff', border: '#e9d5ff', color: '#6b21a8', subColor: '#9333ea', icon: 'fa-user-nurse' }
+            ];
+            credGrid.innerHTML = detail.credentials.items.map((item, idx) => {
+              const st = bgStyles[idx % bgStyles.length];
+              return `
+                <div style="background: ${st.bg}; border: 1px solid ${st.border}; border-radius: 8px; padding: 16px;">
+                  <h4 style="color: ${st.color}; margin-bottom: 6px; font-size: 15px;">
+                    <i class="fa-solid ${st.icon}"></i> <span>${escapeHtml(item.title || '')}</span>
+                  </h4>
+                  <p style="font-size: 13px; color: ${st.subColor}; margin: 0;">${escapeHtml(item.desc || '')}</p>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+      }
+
+      // 5. Curriculum Section & Modules List
+      const currTitleEl = document.getElementById('psw-curr-title');
+      const customCurrTitle = detail.curriculum?.title || detail.curriculum_title;
+      if (currTitleEl && customCurrTitle) {
+        currTitleEl.textContent = customCurrTitle;
+      }
+
+      const currDescEl = document.getElementById('psw-curr-desc');
+      const customCurrDesc = detail.curriculum?.desc || detail.curriculum_desc;
+      if (currDescEl && customCurrDesc) {
+        currDescEl.textContent = customCurrDesc;
+      }
+
+      const modules = (detail.curriculum_modules && Array.isArray(detail.curriculum_modules) && detail.curriculum_modules.length > 0)
+        ? detail.curriculum_modules
+        : ((detail.curriculum?.modules && Array.isArray(detail.curriculum.modules) && detail.curriculum.modules.length > 0)
+          ? detail.curriculum.modules
+          : ((isZh ? pswDynamicData.modules_zh : pswDynamicData.modules_en) || []));
+
+      if (Array.isArray(modules) && modules.length > 0) {
+        const currList = document.getElementById('psw-curriculum-list');
+        if (currList) {
+          currList.innerHTML = modules.map((mod, idx) => {
+            if (typeof mod === 'string') {
+              const colonIdx = mod.indexOf(':');
+              if (colonIdx > 0) {
+                const titlePart = mod.substring(0, colonIdx).trim();
+                const descPart = mod.substring(colonIdx + 1).trim();
+                return `
+                  <li class="curriculum-item">
+                    <span class="curriculum-num">${idx + 1}</span>
+                    <span><strong>${escapeHtml(titlePart)}:</strong> ${escapeHtml(descPart)}</span>
+                  </li>
+                `;
+              }
+              return `
+                <li class="curriculum-item">
+                  <span class="curriculum-num">${idx + 1}</span>
+                  <span><strong>${escapeHtml(mod)}</strong></span>
+                </li>
+              `;
+            } else if (typeof mod === 'object' && mod !== null) {
+              const modNum = mod.num || (idx + 1);
+              const modTitle = mod.title || mod.name || '';
+              const modDesc = mod.desc || mod.description || '';
+              const modHours = mod.hours ? ` (${mod.hours})` : '';
+              return `
+                <li class="curriculum-item">
+                  <span class="curriculum-num">${modNum}</span>
+                  <span><strong>${escapeHtml(modTitle)}${escapeHtml(modHours)}${modDesc ? ':' : ''}</strong> ${escapeHtml(modDesc)}</span>
+                </li>
+              `;
+            }
+            return '';
+          }).filter(Boolean).join('');
+        }
+      }
+
+      // 6. Practicum Section
+      if (detail.practicum) {
+        const pracTitle = document.getElementById('psw-prac-title');
+        if (pracTitle && detail.practicum.title) pracTitle.textContent = detail.practicum.title;
+
+        const pracDesc = document.getElementById('psw-prac-desc');
+        if (pracDesc && detail.practicum.desc) pracDesc.textContent = detail.practicum.desc;
+
+        const boxTitle = document.getElementById('psw-prac-box-title');
+        if (boxTitle && detail.practicum.box_title) boxTitle.textContent = detail.practicum.box_title;
+
+        const boxDesc = document.getElementById('psw-prac-box-desc');
+        if (boxDesc && detail.practicum.box_desc) boxDesc.textContent = detail.practicum.box_desc;
+      }
+
+      // 7. Admission Requirements
+      if (detail.admissions) {
+        const admTitle = document.getElementById('psw-adm-title');
+        if (admTitle && detail.admissions.title) admTitle.textContent = detail.admissions.title;
+
+        if (Array.isArray(detail.admissions.items) && detail.admissions.items.length > 0) {
+          const admList = document.getElementById('psw-admissions-list');
+          if (admList) {
+            admList.innerHTML = detail.admissions.items.map(item => `
+              <li>${escapeHtml(item)}</li>
+            `).join('');
+          }
+        }
+      }
+
+      // 8. Sidebar Snapshot & Grants
       const sideDurationEl = document.getElementById('psw-side-duration');
       if (sideDurationEl && duration) sideDurationEl.textContent = duration;
 
       const sideCredEl = document.getElementById('psw-side-credential');
       if (sideCredEl && credential) sideCredEl.textContent = credential;
 
-      // Update Breadcrumb Current Item
-      const breadCurrEl = document.getElementById('psw-bread-curr');
-      if (breadCurrEl && title) breadCurrEl.textContent = title;
+      if (detail.snapshot) {
+        const delEl = document.getElementById('psw-side-delivery');
+        if (delEl && detail.snapshot.delivery) delEl.textContent = detail.snapshot.delivery;
+
+        const pracEl = document.getElementById('psw-side-practicum');
+        if (pracEl && detail.snapshot.practicum) pracEl.textContent = detail.snapshot.practicum;
+
+        const locEl = document.getElementById('psw-side-locations');
+        if (locEl && detail.snapshot.locations) locEl.textContent = detail.snapshot.locations;
+
+        const hotEl = document.getElementById('psw-side-hotline');
+        if (hotEl && detail.snapshot.hotline) {
+          hotEl.textContent = detail.snapshot.hotline;
+          hotEl.href = `tel:${detail.snapshot.hotline.replace(/[^0-9]/g, '')}`;
+        }
+      }
+
+      if (detail.grants) {
+        const sideGrantTitle = document.getElementById('psw-side-grant-title');
+        if (sideGrantTitle && detail.grants.title) sideGrantTitle.textContent = detail.grants.title;
+
+        const sideGrantDesc = document.getElementById('psw-side-grant-desc');
+        if (sideGrantDesc && detail.grants.description) sideGrantDesc.textContent = detail.grants.description;
+
+        const sideGrantBadge = document.getElementById('psw-side-grant-badge');
+        if (sideGrantBadge && (detail.grants.badge || detail.grants.amount)) {
+          sideGrantBadge.textContent = detail.grants.badge || detail.grants.amount;
+        }
+
+        const sideGrantBtn = document.getElementById('psw-side-grant-btn');
+        if (sideGrantBtn && detail.grants.button_text) sideGrantBtn.textContent = detail.grants.button_text;
+      }
+
+      // 9. FAQs Accordion
+      if (Array.isArray(detail.faqs) && detail.faqs.length > 0) {
+        const faqList = document.getElementById('psw-faq-list');
+        if (faqList) {
+          faqList.innerHTML = detail.faqs.map(faq => `
+            <div class="faq-accordion-item">
+              <div class="faq-accordion-header" onclick="toggleFaq(this)">
+                <span>${escapeHtml(faq.q || faq.question || '')}</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </div>
+              <div class="faq-accordion-body" style="display: none;">
+                ${escapeHtml(faq.a || faq.answer || '')}
+              </div>
+            </div>
+          `).join('');
+        }
+      }
     }
 
     // 3. Render Dynamic Navigation Dropdowns from DB
