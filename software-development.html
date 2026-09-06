@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="tech_page_title">Full Stack Web Development with AI Mini-Credential | Victoria International College</title>
+  <meta name="description"
+    content="Fast-track your career as a high-paying Full Stack Software Engineer. Master React 19, Next.js, TypeScript, Node.js, Spring Boot, AWS cloud deployment, and Generative AI / LLM engineering with senior industry architects.">
+  <meta name="keywords"
+    content="full stack developer course toronto, software development diploma markham, generative ai mini credential, react nextjs typescript training, spring boot microservices course, aws devops certification ontario, better jobs ontario coding bootcamp, victoria international college">
+
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Full Stack Web Development with AI Mini-Credential | Victoria International College">
+  <meta property="og:description"
+    content="Master modern enterprise full-stack development and Generative AI integration with veteran industry architects. Build production-grade SaaS apps and secure $75K–$120K+ developer roles.">
+  <meta property="og:image" content="images/fullstack.jpg">
+
+  <!-- Schema.org Course JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Full Stack Web Technician Diploma with AI Mini-Credential",
+    "description": "Comprehensive 32-week enterprise software engineering diploma covering modern frontend (React/Next.js/TypeScript), backend microservices (Node.js/Java/Python), database architecture, AWS cloud DevOps, and Generative AI LLM engineering.",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "Victoria International College of Business Healthcare Technology & Trades",
+      "sameAs": "https://www.viccollege.com",
+      "telephone": "+1-416-665-6668",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "7050 Woodbine Ave., Unit 300",
+        "addressLocality": "Markham",
+        "addressRegion": "ON",
+        "postalCode": "L3R 4G8",
+        "addressCountry": "CA"
+      }
+    },
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": ["blended", "online", "in-person"],
+      "duration": "PT32W",
+      "courseWorkload": "PT20H"
+    },
+    "occupationalCredentialAwarded": "Full Stack Web Technician Diploma & AI Engineering Mini-Credential"
+  }
+  </script>
+
+  <link rel="icon" href="images/favicon.gif" sizes="32x32">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Dedicated Tech & Software Development Program Custom Styles */
+    :root {
+      --tech-primary: #4f46e5;
+      --tech-primary-dark: #3730a3;
+      --tech-primary-light: #6366f1;
+      --tech-cyan: #06b6d4;
+      --tech-cyan-dark: #0891b2;
+      --tech-cyan-light: #22d3ee;
+      --tech-navy: #0f172a;
+      --tech-dark-bg: #1e293b;
+      --tech-gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    }
+
+    .prog-page-hero {
+      position: relative;
+      background: linear-gradient(rgba(15, 23, 42, 0.88), rgba(30, 41, 59, 0.90)), url('images/fullstack.jpg') center/cover no-repeat;
+      color: #ffffff;
+      padding: 85px 0 75px;
+    }
+
+    .prog-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #94a3b8;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .prog-breadcrumb a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .prog-breadcrumb a:hover {
+      color: #ffffff;
+    }
+
+    .prog-hero-badge {
+      display: inline-block;
+      background: rgba(79, 70, 229, 0.95);
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .prog-hero-title {
+      font-size: 2.8rem;
+      font-family: var(--font-serif);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      color: #ffffff;
+      max-width: 960px;
+    }
+
+    .prog-hero-lead {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+      max-width: 880px;
+      margin-bottom: 30px;
+    }
+
+    .prog-hero-ctas {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 45px;
+    }
+
+    .btn-hero-primary {
+      background: var(--tech-gradient);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15.5px;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+    }
+
+    .btn-hero-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 14px 26px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15.5px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      transition: background 0.2s;
+    }
+
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    /* Hero Quick Stats Bar (4 Metric Cards) */
+    .prog-hero-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-top: 10px;
+    }
+
+    .prog-hero-stat-item {
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      padding-right: 16px;
+    }
+
+    .prog-hero-stat-item:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+
+    .prog-stat-val {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #38bdf8;
+      font-family: var(--font-serif);
+      margin-bottom: 4px;
+    }
+
+    .prog-stat-lbl {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .prog-stat-sub {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    /* Main Content Layout */
+    .prog-main-section {
+      padding: 60px 0 80px;
+      background: #f8fafc;
+    }
+
+    .prog-layout-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .prog-block {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 36px 32px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    }
+
+    .prog-block-header {
+      margin-bottom: 24px;
+    }
+
+    .prog-block-title {
+      font-size: 1.6rem;
+      font-family: var(--font-serif);
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .prog-block-title i {
+      color: #4f46e5;
+    }
+
+    .prog-block-subtitle {
+      font-size: 14.5px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    /* 4 Value Pillars Grid */
+    .prog-pillar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .prog-pillar-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 22px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .prog-pillar-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.08);
+      border-color: #c7d2fe;
+    }
+
+    .prog-pillar-icon {
+      width: 44px;
+      height: 44px;
+      background: #e0e7ff;
+      color: #4338ca;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .prog-pillar-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .prog-pillar-text {
+      font-size: 13.5px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* 4 Credentials Grid */
+    .credentials-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .credential-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .credential-card i {
+      color: #16a34a;
+      font-size: 22px;
+      margin-top: 2px;
+    }
+
+    .credential-card h4 {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #14532d;
+      margin-bottom: 4px;
+    }
+
+    .credential-card p {
+      font-size: 13px;
+      color: #166534;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Tech Wages Table */
+    .wages-table-wrap {
+      overflow-x: auto;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .wages-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .wages-table th {
+      background: #0f172a;
+      color: #ffffff;
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .wages-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    .wages-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .wages-table .wage-val {
+      font-weight: 700;
+      color: #047857;
+    }
+
+    /* Lab Callout Box */
+    .lab-box {
+      background: #eef2ff;
+      border: 1.5px solid #c7d2fe;
+      border-left: 6px solid #4f46e5;
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-top: 20px;
+    }
+
+    .lab-box h4 {
+      color: #312e81;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lab-box p {
+      color: #3730a3;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* 10 Curriculum Modules List */
+    .curriculum-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .curriculum-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 18px 20px;
+      background: #ffffff;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: all 0.2s;
+    }
+
+    .curriculum-item:hover {
+      border-color: #6366f1;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+    }
+
+    .curriculum-num {
+      width: 34px;
+      height: 34px;
+      background: #4f46e5;
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .curriculum-hours {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #4338ca;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-left: 8px;
+    }
+
+    /* Admissions List */
+    .admissions-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .admissions-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14.5px;
+      color: #334155;
+      line-height: 1.55;
+    }
+
+    .admissions-list li i {
+      color: #4f46e5;
+      font-size: 16px;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    /* FAQ Accordion */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .faq-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .faq-header {
+      padding: 18px 20px;
+      background: #f8fafc;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+
+    .faq-header:hover {
+      background: #f1f5f9;
+    }
+
+    .faq-body {
+      padding: 18px 20px;
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.65;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* Sidebar Sticky Consultation Card */
+    .prog-sidebar {
+      position: sticky;
+      top: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .prog-consult-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 30px 28px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .prog-consult-card h3 {
+      font-size: 1.35rem;
+      font-family: var(--font-serif);
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .prog-consult-card p {
+      font-size: 13.5px;
+      color: #64748b;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .consult-form-group {
+      margin-bottom: 14px;
+    }
+
+    .consult-form-group label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .consult-form-group input,
+    .consult-form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #0f172a;
+      outline: none;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+
+    .consult-form-group input:focus,
+    .consult-form-group select:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .btn-submit-consult {
+      width: 100%;
+      background: var(--tech-gradient);
+      color: #ffffff;
+      padding: 13px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 6px;
+    }
+
+    .btn-submit-consult:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    /* Program Snapshot Card */
+    .prog-snapshot-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 26px 24px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .prog-snapshot-card h4 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prog-snapshot-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .prog-snapshot-list li {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .prog-snapshot-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .snap-lbl {
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .snap-val {
+      color: #0f172a;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* Grant Promo Card */
+    .prog-grant-card {
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 26px 24px;
+      box-shadow: 0 6px 20px rgba(49, 46, 129, 0.25);
+    }
+
+    .prog-grant-badge {
+      display: inline-block;
+      background: #06b6d4;
+      color: #0f172a;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .prog-grant-card h4 {
+      font-size: 1.25rem;
+      font-family: var(--font-serif);
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .prog-grant-card p {
+      font-size: 13px;
+      color: #c7d2fe;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+
+    .btn-grant-check {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #ffffff;
+      color: #4338ca;
+      padding: 11px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      transition: background 0.2s;
+      box-sizing: border-box;
+    }
+
+    .btn-grant-check:hover {
+      background: #f1f5f9;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .prog-layout-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prog-hero-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .prog-hero-title {
+        font-size: 2.2rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .prog-hero-stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prog-pillar-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .credentials-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header Navigation -->
+  <header class="vic-main-header">
+    <div class="container nav-wrapper">
+      <a href="index.html#home" class="logo-section" aria-label="Victoria College of Business Healthcare Technology & Trades">
+        <img class="logo-img" src="images/vic_logo.png" alt="Victoria College">
+        <div class="logo-text">
+          <span class="logo-brand-main" data-i18n="logo_brand_main">Victoria College</span>
+          <span class="logo-brand-sub" data-i18n="logo_brand_sub">of Business Healthcare Technology &amp; Trades</span>
+        </div>
+      </a>
+
+      <nav class="main-nav-list">
+        <div class="main-nav-item">
+          <a href="index.html#home" class="main-nav-link" data-i18n="nav_home">Home</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="index.html#about" class="main-nav-link" data-i18n="nav_about">About Us</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="index.html#programs" class="main-nav-link active" data-i18n="nav_programs">Programs <i
+              class="fa-solid fa-angle-down" style="font-size: 11px;"></i></a>
+          <div class="nav-dropdown" id="tech-nav-dropdown">
+            <a href="personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a>
+            <a href="computerized-accounting.html" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
+            <a href="early-childcare-assistant-eca.html" data-i18n="prog_eca_title">Early Childcare Assistant (ECA)</a>
+            <a href="acupuncture-program.html" data-i18n="prog_acu_title">Acupuncture &amp; Traditional Wellness</a>
+            <a href="electrician.html" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
+            <a href="software-development.html" class="active" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a>
+          </div>
+        </div>
+        <div class="main-nav-item">
+          <a href="index.html#financial-aid" class="main-nav-link" data-i18n="nav_aid">Financial Aid</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="index.html#articles" class="main-nav-link" data-i18n="nav_articles">Career Insights</a>
+        </div>
+      </nav>
+
+      <div class="nav-social-icons">
+        <a href="https://www.instagram.com/vic.college/?utm_medium=copy_link" target="_blank" rel="noopener"><i
+            class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=100078023242504" target="_blank" rel="noopener"><i
+            class="fa-brands fa-facebook"></i></a>
+        <button type="button" class="lang-switcher-vic js-lang-toggle desktop-only" style="margin-left: 10px;"
+          aria-label="Toggle language">
+          <i class="fa-solid fa-globe"></i>
+          <span class="lang-label" data-i18n="lang_btn">中文</span>
+          <span class="lang-badge lang-current">EN</span>
+        </button>
+        <a href="admin.html?tab=programs&edit=tech" class="desktop-only"
+          style="margin-left: 10px; display: inline-flex; align-items: center; gap: 6px; background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.3); color: #4338ca; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s;"
+          title="Edit this program in the Admin Portal">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Edit Program</span>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button type="button" class="mobile-toggle-btn" aria-label="Open navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-drawer-overlay"></div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer">
+    <div class="mobile-drawer-header">
+      <div class="logo-text">
+        <span class="logo-brand-main" data-i18n="logo_brand_main">Victoria College</span>
+      </div>
+      <button type="button" class="mobile-drawer-close" aria-label="Close menu">&times;</button>
+    </div>
+    <div class="mobile-drawer-body">
+      <div class="mobile-drawer-item">
+        <a href="index.html#home" class="mobile-drawer-link" data-i18n="nav_home">Home</a>
+      </div>
+      <div class="mobile-drawer-item">
+        <a href="index.html#about" class="mobile-drawer-link" data-i18n="nav_about">About Us</a>
+      </div>
+      <div class="mobile-drawer-item">
+        <a href="index.html#programs" class="mobile-drawer-link active" data-i18n="nav_programs">Programs</a>
+        <div style="padding-left: 16px; display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+          <a href="personal-support-worker-online-psw-course.html" style="color: #cbd5e1; font-size: 13.5px;" data-i18n="prog_psw_title">NACC PSW Certificate</a>
+          <a href="computerized-accounting.html" style="color: #cbd5e1; font-size: 13.5px;" data-i18n="prog_acc_title">Accounting, Tax &amp; Payroll</a>
+          <a href="early-childcare-assistant-eca.html" style="color: #cbd5e1; font-size: 13.5px;" data-i18n="prog_eca_title">Early Childcare Assistant (ECA)</a>
+          <a href="acupuncture-program.html" style="color: #cbd5e1; font-size: 13.5px;" data-i18n="prog_acu_title">Acupuncture &amp; Traditional Wellness</a>
+          <a href="electrician.html" style="color: #cbd5e1; font-size: 13.5px;" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
+          <a href="software-development.html" style="color: #38bdf8; font-weight: 700; font-size: 13.5px;" data-i18n="prog_tech_title">Full Stack Web with AI</a>
+        </div>
+      </div>
+      <div class="mobile-drawer-item">
+        <a href="index.html#financial-aid" class="mobile-drawer-link" data-i18n="nav_aid">Financial Aid</a>
+      </div>
+      <div class="mobile-drawer-item">
+        <a href="index.html#articles" class="mobile-drawer-link" data-i18n="nav_articles">Career Insights</a>
+      </div>
+      <div class="mobile-drawer-item" style="margin-top: 16px;">
+        <button type="button" class="lang-switcher-vic js-lang-toggle" style="width: 100%; justify-content: center;">
+          <i class="fa-solid fa-globe"></i>
+          <span class="lang-label" data-i18n="lang_btn">中文</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="prog-page-hero">
+    <div class="container">
+      <div class="prog-breadcrumb">
+        <a href="index.html" data-i18n="nav_home">Home</a>
+        <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+        <a href="index.html#programs" data-i18n="nav_programs">Programs</a>
+        <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+        <span style="color: #38bdf8;" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</span>
+      </div>
+
+      <div class="prog-hero-badge" id="tech-hero-badge" data-i18n="tech_hero_badge">
+        Career Diploma • AI Mini-Credential • 32-Week Intensive
+      </div>
+
+      <h1 class="prog-hero-title" id="tech-hero-title" data-i18n="tech_hero_title">
+        Master Full-Stack Web Development &amp; Enterprise Generative AI Integration
+      </h1>
+
+      <p class="prog-hero-lead" id="tech-hero-lead" data-i18n="tech_hero_lead">
+        Coached by senior tech leads from top Canadian financial institutions and tech enterprises. Master modern frontend architecture (React 19 / Next.js / TypeScript), robust backend microservices (Node.js / Python / Spring Boot), cloud DevOps (AWS / Docker), and cutting-edge Generative AI engineering (OpenAI API, LangChain, RAG, Vector DBs). Build production-ready portfolio projects and land high-paying software engineering careers.
+      </p>
+
+      <div class="prog-hero-ctas">
+        <a href="#consultation-card" class="btn-hero-primary">
+          <i class="fa-solid fa-code"></i>
+          <span data-i18n="tech_hero_cta_book">Book Free Tech Career Consultation</span>
+        </a>
+        <a href="#curriculum" class="btn-hero-secondary">
+          <i class="fa-solid fa-laptop-code"></i>
+          <span data-i18n="tech_hero_cta_curriculum">Explore 10-Module Curriculum</span>
+        </a>
+      </div>
+
+      <!-- 4 Hero Stats Strip -->
+      <div class="prog-hero-stats-grid">
+        <div class="prog-hero-stat-item">
+          <div class="prog-stat-val" id="tech-stat-1-val" data-i18n="tech_hero_stat_1_val">$75K – $120K+</div>
+          <div class="prog-stat-lbl" id="tech-stat-1-lbl" data-i18n="tech_hero_stat_1_lbl">GTA Software Dev Salary Range</div>
+          <div class="prog-stat-sub" id="tech-stat-1-sub" data-i18n="tech_hero_stat_1_sub">Entry to Mid-Level Full Stack Engineers</div>
+        </div>
+        <div class="prog-hero-stat-item">
+          <div class="prog-stat-val" id="tech-stat-2-val" data-i18n="tech_hero_stat_2_val">100% Project Labs</div>
+          <div class="prog-stat-lbl" id="tech-stat-2-lbl" data-i18n="tech_hero_stat_2_lbl">Real-World Commercial Portfolio</div>
+          <div class="prog-stat-sub" id="tech-stat-2-sub" data-i18n="tech_hero_stat_2_sub">SaaS, AI Integrations &amp; GitHub Repos</div>
+        </div>
+        <div class="prog-hero-stat-item">
+          <div class="prog-stat-val" id="tech-stat-3-val" data-i18n="tech_hero_stat_3_val">FAANG Mentorship</div>
+          <div class="prog-stat-lbl" id="tech-stat-3-lbl" data-i18n="tech_hero_stat_3_lbl">Senior Industry Tech Leads</div>
+          <div class="prog-stat-sub" id="tech-stat-3-sub" data-i18n="tech_hero_stat_3_sub">1-on-1 Code Reviews &amp; Mock Tech Interviews</div>
+        </div>
+        <div class="prog-hero-stat-item">
+          <div class="prog-stat-val" id="tech-stat-4-val" data-i18n="tech_hero_stat_4_val">Up to $28,000+</div>
+          <div class="prog-stat-lbl" id="tech-stat-4-lbl" data-i18n="tech_hero_stat_4_lbl">Government Grants Available</div>
+          <div class="prog-stat-sub" id="tech-stat-4-sub" data-i18n="tech_hero_stat_4_sub">Better Jobs Ontario &amp; Job Grant Eligible</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Layout -->
+  <main class="prog-main-section">
+    <div class="container">
+      <div class="prog-layout-grid">
+
+        <!-- Left Main Content Column -->
+        <div class="prog-content-col">
+
+          <!-- 1. Why Choose Tech Program -->
+          <section class="prog-block">
+            <div class="prog-block-header">
+              <h2 class="prog-block-title" id="tech-why-title" data-i18n="tech_why_title">
+                <i class="fa-solid fa-microchip"></i> Why Choose Full Stack Web Development with AI Mini-Credential?
+              </h2>
+              <p class="prog-block-subtitle" id="tech-why-sub" data-i18n="tech_why_sub">
+                Software development continues to be one of Canada's most in-demand, resilient, and highest-paying career paths. With the explosive rise of Generative AI, developers who understand how to build robust full-stack web applications and integrate AI capabilities command top market compensation.
+              </p>
+            </div>
+
+            <div class="prog-pillar-grid" id="tech-pillars-grid">
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <h3 class="prog-pillar-title" data-i18n="tech_why_1_title">Modern Enterprise Full-Stack Architecture</h3>
+                <p class="prog-pillar-text" data-i18n="tech_why_1_desc">
+                  Master end-to-end full stack development: React 19, Next.js App Router, TypeScript, Node.js, Python, Spring Boot, PostgreSQL, MongoDB, and Redis caching.
+                </p>
+              </div>
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid fa-robot"></i></div>
+                <h3 class="prog-pillar-title" data-i18n="tech_why_2_title">Integrated Generative AI &amp; LLM Engineering</h3>
+                <p class="prog-pillar-text" data-i18n="tech_why_2_desc">
+                  Stand out from traditional coders. Build intelligent applications with OpenAI/Claude APIs, LangChain, Retrieval-Augmented Generation (RAG), and vector databases.
+                </p>
+              </div>
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <h3 class="prog-pillar-title" data-i18n="tech_why_3_title">Cloud Native DevOps &amp; Production Deployment</h3>
+                <p class="prog-pillar-text" data-i18n="tech_why_3_desc">
+                  Gain hands-on experience containerizing apps with Docker, deploying to AWS (EC2, S3, RDS, Lambda), and setting up automated CI/CD pipelines via GitHub Actions.
+                </p>
+              </div>
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid fa-user-check"></i></div>
+                <h3 class="prog-pillar-title" data-i18n="tech_why_4_title">1-on-1 Tech Interview Coaching &amp; Job Referrals</h3>
+                <p class="prog-pillar-text" data-i18n="tech_why_4_desc">
+                  Get tailored resume packaging, GitHub code review, LeetCode algorithmic drills, system design practice, and direct introductions to hiring tech partners across the GTA.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. Credentials & Learning Outcomes -->
+          <section class="prog-block">
+            <div class="prog-block-header">
+              <h2 class="prog-block-title" id="tech-cred-title" data-i18n="tech_cred_title">
+                <i class="fa-solid fa-award"></i> Diplomas, Micro-Credentials &amp; Portfolio Milestones
+              </h2>
+              <p class="prog-block-subtitle" id="tech-cred-sub" data-i18n="tech_cred_sub">
+                Graduates earn recognized career credentials and build an employer-ready GitHub portfolio:
+              </p>
+            </div>
+
+            <div class="credentials-grid" id="tech-credentials-grid">
+              <div class="credential-card">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <div>
+                  <h4 data-i18n="tech_cred_1_title">Full Stack Web Technician Career Diploma</h4>
+                  <p data-i18n="tech_cred_1_desc">Registered vocational diploma verifying mastery of modern full stack software engineering and database systems.</p>
+                </div>
+              </div>
+              <div class="credential-card">
+                <i class="fa-solid fa-brain"></i>
+                <div>
+                  <h4 data-i18n="tech_cred_2_title">Generative AI Engineering Mini-Credential</h4>
+                  <p data-i18n="tech_cred_2_desc">Specialized micro-credential certifying hands-on proficiency in LLM API integration, prompt engineering, and RAG systems.</p>
+                </div>
+              </div>
+              <div class="credential-card">
+                <i class="fa-brands fa-aws"></i>
+                <div>
+                  <h4 data-i18n="tech_cred_3_title">AWS Cloud &amp; DevOps Practitioner Badge</h4>
+                  <p data-i18n="tech_cred_3_desc">Proof of competence in containerization, cloud infrastructure provisioning, serverless functions, and CI/CD pipelines.</p>
+                </div>
+              </div>
+              <div class="credential-card">
+                <i class="fa-brands fa-github"></i>
+                <div>
+                  <h4 data-i18n="tech_cred_4_title">Production-Grade Capstone SaaS Portfolio</h4>
+                  <p data-i18n="tech_cred_4_desc">A live, fully deployed full-stack SaaS application with authentication, payments, database persistence, and AI features on GitHub.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. Tech Salary & Career Benchmark Table -->
+          <section class="prog-block" id="tech-practicum">
+            <div class="prog-block-header">
+              <h2 class="prog-block-title" id="tech-lab-title" data-i18n="tech_lab_title">
+                <i class="fa-solid fa-chart-line"></i> GTA Tech Salaries &amp; Enterprise Coding Labs
+              </h2>
+              <p class="prog-block-subtitle" id="tech-lab-desc" data-i18n="tech_lab_desc">
+                Victoria International College provides high-performance computing environments and live cloud sandbox accounts. Students collaborate in agile Scrum teams to deliver enterprise software solutions with clean code, testing, and CI/CD automation.
+              </p>
+            </div>
+
+            <!-- Tech Wages & Career Paths Table -->
+            <div class="wages-table-wrap">
+              <table class="wages-table">
+                <thead>
+                  <tr>
+                    <th>Career Role</th>
+                    <th>Average Starting Salary</th>
+                    <th>Mid / Senior Earning Potential</th>
+                    <th>Core Tech Stack</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Junior Full Stack Developer</strong></td>
+                    <td class="wage-val">$65,000 – $80,000 / yr</td>
+                    <td>$85,000 – $105,000+</td>
+                    <td>React, Node.js, TypeScript, PostgreSQL</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Frontend / React Engineer</strong></td>
+                    <td class="wage-val">$75,000 – $92,000 / yr</td>
+                    <td>$95,000 – $120,000+</td>
+                    <td>Next.js App Router, Tailwind, Redux, Jest</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Java / Python Backend Engineer</strong></td>
+                    <td class="wage-val">$80,000 – $98,000 / yr</td>
+                    <td>$105,000 – $135,000+</td>
+                    <td>Spring Boot, Microservices, Redis, Docker</td>
+                  </tr>
+                  <tr>
+                    <td><strong>AI Application / Full Stack Engineer</strong></td>
+                    <td class="wage-val">$88,000 – $110,000 / yr</td>
+                    <td>$115,000 – $150,000+</td>
+                    <td>LLM APIs, RAG, LangChain, Vector DBs, AWS</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Senior Full Stack / Cloud Architect</strong></td>
+                    <td class="wage-val">$110,000 – $135,000 / yr</td>
+                    <td>$140,000 – $190,000+</td>
+                    <td>System Design, Kubernetes, Distributed Clouds</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="lab-box">
+              <h4 id="tech-lab-box-title" data-i18n="tech_lab_box_title">
+                <i class="fa-solid fa-handshake"></i> Direct Tech Employer Introductions &amp; Alumni Referral Network
+              </h4>
+              <p id="tech-lab-box-desc" data-i18n="tech_lab_box_desc">
+                Over 90% of our active tech graduates secure full-stack, frontend, backend, or QA engineering roles within 3 to 6 months of graduation, working across Toronto's thriving fintech, healthcare tech, and software sectors!
+              </p>
+            </div>
+          </section>
+
+          <!-- 4. 10-Module Curriculum Outline -->
+          <section class="prog-block" id="curriculum">
+            <div class="prog-block-header">
+              <h2 class="prog-block-title" id="tech-curr-title" data-i18n="tech_curr_title">
+                <i class="fa-solid fa-list-ol"></i> Comprehensive 10-Module Curriculum Outline
+              </h2>
+              <p class="prog-block-subtitle" id="tech-curr-desc" data-i18n="tech_curr_desc">
+                A structured, hands-on 32-week software engineering curriculum designed to take you from foundational programming to enterprise-ready AI full-stack developer:
+              </p>
+            </div>
+
+            <ul class="curriculum-list" id="tech-curriculum-list">
+              <li class="curriculum-item">
+                <span class="curriculum-num">1</span>
+                <div>
+                  <strong>Computer Science Fundamentals, OOP &amp; Core Programming Architecture</strong>
+                  <span class="curriculum-hours">35 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">Core algorithms, data structures (arrays, linked lists, hash maps, trees), Big-O complexity, Object-Oriented Programming (OOP) principles, clean code design, and Git version control workflows.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">2</span>
+                <div>
+                  <strong>Modern Frontend Core: HTML5, CSS3, Responsive Design &amp; Modern JavaScript (ES6+)</strong>
+                  <span class="curriculum-hours">35 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">Semantic HTML, Flexbox, CSS Grid, Tailwind CSS, DOM manipulation, ES6+ features (closures, promises, async/await, modules), event-driven programming, and client-side debugging.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">3</span>
+                <div>
+                  <strong>Enterprise Frontend Engineering: TypeScript &amp; React 19 Architecture</strong>
+                  <span class="curriculum-hours">40 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">TypeScript static typing, interfaces, generics; React 19 functional components, custom hooks, context API, state management with Redux Toolkit/Zustand, and performance optimization.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">4</span>
+                <div>
+                  <strong>Next.js Full-Stack Architecture: Server Components, SSR &amp; App Router</strong>
+                  <span class="curriculum-hours">35 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">Next.js App Router, React Server Components (RSC), Server-Side Rendering (SSR), Static Site Generation (SSG), dynamic routing, API route handlers, and middleware security.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">5</span>
+                <div>
+                  <strong>Backend Engineering: Node.js, Express &amp; RESTful Microservices</strong>
+                  <span class="curriculum-hours">35 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">Asynchronous event-loop architecture, Express.js middleware, RESTful API design standards, JWT / OAuth2 authentication, rate limiting, error handling, and unit testing with Jest.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">6</span>
+                <div>
+                  <strong>Enterprise Java &amp; Spring Boot Microservices Ecosystem</strong>
+                  <span class="curriculum-hours">35 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">Core &amp; Advanced Java, JVM internals, Spring Boot 3, Dependency Injection, Spring MVC, Spring Security, MyBatis / Hibernate ORM, and enterprise service architecture.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">7</span>
+                <div>
+                  <strong>Database Engineering: Relational SQL, NoSQL &amp; High-Performance Caching</strong>
+                  <span class="curriculum-hours">35 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">PostgreSQL and MySQL schema design, complex JOINs, indexing &amp; query optimization, MongoDB document modeling, Prisma ORM, and Redis distributed caching.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">8</span>
+                <div>
+                  <strong>Generative AI Engineering: LLMs, OpenAI API, LangChain &amp; Vector Databases</strong>
+                  <span class="curriculum-hours">40 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">OpenAI / Anthropic Claude API integration, prompt engineering techniques, LangChain / LlamaIndex workflows, Retrieval-Augmented Generation (RAG), embeddings, and Pinecone/ChromaDB vector search.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">9</span>
+                <div>
+                  <strong>Cloud Infrastructure, Docker Containers &amp; DevOps CI/CD Pipelines</strong>
+                  <span class="curriculum-hours">30 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">Containerizing multi-service apps with Docker &amp; Docker Compose, AWS cloud services (EC2, S3, RDS, Lambda), Vercel deployment, GitHub Actions automated CI/CD pipelines, and environment secrets.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">10</span>
+                <div>
+                  <strong>Enterprise Capstone Project, System Design &amp; Tech Interview Mastery</strong>
+                  <span class="curriculum-hours">40 Hours</span>
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">Build and deploy an enterprise-grade AI-powered SaaS application; comprehensive system design reviews (scalability, microservices, load balancing), LeetCode coding interview drills, and mock tech screens.</div>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 5. Admissions & Prerequisites -->
+          <section class="prog-block">
+            <div class="prog-block-header">
+              <h2 class="prog-block-title" id="tech-adm-title" data-i18n="tech_adm_title">
+                <i class="fa-solid fa-clipboard-check"></i> Admission Requirements &amp; Prerequisites
+              </h2>
+            </div>
+            <ul class="admissions-list" id="tech-admissions-list">
+              <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="tech_adm_1">Ontario Secondary School Diploma (OSSD / Grade 12) or Canadian / International equivalent credential evaluation.</span></li>
+              <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="tech_adm_2">Mature Student Admission: 18 years of age or older with a passing score on the college entrance assessment.</span></li>
+              <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="tech_adm_3">Basic computer literacy and logical problem-solving aptitude (no prior coding experience strictly required; introductory bootcamp modules included).</span></li>
+              <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="tech_adm_4">Career changers, engineering/science graduates, and existing IT professionals looking to upskill with modern AI and Full-Stack technologies.</span></li>
+              <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="tech_adm_5">English language proficiency suitable for technical communication and documentation.</span></li>
+            </ul>
+          </section>
+
+          <!-- 6. FAQs Accordion -->
+          <section class="prog-block">
+            <div class="prog-block-header">
+              <h2 class="prog-block-title" id="tech-faq-title" data-i18n="tech_faq_title">
+                <i class="fa-solid fa-circle-question"></i> Frequently Asked Questions
+              </h2>
+            </div>
+            <div class="faq-list" id="tech-faq-list">
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="tech_faq_q1">Do I need a Computer Science degree or prior coding experience to enroll?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="tech_faq_a1">
+                  No prior coding background is required! Our program is carefully designed to take beginners from programming fundamentals to enterprise-level full-stack and AI engineering through structured labs, step-by-step guidance, and mentor code reviews.
+                </div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="tech_faq_q2">What is the AI Mini-Credential included in this program?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="tech_faq_a2">
+                  The AI Mini-Credential is a cutting-edge curriculum track covering Generative AI integration, LLM APIs (OpenAI GPT-4, Claude), prompt engineering, Retrieval-Augmented Generation (RAG), and vector databases. You'll build smart web applications capable of semantic search, automated summarization, AI chat, and workflow automation.
+                </div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="tech_faq_q3">What technologies and frameworks will I master?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="tech_faq_a3">
+                  You will gain hands-on mastery in HTML5, CSS3, Tailwind CSS, JavaScript (ES6+), TypeScript, React 19, Next.js, Node.js, Express, Java, Spring Boot, PostgreSQL, MongoDB, Redis, Docker, AWS (EC2/S3/RDS/Lambda), Git/GitHub, and OpenAI/LangChain.
+                </div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="tech_faq_q4">Is this program eligible for government grants like Better Jobs Ontario?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="tech_faq_a4">
+                  Yes! Victoria International College is a registered career college under the Ontario Career Colleges Act, 2005. Eligible individuals (unemployed, laid-off, gig workers, or underemployed) can qualify for up to $28,000+ in non-repayable Better Jobs Ontario funding covering 100% of tuition, tech equipment, and living costs.
+                </div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="tech_faq_q5">How does Victoria College support students with job placement?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="tech_faq_a5">
+                  We provide comprehensive tech career services: 1-on-1 resume optimization, GitHub portfolio polishing, technical mock interviews (data structures, algorithms, system design), LeetCode interview preparation, and direct job referrals to our GTA employer hiring network.
+                </div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="tech_faq_q6">What is the class schedule and format?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="tech_faq_a6">
+                  We offer flexible formats including full-time weekday cohorts and part-time evening/weekend tracks. All live sessions are recorded in HD for 24/7 review, combined with collaborative online lab workstations and on-campus mentor access.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 7. Student Testimonials -->
+          <section class="prog-block">
+            <div class="prog-block-header">
+              <h2 class="prog-block-title">
+                <i class="fa-solid fa-comments"></i> What Our Software Engineering Graduates Say
+              </h2>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 16px;">
+              <div style="background: #f8fafc; border-left: 4px solid #4f46e5; padding: 18px 22px; border-radius: 0 8px 8px 0;">
+                <p style="font-style: italic; color: #334155; font-size: 14.5px; margin-bottom: 8px;">
+                  “Transitioning into tech was the best decision of my career. Victoria College’s curriculum is ahead of the curve — learning Next.js and LLM integrations directly helped me impress the interviewers at a top Toronto fintech company. I landed a Full Stack Engineer role at $88,000/year within two months of graduation!”
+                </p>
+                <strong style="color: #1e293b; font-size: 13.5px;">— Kevin Z., Full Stack Engineer • Toronto Fintech Hub</strong>
+              </div>
+              <div style="background: #f8fafc; border-left: 4px solid #06b6d4; padding: 18px 22px; border-radius: 0 8px 8px 0;">
+                <p style="font-style: italic; color: #334155; font-size: 14.5px; margin-bottom: 8px;">
+                  “With the help of Victoria College’s financial aid advisors, I secured full Better Jobs Ontario grant funding covering 100% of my tuition and living support. The instructor’s one-on-one code reviews and mock white-boarding gave me the exact confidence I needed to transition from non-tech to enterprise software development.”
+                </p>
+                <strong style="color: #1e293b; font-size: 13.5px;">— Emily L., Cloud Software Associate • Markham Tech Corridor</strong>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Right Column (Sticky Sidebar) -->
+        <aside class="prog-sidebar">
+
+          <!-- Widget 1: Fast Facts Snapshot -->
+          <div class="prog-snapshot-card" id="tech-snapshot-card">
+            <h4 data-i18n="tech_side_snap_title">
+              <i class="fa-solid fa-bolt" style="color: #4f46e5;"></i> Program Snapshot
+            </h4>
+            <ul class="prog-snapshot-list">
+              <li>
+                <span class="snap-lbl" data-i18n="tech_side_c_lbl">Credential:</span>
+                <strong class="snap-val" id="tech-side-credential" data-i18n="tech_side_c_val">Full Stack Web Technician + AI</strong>
+              </li>
+              <li>
+                <span class="snap-lbl" data-i18n="tech_side_d_lbl">Duration:</span>
+                <strong class="snap-val" id="tech-side-duration" data-i18n="tech_side_d_val">32 Weeks (Labs + Capstone)</strong>
+              </li>
+              <li>
+                <span class="snap-lbl" data-i18n="tech_side_del_lbl">Delivery:</span>
+                <strong class="snap-val" id="tech-side-delivery" data-i18n="tech_side_del_val">Live Online + In-Person Campus Labs</strong>
+              </li>
+              <li>
+                <span class="snap-lbl" data-i18n="tech_side_loc_lbl">Locations:</span>
+                <strong class="snap-val" id="tech-side-locations" data-i18n="tech_side_loc_val">Markham / North York / Online</strong>
+              </li>
+              <li>
+                <span class="snap-lbl" data-i18n="tech_side_hot_lbl">Hotline:</span>
+                <strong class="snap-val"><a href="tel:416-665-6668" id="tech-side-hotline" style="color: #4f46e5; text-decoration: none;">416-665-6668</a></strong>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Widget 2: Government Grant Box -->
+          <div class="prog-grant-card">
+            <span class="prog-grant-badge" id="tech-side-grant-badge" data-i18n="tech_side_grant_badge">GOVERNMENT GRANTS</span>
+            <h4 id="tech-side-grant-title" data-i18n="tech_side_grant_title">Get Up to $28,000+ Grant</h4>
+            <p id="tech-side-grant-desc" data-i18n="tech_side_grant_desc">
+              Study Full Stack Web with AI with zero out-of-pocket tuition. Eligible candidates can qualify for up to $28,000+ through Better Jobs Ontario covering tuition, tech allowance, and living support.
+            </p>
+            <a href="#consultation-card" class="btn-grant-check" data-i18n="tech_side_grant_btn">
+              Check Grant Eligibility Now
+            </a>
+          </div>
+
+          <!-- Widget 3: Sticky Lead Consultation Form -->
+          <div class="prog-consult-card" id="consultation-card">
+            <h3 data-i18n="tech_form_title">Apply / Book Consultation</h3>
+            <p data-i18n="tech_form_desc">Reserve your spot or request grant evaluation. An advisor will contact you within 24 hours.</p>
+
+            <form id="tech-consultation-form" onsubmit="event.preventDefault(); handleTechBooking(this);">
+              <div class="consult-form-group">
+                <label data-i18n="tech_form_name_lbl">Your Full Name *</label>
+                <input type="text" id="tech-name" required placeholder="e.g. Alex Zhang / David Miller" data-i18n-ph="tech_form_name_ph">
+              </div>
+
+              <div class="consult-form-group">
+                <label data-i18n="tech_form_email_lbl">Email Address *</label>
+                <input type="email" id="tech-email" required placeholder="name@example.com" data-i18n-ph="tech_form_email_ph">
+              </div>
+
+              <div class="consult-form-group">
+                <label data-i18n="tech_form_phone_lbl">Phone Number *</label>
+                <input type="tel" id="tech-phone" required placeholder="416-665-6668" data-i18n-ph="tech_form_phone_ph">
+              </div>
+
+              <div style="margin-bottom: 18px; display: flex; align-items: flex-start; gap: 8px;">
+                <input type="checkbox" id="tech-grant-check" checked style="margin-top: 3px;">
+                <label for="tech-grant-check" style="font-size: 12.5px; color: #475569; line-height: 1.4; cursor: pointer;" data-i18n="tech_form_grant_check">
+                  I am interested in applying for Government Grants ($28,000+)
+                </label>
+              </div>
+
+              <button type="submit" class="btn-submit-consult" id="tech-btn-submit" data-i18n="tech_form_submit">
+                Submit Consultation Request
+              </button>
+
+              <div id="tech-form-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 13.5px;"></div>
+            </form>
+          </div>
+
+          <!-- Widget 4: Campus Locations -->
+          <div class="prog-snapshot-card">
+            <h4 style="font-size: 14.5px; color: #0f172a; margin-bottom: 12px;">
+              <i class="fa-solid fa-building-columns" style="color: #4f46e5;"></i> Campus Locations
+            </h4>
+            <div style="font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 10px;">
+              <strong style="color: #334155; display: block;" data-i18n="campus_markham">Markham Campus (Main):</strong>
+              <span data-i18n="campus_markham_addr">7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8</span>
+            </div>
+            <div style="font-size: 13px; color: #64748b; line-height: 1.5;">
+              <strong style="color: #334155; display: block;" data-i18n="campus_nyork">North York Campus:</strong>
+              <span data-i18n="campus_nyork_addr">306 Consumers Rd., North York, ON M2J 1P8</span>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="vic-site-footer">
+    <div class="container">
+      <div class="footer-columns-grid">
+
+        <!-- Column 1: Logo & About -->
+        <div class="footer-col">
+          <div class="footer-logo-row">
+            <img class="footer-logo-img" src="images/vic_logo.png" alt="Victoria College">
+            <span class="footer-brand-name">VICTORIA<br>INTERNATIONAL COLLEGE<br><span
+                style="font-size:12px; color:#888;" data-i18n="logo_brand_sub">OF BUSINESS &amp;
+                TECHNOLOGY</span></span>
+          </div>
+          <p class="footer-reg-statement" data-i18n="footer_desc">Registered as a career college under the <i>Ontario
+              Career Colleges Act, 2005</i>.</p>
+          <div class="footer-socials">
+            <a href="https://www.facebook.com/profile.php?id=100078023242504" target="_blank" rel="noopener"><i
+                class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/vic.college/?utm_medium=copy_link" target="_blank" rel="noopener"><i
+                class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <!-- Column 2: Programs -->
+        <div class="footer-col">
+          <h3 data-i18n="footer_col_programs">Programs</h3>
+          <ul class="footer-prog-list" id="tech-footer-prog-list">
+            <li><a href="personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a></li>
+            <li><a href="computerized-accounting.html" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
+            <li><a href="early-childcare-assistant-eca.html" data-i18n="prog_eca_title">Early Childcare Assistant</a></li>
+            <li><a href="acupuncture-program.html" data-i18n="prog_acu_title">Acupuncture &amp; Traditional Wellness</a></li>
+            <li><a href="electrician.html" data-i18n="prog_elec_title">Electrician (309A / 442A)</a></li>
+            <li><a href="software-development.html" class="active" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Contact -->
+        <div class="footer-col">
+          <h3 data-i18n="nav_contact">Contact</h3>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <a href="tel:416-665-6668">416-665-6668</a>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span data-i18n="campus_markham_addr">7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span data-i18n="campus_nyork_addr">306 Consumers Rd., North York, ON M2J 1P8</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-bar"
+        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <span data-i18n="footer_copyright">Copyright © 2026 VICTORIA INTERNATIONAL COLLEGE OF BUSINESS &amp; TECHNOLOGY.
+          All rights reserved.</span>
+        <div style="font-size: 12.5px;">
+          <a href="admin.html?tab=programs&edit=tech"
+            style="color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s;"
+            onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#94a3b8'">
+            <i class="fa-solid fa-lock" style="font-size: 11px;"></i> Staff / Admin Portal
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Quick Admin Edit Floating Shortcut -->
+  <div id="quick-admin-edit-badge" style="position: fixed; bottom: 24px; left: 24px; z-index: 9999;">
+    <a href="admin.html?tab=programs&edit=tech" title="Open Admin Portal to Edit Programs, Copy &amp; Media"
+      style="display: inline-flex; align-items: center; gap: 8px; background: #312e81; color: #ffffff; padding: 10px 18px; border-radius: 24px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1.5px solid rgba(255,255,255,0.25); transition: transform 0.2s, background 0.2s;"
+      onmouseover="this.style.transform='translateY(-2px)'; this.style.background='#4338ca';"
+      onmouseout="this.style.transform='none'; this.style.background='#312e81';">
+      <i class="fa-solid fa-pen-to-square" style="color: #38bdf8; font-size: 14px;"></i>
+      <span>Edit Full Stack + AI in Admin</span>
+    </a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ai-chatbot.js"></script>
+  <script>
+    // FAQ Toggle Handler
+    function toggleFaq(header) {
+      const body = header.nextElementSibling;
+      const isHidden = body.style.display === 'none' || window.getComputedStyle(body).display === 'none';
+      body.style.display = isHidden ? 'block' : 'none';
+      const icon = header.querySelector('i');
+      if (icon) {
+        icon.className = isHidden ? 'fa-solid fa-angle-up' : 'fa-solid fa-angle-down';
+      }
+    }
+
+    // Lead Consultation Submission
+    function handleTechBooking(form) {
+      const name = document.getElementById('tech-name').value;
+      const email = document.getElementById('tech-email').value;
+      const phone = document.getElementById('tech-phone').value;
+      const grantInterest = document.getElementById('tech-grant-check').checked;
+
+      const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/consultations') : '/api/consultations';
+      const feedback = document.getElementById('tech-form-feedback');
+      const submitBtn = document.getElementById('tech-btn-submit');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: phone,
+          program: 'Full Stack Web with AI Mini-Credential',
+          interested_in_grant: grantInterest ? 1 : 0,
+          source_page: 'software-development'
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage].tech_form_submit) ? window.translations[currentLanguage].tech_form_submit : 'Submit Consultation Request';
+          feedback.style.display = 'block';
+          if (data.success) {
+            feedback.style.color = '#047857';
+            feedback.style.background = '#ecfdf5';
+            feedback.style.border = '1px solid #a7f3d0';
+            feedback.innerHTML = typeof window.translations !== 'undefined' && window.translations[currentLanguage] && window.translations[currentLanguage].tech_form_success
+              ? window.translations[currentLanguage].tech_form_success
+              : '<strong>Thank You!</strong> Your request has been submitted. Our tech admissions advisor will reach out shortly.';
+            form.reset();
+          } else {
+            feedback.style.color = '#dc2626';
+            feedback.style.background = '#fef2f2';
+            feedback.style.border = '1px solid #fecaca';
+            feedback.innerHTML = 'Error: ' + (data.error || 'Failed to submit request.');
+          }
+        })
+        .catch(err => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage].tech_form_submit) ? window.translations[currentLanguage].tech_form_submit : 'Submit Consultation Request';
+          feedback.style.display = 'block';
+          feedback.style.color = '#dc2626';
+          feedback.style.background = '#fef2f2';
+          feedback.style.border = '1px solid #fecaca';
+          feedback.innerHTML = 'Network error. Please call 416-665-6668 directly.';
+        });
+    }
+
+    // Language Handling & Dynamic DB Hydration
+    let currentLanguage = localStorage.getItem('vic_lang') || 'en';
+    let techDynamicData = null;
+    let allProgramsList = [];
+
+    // 1. Fetch live dynamic content for Tech program
+    async function loadTechData() {
+      try {
+        const rawUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs/tech') : '/api/programs/tech';
+        const progApiUrl = rawUrl + (rawUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+        const res = await fetch(progApiUrl, { cache: 'no-store' });
+        const data = await res.json();
+        if (res.ok && data.success && data.program) {
+          techDynamicData = data.program;
+          renderDynamicTechContent(currentLanguage);
+        }
+      } catch (err) {
+        console.warn('Could not load dynamic Tech program data from API:', err);
+      }
+
+      // Fetch all active programs for navigation dropdowns and footer
+      try {
+        const rawUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs') : '/api/programs';
+        const progsApiUrl = rawUrl + (rawUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+        const res = await fetch(progsApiUrl, { cache: 'no-store' });
+        const data = await res.json();
+        if (res.ok && data.success && Array.isArray(data.programs)) {
+          allProgramsList = data.programs;
+          renderDynamicNavPrograms(currentLanguage);
+        }
+      } catch (err) {
+        console.warn('Could not load dynamic programs list from API:', err);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // 2. Render Dynamic Tech Content from DB
+    function renderDynamicTechContent(lang = currentLanguage) {
+      if (!techDynamicData) return;
+
+      const parseDetail = (val) => {
+        if (!val) return {};
+        if (typeof val === 'object') return val;
+        try {
+          let parsed = json.loads ? json.loads(val) : JSON.parse(val);
+          while (typeof parsed === 'string') parsed = JSON.parse(parsed);
+          return typeof parsed === 'object' && parsed !== null ? parsed : {};
+        } catch (e) {
+          return {};
+        }
+      };
+
+      const isZh = lang === 'zh';
+      const detailZh = parseDetail(techDynamicData.detail_json_zh);
+      const detailEn = parseDetail(techDynamicData.detail_json_en);
+      const detail = isZh ? (Object.keys(detailZh).length > 0 ? detailZh : detailEn) : (Object.keys(detailEn).length > 0 ? detailEn : detailZh);
+      const title = (isZh ? techDynamicData.title_zh : techDynamicData.title_en) || techDynamicData.title_en;
+      const badge = (isZh ? techDynamicData.badge_zh : techDynamicData.badge_en) || techDynamicData.badge_en;
+      const heroLead = detail.hero?.lead || (isZh ? techDynamicData.overview_zh : techDynamicData.overview_en) || (isZh ? techDynamicData.desc_zh : techDynamicData.desc_en) || '';
+      const duration = (isZh ? techDynamicData.duration_zh : techDynamicData.duration_en) || techDynamicData.duration_en;
+      const credential = (isZh ? techDynamicData.credential_zh : techDynamicData.credential_en) || techDynamicData.credential_en;
+
+      // 1. Hero Section
+      const badgeEl = document.getElementById('tech-hero-badge');
+      if (badgeEl && (detail.hero?.badge || badge)) badgeEl.textContent = detail.hero?.badge || badge;
+
+      const titleEl = document.getElementById('tech-hero-title');
+      if (titleEl && (detail.hero?.title || title)) titleEl.textContent = detail.hero?.title || title;
+
+      const leadEl = document.getElementById('tech-hero-lead');
+      if (leadEl && heroLead) leadEl.textContent = heroLead;
+
+      // 2. Quick Stats Bar
+      const stats = Array.isArray(detail.stats) ? detail.stats : [];
+      if (stats.length > 0) {
+        stats.forEach((st, idx) => {
+          const valEl = document.getElementById(`tech-stat-${idx + 1}-val`);
+          const lblEl = document.getElementById(`tech-stat-${idx + 1}-lbl`);
+          const subEl = document.getElementById(`tech-stat-${idx + 1}-sub`);
+          if (valEl && st.value) valEl.textContent = st.value;
+          if (lblEl && st.label) lblEl.textContent = st.label;
+          if (subEl && st.sub) subEl.textContent = st.sub;
+        });
+      }
+
+      // 3. Why Choose Section & Pillars
+      if (detail.why_choose) {
+        const whyTitle = document.getElementById('tech-why-title');
+        if (whyTitle && detail.why_choose.title) whyTitle.innerHTML = `<i class="fa-solid fa-microchip"></i> ${escapeHtml(detail.why_choose.title)}`;
+
+        const whySub = document.getElementById('tech-why-sub');
+        if (whySub && detail.why_choose.subtitle) whySub.textContent = detail.why_choose.subtitle;
+
+        if (Array.isArray(detail.why_choose.pillars) && detail.why_choose.pillars.length > 0) {
+          const pillarsGrid = document.getElementById('tech-pillars-grid');
+          if (pillarsGrid) {
+            const icons = ['fa-layer-group', 'fa-robot', 'fa-cloud-arrow-up', 'fa-user-check'];
+            pillarsGrid.innerHTML = detail.why_choose.pillars.map((item, idx) => `
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid ${icons[idx % icons.length]}"></i></div>
+                <h3 class="prog-pillar-title">${escapeHtml(item.title)}</h3>
+                <p class="prog-pillar-text">${escapeHtml(item.desc)}</p>
+              </div>
+            `).join('');
+          }
+        }
+      }
+
+      // 4. Credentials
+      if (detail.credentials) {
+        const credTitle = document.getElementById('tech-cred-title');
+        if (credTitle && detail.credentials.title) credTitle.innerHTML = `<i class="fa-solid fa-award"></i> ${escapeHtml(detail.credentials.title)}`;
+
+        const credSub = document.getElementById('tech-cred-sub');
+        if (credSub && detail.credentials.subtitle) credSub.textContent = detail.credentials.subtitle;
+
+        if (Array.isArray(detail.credentials.items) && detail.credentials.items.length > 0) {
+          const credGrid = document.getElementById('tech-credentials-grid');
+          if (credGrid) {
+            const credIcons = ['fa-graduation-cap', 'fa-brain', 'fa-aws', 'fa-github'];
+            credGrid.innerHTML = detail.credentials.items.map((item, idx) => `
+              <div class="credential-card">
+                <i class="fa-solid ${credIcons[idx % credIcons.length]}"></i>
+                <div>
+                  <h4>${escapeHtml(item.title)}</h4>
+                  <p>${escapeHtml(item.desc)}</p>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      }
+
+      // 5. 10 Curriculum Modules
+      const currTitle = document.getElementById('tech-curr-title');
+      if (currTitle && (detail.curriculum?.title || detail.curriculum_title)) {
+        currTitle.innerHTML = `<i class="fa-solid fa-list-ol"></i> ${escapeHtml(detail.curriculum?.title || detail.curriculum_title)}`;
+      }
+
+      const currDesc = document.getElementById('tech-curr-desc');
+      if (currDesc && (detail.curriculum?.desc || detail.curriculum_desc)) {
+        currDesc.textContent = detail.curriculum?.desc || detail.curriculum_desc;
+      }
+
+      const modules = Array.isArray(detail.curriculum_modules) && detail.curriculum_modules.length > 0
+        ? detail.curriculum_modules
+        : (Array.isArray(detail.curriculum?.modules) ? detail.curriculum.modules : []);
+
+      if (modules.length > 0) {
+        const currList = document.getElementById('tech-curriculum-list');
+        if (currList) {
+          currList.innerHTML = modules.map((item, idx) => {
+            const num = item.num || (idx + 1);
+            const modTitle = item.title || item.name || '';
+            const modHours = item.hours ? `<span class="curriculum-hours">${escapeHtml(item.hours)}</span>` : '';
+            const modDesc = item.desc || item.description || '';
+            return `
+              <li class="curriculum-item">
+                <span class="curriculum-num">${num}</span>
+                <div>
+                  <strong>${escapeHtml(modTitle)}</strong>
+                  ${modHours}
+                  <div style="margin-top: 4px; color: #64748b; font-size: 13.5px;">${escapeHtml(modDesc)}</div>
+                </div>
+              </li>
+            `;
+          }).join('');
+        }
+      }
+
+      // 6. Admission Requirements
+      if (detail.admissions) {
+        const admTitle = document.getElementById('tech-adm-title');
+        if (admTitle && detail.admissions.title) admTitle.textContent = detail.admissions.title;
+
+        if (Array.isArray(detail.admissions.items) && detail.admissions.items.length > 0) {
+          const admList = document.getElementById('tech-admissions-list');
+          if (admList) {
+            admList.innerHTML = detail.admissions.items.map(item => `
+              <li><i class="fa-solid fa-circle-check"></i> <span>${escapeHtml(item)}</span></li>
+            `).join('');
+          }
+        }
+      }
+
+      // 7. Sidebar Snapshot
+      const sideDurationEl = document.getElementById('tech-side-duration');
+      if (sideDurationEl && duration) sideDurationEl.textContent = duration;
+
+      const sideCredEl = document.getElementById('tech-side-credential');
+      if (sideCredEl && credential) sideCredEl.textContent = credential;
+
+      if (detail.snapshot) {
+        const delEl = document.getElementById('tech-side-delivery');
+        if (delEl && detail.snapshot.delivery) delEl.textContent = detail.snapshot.delivery;
+
+        const locEl = document.getElementById('tech-side-locations');
+        if (locEl && detail.snapshot.locations) locEl.textContent = detail.snapshot.locations;
+      }
+
+      // 8. FAQs
+      if (Array.isArray(detail.faqs) && detail.faqs.length > 0) {
+        const faqList = document.getElementById('tech-faq-list');
+        if (faqList) {
+          faqList.innerHTML = detail.faqs.map(item => `
+            <div class="faq-item">
+              <div class="faq-header" onclick="toggleFaq(this)">
+                <span>${escapeHtml(item.q)}</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </div>
+              <div class="faq-body" style="display: none;">
+                ${escapeHtml(item.a)}
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    // 3. Render Dynamic Program Links in Nav Dropdown & Footer
+    function renderDynamicNavPrograms(lang = currentLanguage) {
+      if (!Array.isArray(allProgramsList) || allProgramsList.length === 0) return;
+      const isZh = lang === 'zh';
+
+      const navDropdown = document.getElementById('tech-nav-dropdown');
+      const footerList = document.getElementById('tech-footer-prog-list');
+
+      const programUrlMap = {
+        'psw': 'personal-support-worker-online-psw-course.html',
+        'accounting': 'computerized-accounting.html',
+        'eca': 'early-childcare-assistant-eca.html',
+        'acupuncture': 'acupuncture-program.html',
+        'electrician': 'electrician.html',
+        'tech': 'software-development.html'
+      };
+
+      const itemsHtml = allProgramsList.filter(p => p.is_active !== 0).map(p => {
+        const title = isZh ? (p.title_zh || p.title_en) : (p.title_en || p.title_zh);
+        const url = programUrlMap[p.slug] || `index.html#${p.slug}`;
+        const activeClass = p.slug === 'tech' ? ' class="active"' : '';
+        return `<a href="${url}"${activeClass}>${escapeHtml(title)}</a>`;
+      }).join('');
+
+      if (navDropdown && itemsHtml) navDropdown.innerHTML = itemsHtml;
+
+      const footerHtml = allProgramsList.filter(p => p.is_active !== 0).map(p => {
+        const title = isZh ? (p.title_zh || p.title_en) : (p.title_en || p.title_zh);
+        const url = programUrlMap[p.slug] || `index.html#${p.slug}`;
+        const activeClass = p.slug === 'tech' ? ' class="active"' : '';
+        return `<li><a href="${url}"${activeClass}>${escapeHtml(title)}</a></li>`;
+      }).join('');
+
+      if (footerList && footerHtml) footerList.innerHTML = footerHtml;
+    }
+
+    // 4. Apply Language
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('vic_lang', lang);
+      document.documentElement.lang = lang;
+
+      const dict = window.translations && window.translations[lang] ? window.translations[lang] : {};
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.innerHTML = dict[key];
+      });
+
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (dict[key]) el.placeholder = dict[key];
+      });
+
+      document.querySelectorAll('.js-lang-toggle').forEach(btn => {
+        const labelSpan = btn.querySelector('.lang-label');
+        const badgeSpan = btn.querySelector('.lang-badge');
+        if (labelSpan) {
+          labelSpan.textContent = lang === 'en' ? '中文' : 'English';
+        }
+        if (badgeSpan) {
+          badgeSpan.textContent = lang === 'en' ? 'EN' : '中文';
+        }
+        btn.setAttribute('aria-label', lang === 'en' ? 'Switch to Chinese' : 'Switch to English');
+      });
+
+      renderDynamicTechContent(lang);
+      renderDynamicNavPrograms(lang);
+    }
+
+    // Expose applyLanguage
+    window.applyLanguage = applyLanguage;
+
+    // Mobile Navigation Drawer Toggle
+    const mobileToggleBtn = document.querySelector('.mobile-toggle-btn');
+    const mobileDrawerClose = document.querySelector('.mobile-drawer-close');
+    const mobileDrawerOverlay = document.querySelector('.mobile-drawer-overlay');
+    const mobileNavDrawer = document.querySelector('.mobile-nav-drawer');
+
+    function openMobileDrawer() {
+      if (mobileNavDrawer) mobileNavDrawer.classList.add('active');
+      if (mobileDrawerOverlay) mobileDrawerOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileDrawer() {
+      if (mobileNavDrawer) mobileNavDrawer.classList.remove('active');
+      if (mobileDrawerOverlay) mobileDrawerOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileToggleBtn) mobileToggleBtn.addEventListener('click', openMobileDrawer);
+    if (mobileDrawerClose) mobileDrawerClose.addEventListener('click', closeMobileDrawer);
+    if (mobileDrawerOverlay) mobileDrawerOverlay.addEventListener('click', closeMobileDrawer);
+
+    // Attach click listeners to all language toggle buttons
+    document.querySelectorAll('.js-lang-toggle').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const nextLang = currentLanguage === 'en' ? 'zh' : 'en';
+        applyLanguage(nextLang);
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTechData();
+      applyLanguage(currentLanguage);
+    });
+  </script>
+</body>
+
+</html>

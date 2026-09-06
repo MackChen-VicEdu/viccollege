@@ -342,11 +342,11 @@
           <div class="nav-dropdown" id="psw-nav-dropdown">
             <a href="personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support
               Worker DE 2022</a>
-            <a href="index.html#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
-            <a href="index.html#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a>
-            <a href="index.html#acupuncture" data-i18n="prog_acu_title">Acupuncture (Non-Vocational)</a>
-            <a href="index.html#electrician" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
-            <a href="index.html#fullstack" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a>
+            <a href="computerized-accounting.html" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
+            <a href="early-childcare-assistant-eca.html" data-i18n="prog_eca_title">Early Childcare Assistant (ECA)</a>
+            <a href="acupuncture-program.html" data-i18n="prog_acu_title">Acupuncture &amp; Traditional Wellness</a>
+            <a href="electrician.html" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
+            <a href="software-development.html" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a>
           </div>
         </div>
         <div class="main-nav-item">
@@ -876,9 +876,11 @@
           <ul class="footer-prog-list" id="psw-footer-prog-list">
             <li><a href="personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal
                 Support Worker DE 2022</a></li>
-            <li><a href="index.html#accounting" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
-            <li><a href="index.html#eca" data-i18n="prog_eca_title">Early Childcare Assistant</a></li>
-            <li><a href="index.html#fullstack" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a></li>
+            <li><a href="computerized-accounting.html" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
+            <li><a href="early-childcare-assistant-eca.html" data-i18n="prog_eca_title">Early Childcare Assistant (ECA)</a></li>
+            <li><a href="acupuncture-program.html" data-i18n="prog_acu_title">Acupuncture &amp; Traditional Wellness</a></li>
+            <li><a href="electrician.html" data-i18n="prog_elec_title">Electrician (309A / 442A)</a></li>
+            <li><a href="software-development.html" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a></li>
           </ul>
         </div>
 
@@ -1280,7 +1282,19 @@
       if (dropdown) {
         dropdown.innerHTML = allProgramsList.map(p => {
           const title = (isZh ? p.title_zh : p.title_en) || p.title_en;
-          const href = p.slug === 'psw' ? 'personal-support-worker-online-psw-course.html' : `index.html#${p.slug}`;
+          const href = p.slug === 'psw' 
+            ? 'personal-support-worker-online-psw-course.html' 
+            : p.slug === 'accounting' 
+              ? 'computerized-accounting.html' 
+              : p.slug === 'eca'
+                ? 'early-childcare-assistant-eca.html'
+                : p.slug === 'acupuncture'
+                  ? 'acupuncture-program.html'
+                  : p.slug === 'electrician'
+                    ? 'electrician.html'
+                    : (p.slug === 'tech' || p.slug === 'fullstack' || p.slug === 'software-development')
+                      ? 'software-development.html'
+                      : `index.html#${p.slug}`;
           return `<a href="${href}">${title}</a>`;
         }).join('');
       }
@@ -1290,7 +1304,19 @@
       if (footerList) {
         footerList.innerHTML = allProgramsList.map(p => {
           const title = (isZh ? p.title_zh : p.title_en) || p.title_en;
-          const href = p.slug === 'psw' ? 'personal-support-worker-online-psw-course.html' : `index.html#${p.slug}`;
+          const href = p.slug === 'psw' 
+            ? 'personal-support-worker-online-psw-course.html' 
+            : p.slug === 'accounting' 
+              ? 'computerized-accounting.html' 
+              : p.slug === 'eca'
+                ? 'early-childcare-assistant-eca.html'
+                : p.slug === 'acupuncture'
+                  ? 'acupuncture-program.html'
+                  : p.slug === 'electrician'
+                    ? 'electrician.html'
+                    : (p.slug === 'tech' || p.slug === 'fullstack' || p.slug === 'software-development')
+                      ? 'software-development.html'
+                      : `index.html#${p.slug}`;
           return `<li><a href="${href}">${title}</a></li>`;
         }).join('');
       }

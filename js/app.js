@@ -791,6 +791,26 @@ function renderDynamicPrograms(lang = currentLanguage) {
             <a href="personal-support-worker-online-psw-course.html" aria-label="${escapeAppHtml(title)}">
               <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
             </a>
+          ` : prog.slug === 'accounting' ? `
+            <a href="computerized-accounting.html" aria-label="${escapeAppHtml(title)}">
+              <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+            </a>
+          ` : prog.slug === 'eca' ? `
+            <a href="early-childcare-assistant-eca.html" aria-label="${escapeAppHtml(title)}">
+              <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+            </a>
+          ` : prog.slug === 'acupuncture' ? `
+            <a href="acupuncture-program.html" aria-label="${escapeAppHtml(title)}">
+              <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+            </a>
+          ` : prog.slug === 'electrician' ? `
+            <a href="electrician.html" aria-label="${escapeAppHtml(title)}">
+              <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+            </a>
+          ` : (prog.slug === 'tech' || prog.slug === 'fullstack' || prog.slug === 'software-development') ? `
+            <a href="software-development.html" aria-label="${escapeAppHtml(title)}">
+              <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
+            </a>
           ` : `
             <img src="${escapeAppHtml(imgUrl)}" alt="${escapeAppHtml(title)}" onerror="this.src='images/fullstack.jpg'">
           `}
@@ -799,6 +819,16 @@ function renderDynamicPrograms(lang = currentLanguage) {
           <h2 class="program-heading">
             ${prog.slug === 'psw' ? `
               <a href="personal-support-worker-online-psw-course.html" style="color: inherit; text-decoration: none;">${escapeAppHtml(title)}</a>
+            ` : prog.slug === 'accounting' ? `
+              <a href="computerized-accounting.html" style="color: inherit; text-decoration: none;">${escapeAppHtml(title)}</a>
+            ` : prog.slug === 'eca' ? `
+              <a href="early-childcare-assistant-eca.html" style="color: inherit; text-decoration: none;">${escapeAppHtml(title)}</a>
+            ` : prog.slug === 'acupuncture' ? `
+              <a href="acupuncture-program.html" style="color: inherit; text-decoration: none;">${escapeAppHtml(title)}</a>
+            ` : prog.slug === 'electrician' ? `
+              <a href="electrician.html" style="color: inherit; text-decoration: none;">${escapeAppHtml(title)}</a>
+            ` : (prog.slug === 'tech' || prog.slug === 'fullstack' || prog.slug === 'software-development') ? `
+              <a href="software-development.html" style="color: inherit; text-decoration: none;">${escapeAppHtml(title)}</a>
             ` : escapeAppHtml(title)}
           </h2>
           <div class="vic-divider"></div>
@@ -806,6 +836,26 @@ function renderDynamicPrograms(lang = currentLanguage) {
           ${bulletsHtml}
           ${prog.slug === 'psw' ? `
             <a href="personal-support-worker-online-psw-course.html" class="btn-learn-more">
+              <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          ` : prog.slug === 'accounting' ? `
+            <a href="computerized-accounting.html" class="btn-learn-more">
+              <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          ` : prog.slug === 'eca' ? `
+            <a href="early-childcare-assistant-eca.html" class="btn-learn-more">
+              <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          ` : prog.slug === 'acupuncture' ? `
+            <a href="acupuncture-program.html" class="btn-learn-more">
+              <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          ` : prog.slug === 'electrician' ? `
+            <a href="electrician.html" class="btn-learn-more">
+              <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          ` : (prog.slug === 'tech' || prog.slug === 'fullstack' || prog.slug === 'software-development') ? `
+            <a href="software-development.html" class="btn-learn-more">
               <span>${btnText}</span> <i class="fa-solid fa-arrow-right"></i>
             </a>
           ` : `
@@ -836,7 +886,19 @@ function updateProgramNavigationAndDropdowns(lang = currentLanguage) {
   if (headerDropdown) {
     headerDropdown.innerHTML = dynamicProgramsList.map(p => {
       const title = (lang === 'zh' ? p.title_zh : p.title_en) || p.title_en;
-      const href = p.slug === 'psw' ? 'personal-support-worker-online-psw-course.html' : `#${p.slug}`;
+      const href = p.slug === 'psw' 
+        ? 'personal-support-worker-online-psw-course.html' 
+        : p.slug === 'accounting' 
+          ? 'computerized-accounting.html' 
+          : p.slug === 'eca'
+            ? 'early-childcare-assistant-eca.html'
+            : p.slug === 'acupuncture'
+              ? 'acupuncture-program.html'
+              : p.slug === 'electrician'
+                ? 'electrician.html'
+                : (p.slug === 'tech' || p.slug === 'fullstack' || p.slug === 'software-development')
+                  ? 'software-development.html'
+                  : `#${p.slug}`;
       return `<a href="${href}">${escapeAppHtml(title)}</a>`;
     }).join('');
   }
@@ -858,7 +920,19 @@ function updateProgramNavigationAndDropdowns(lang = currentLanguage) {
   if (footerList) {
     footerList.innerHTML = dynamicProgramsList.map(p => {
       const title = (lang === 'zh' ? p.title_zh : p.title_en) || p.title_en;
-      const href = p.slug === 'psw' ? 'personal-support-worker-online-psw-course.html' : `#${p.slug}`;
+      const href = p.slug === 'psw' 
+        ? 'personal-support-worker-online-psw-course.html' 
+        : p.slug === 'accounting' 
+          ? 'computerized-accounting.html' 
+          : p.slug === 'eca'
+            ? 'early-childcare-assistant-eca.html'
+            : p.slug === 'acupuncture'
+              ? 'acupuncture-program.html'
+              : p.slug === 'electrician'
+                ? 'electrician.html'
+                : (p.slug === 'tech' || p.slug === 'fullstack' || p.slug === 'software-development')
+                  ? 'software-development.html'
+                  : `#${p.slug}`;
       return `<li><a href="${href}">${escapeAppHtml(title)}</a></li>`;
     }).join('');
   }

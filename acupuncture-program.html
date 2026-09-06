@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="acu_page_title">Acupuncture &amp; Traditional Wellness Program | Victoria International College</title>
+  <meta name="description"
+    content="Discover the foundations of Traditional Chinese Medicine (TCM), meridian channels, and hands-on wellness modalities. 2250-hour non-vocational enrichment course at Victoria International College in Markham and Toronto.">
+  <meta name="keywords"
+    content="acupuncture course toronto, acupuncture program markham, traditional chinese medicine course, tcm meridians, moxibustion cupping training, holistic wellness education, victoria international college">
+
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Acupuncture &amp; Traditional Wellness Program | Victoria International College">
+  <meta property="og:description"
+    content="Discover ancient healing wisdom, 14 meridian pathways, and practical demonstrations in acupuncture and holistic wellness. Flexible weekday &amp; weekend schedules.">
+  <meta property="og:image" content="images/acupuncture.jpg">
+
+  <!-- Schema.org Course JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Acupuncture & Traditional Wellness Program",
+    "description": "Comprehensive 2250-hour non-vocational enrichment program covering traditional Chinese medicine philosophy, meridian anatomy, diagnostic arts, and practical wellness demonstrations.",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "Victoria International College of Business & Technology",
+      "sameAs": "https://www.viccollege.com",
+      "telephone": "+1-416-665-6668",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "7050 Woodbine Ave., Unit 300",
+        "addressLocality": "Markham",
+        "addressRegion": "ON",
+        "postalCode": "L3R 4G8",
+        "addressCountry": "CA"
+      }
+    },
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": ["blended", "online", "in-person"],
+      "duration": "P2250H",
+      "courseWorkload": "PT20H"
+    },
+    "occupationalCredentialAwarded": "Certificate of Course Completion in Traditional Acupuncture Foundations & Wellness (2250 Hours)"
+  }
+  </script>
+
+  <link rel="icon" href="images/favicon.gif" sizes="32x32">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Dedicated Acupuncture Program Custom Styles */
+    :root {
+      --acu-primary: #047857;
+      --acu-primary-dark: #065f46;
+      --acu-primary-light: #10b981;
+      --acu-gold: #b45309;
+      --acu-gold-light: #f59e0b;
+    }
+
+    .prog-page-hero {
+      position: relative;
+      background: linear-gradient(rgba(6, 44, 34, 0.90), rgba(15, 23, 42, 0.88)), url('images/acupuncture.jpg') center/cover no-repeat;
+      color: #ffffff;
+      padding: 85px 0 75px;
+    }
+
+    .prog-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #94a3b8;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .prog-breadcrumb a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .prog-breadcrumb a:hover {
+      color: #ffffff;
+    }
+
+    .prog-hero-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.9);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    }
+
+    .prog-hero-title {
+      font-size: 2.8rem;
+      font-family: var(--font-serif);
+      line-height: 1.25;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .prog-hero-lead {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+      max-width: 780px;
+      margin-bottom: 28px;
+    }
+
+    .prog-hero-ctas {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .btn-hero-primary {
+      background: #10b981;
+      color: #ffffff;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+      transition: all 0.25s ease;
+    }
+
+    .btn-hero-primary:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    }
+
+    .btn-hero-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      padding: 14px 26px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(8px);
+      transition: all 0.25s ease;
+    }
+
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.22);
+      border-color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .compliance-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 12.5px;
+      color: #cbd5e1;
+      margin-top: 10px;
+    }
+
+    .compliance-pill i {
+      color: #f59e0b;
+    }
+
+    /* Hero Stats Strip */
+    .prog-hero-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .prog-hero-stat-item {
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      padding-right: 16px;
+    }
+
+    .prog-hero-stat-item:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+
+    .prog-stat-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #34d399;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .prog-stat-lbl {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 2px;
+    }
+
+    .prog-stat-sub {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    /* Main Content Layout */
+    .prog-main-section {
+      padding: 65px 0 80px;
+      background: #f8fafc;
+    }
+
+    .prog-layout-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .prog-content-col {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    /* Section Cards */
+    .prog-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 36px 38px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .prog-section-header {
+      margin-bottom: 24px;
+    }
+
+    .prog-section-tag {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #047857;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 6px;
+    }
+
+    .prog-section-title {
+      font-size: 1.85rem;
+      font-family: var(--font-serif);
+      color: #0f172a;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .prog-section-desc {
+      font-size: 15px;
+      color: #64748b;
+      line-height: 1.65;
+    }
+
+    /* Pillars Grid */
+    .prog-pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .prog-pillar-item {
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 22px;
+      border-left: 4px solid #10b981;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .prog-pillar-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .prog-pillar-icon {
+      font-size: 24px;
+      color: #047857;
+      margin-bottom: 12px;
+    }
+
+    .prog-pillar-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .prog-pillar-text {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Schedule Boxes */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 16px;
+    }
+
+    .schedule-card {
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+    }
+
+    .schedule-badge {
+      display: inline-block;
+      background: #047857;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .schedule-card h4 {
+      font-size: 1.15rem;
+      color: #064e3b;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .schedule-time {
+      font-size: 14px;
+      font-weight: 700;
+      color: #047857;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .schedule-card p {
+      font-size: 13.5px;
+      color: #334155;
+      line-height: 1.55;
+    }
+
+    /* Compliance Callout Box */
+    .compliance-box {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      border-left: 6px solid #f59e0b;
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-top: 10px;
+    }
+
+    .compliance-box h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #92400e;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .compliance-box p {
+      font-size: 14px;
+      color: #78350f;
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+
+    .compliance-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Curriculum Modules List */
+    .curriculum-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .curriculum-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 18px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      font-size: 14.5px;
+      color: #334155;
+      line-height: 1.55;
+      transition: background 0.2s;
+    }
+
+    .curriculum-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .curriculum-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      background: #047857;
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .curriculum-hours {
+      display: inline-block;
+      background: #d1fae5;
+      color: #065f46;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+
+    /* Credentials Grid */
+    .credentials-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .credential-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+
+    .credential-card i {
+      font-size: 22px;
+      color: #047857;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .credential-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #064e3b;
+      margin-bottom: 4px;
+    }
+
+    .credential-card p {
+      font-size: 13px;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    /* Admissions List */
+    .admissions-list {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .admissions-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14.5px;
+      color: #334155;
+      line-height: 1.55;
+    }
+
+    .admissions-list li i {
+      color: #10b981;
+      font-size: 16px;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    /* FAQ Accordion */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .faq-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .faq-header {
+      padding: 18px 20px;
+      background: #f8fafc;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+
+    .faq-header:hover {
+      background: #f1f5f9;
+    }
+
+    .faq-body {
+      padding: 18px 20px;
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.65;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* Sidebar Sticky Consultation Card */
+    .prog-sidebar {
+      position: sticky;
+      top: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .prog-consult-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 30px 28px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .prog-consult-card h3 {
+      font-size: 1.35rem;
+      font-family: var(--font-serif);
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .prog-consult-card p {
+      font-size: 13.5px;
+      color: #64748b;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .consult-form-group {
+      margin-bottom: 14px;
+    }
+
+    .consult-form-group label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .consult-form-group input,
+    .consult-form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #0f172a;
+      outline: none;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+
+    .consult-form-group input:focus,
+    .consult-form-group select:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .btn-submit-consult {
+      width: 100%;
+      background: #047857;
+      color: #ffffff;
+      padding: 13px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 6px;
+    }
+
+    .btn-submit-consult:hover {
+      background: #065f46;
+      transform: translateY(-1px);
+    }
+
+    /* Program Snapshot Card */
+    .prog-snapshot-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 26px 24px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .prog-snapshot-card h4 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prog-snapshot-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .prog-snapshot-list li {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .prog-snapshot-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .snap-lbl {
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .snap-val {
+      color: #0f172a;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* Schedule Sidebar Promo Card */
+    .prog-grant-card {
+      background: linear-gradient(135deg, #064e3b, #047857);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 26px 24px;
+      box-shadow: 0 6px 20px rgba(4, 120, 87, 0.25);
+    }
+
+    .prog-grant-badge {
+      display: inline-block;
+      background: #f59e0b;
+      color: #0f172a;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .prog-grant-card h4 {
+      font-size: 1.25rem;
+      font-family: var(--font-serif);
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .prog-grant-card p {
+      font-size: 13px;
+      color: #d1fae5;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+
+    .btn-grant-check {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #ffffff;
+      color: #047857;
+      padding: 11px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      transition: background 0.2s;
+      box-sizing: border-box;
+    }
+
+    .btn-grant-check:hover {
+      background: #f1f5f9;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .prog-layout-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prog-hero-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .prog-hero-title {
+        font-size: 2.2rem;
+      }
+
+      .schedule-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .prog-hero-stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prog-pillar-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .credentials-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header Navigation -->
+  <header class="vic-main-header">
+    <div class="container nav-wrapper">
+      <a href="index.html#home" class="logo-section" aria-label="Victoria College of Business Healthcare Technology & Trades">
+        <img class="logo-img" src="images/vic_logo.png" alt="Victoria College">
+        <div class="logo-text">
+          <span class="logo-brand-main" data-i18n="logo_brand_main">Victoria College</span>
+          <span class="logo-brand-sub" data-i18n="logo_brand_sub">of Business Healthcare Technology &amp; Trades</span>
+        </div>
+      </a>
+
+      <nav class="main-nav-list">
+        <div class="main-nav-item">
+          <a href="index.html#home" class="main-nav-link" data-i18n="nav_home">Home</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="index.html#about" class="main-nav-link" data-i18n="nav_about">About Us</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="index.html#programs" class="main-nav-link active" data-i18n="nav_programs">Programs <i
+              class="fa-solid fa-angle-down" style="font-size: 11px;"></i></a>
+          <div class="nav-dropdown" id="acu-nav-dropdown">
+            <a href="personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a>
+            <a href="computerized-accounting.html" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a>
+            <a href="early-childcare-assistant-eca.html" data-i18n="prog_eca_title">Early Childcare Assistant (ECA)</a>
+            <a href="acupuncture-program.html" class="active" data-i18n="prog_acu_title">Acupuncture &amp; Traditional Wellness</a>
+            <a href="electrician.html" data-i18n="prog_elec_title">Electrician (309A / 442A)</a>
+            <a href="software-development.html" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a>
+          </div>
+        </div>
+        <div class="main-nav-item">
+          <a href="index.html#financial-aid" class="main-nav-link" data-i18n="nav_aid">Financial Aid</a>
+        </div>
+        <div class="main-nav-item">
+          <a href="index.html#articles" class="main-nav-link" data-i18n="nav_articles">Career Insights</a>
+        </div>
+      </nav>
+
+      <div class="nav-social-icons">
+        <a href="https://www.instagram.com/vic.college/?utm_medium=copy_link" target="_blank" rel="noopener"><i
+            class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=100078023242504" target="_blank" rel="noopener"><i
+            class="fa-brands fa-facebook"></i></a>
+        <button type="button" class="lang-switcher-vic js-lang-toggle desktop-only" style="margin-left: 10px;"
+          aria-label="Toggle language">
+          <i class="fa-solid fa-globe"></i>
+          <span class="lang-label" data-i18n="lang_btn">中文</span>
+          <span class="lang-badge lang-current">EN</span>
+        </button>
+        <a href="admin.html?tab=programs&edit=acupuncture" class="desktop-only"
+          style="margin-left: 10px; display: inline-flex; align-items: center; gap: 6px; background: rgba(4, 120, 87, 0.08); border: 1px solid rgba(4, 120, 87, 0.25); color: #047857; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s;"
+          title="Edit this program in the Admin Portal">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Edit Program</span>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button type="button" class="mobile-toggle-btn" aria-label="Open navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-drawer-overlay"></div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer">
+    <div class="mobile-drawer-header">
+      <div class="logo-text">
+        <h1 style="font-size: 1rem; font-family: var(--font-serif);" data-i18n="logo_brand_main">VICTORIA COLLEGE</h1>
+      </div>
+      <button type="button" class="mobile-drawer-close" aria-label="Close navigation menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;">
+      <button type="button" class="lang-switcher-vic js-lang-toggle" style="width: 100%; justify-content: center;"
+        aria-label="Toggle language">
+        <i class="fa-solid fa-globe"></i>
+        <span class="lang-label" data-i18n="lang_btn">中文</span>
+        <span class="lang-badge lang-current">EN</span>
+      </button>
+      <a href="admin.html?tab=programs&edit=acupuncture"
+        style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #047857; color: #fff; padding: 10px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 13.5px;">
+        <i class="fa-solid fa-pen-to-square"></i> Edit Program in Admin
+      </a>
+    </div>
+
+    <nav class="mobile-nav-links" id="acu-mobile-nav-links">
+      <a href="index.html#home" data-i18n="nav_home">Home</a>
+      <a href="index.html#about" data-i18n="nav_about">About Us</a>
+      <a href="index.html#programs" data-i18n="nav_programs">Programs</a>
+      <a href="index.html#financial-aid" data-i18n="nav_aid">Financial Aid</a>
+      <a href="index.html#articles" data-i18n="nav_articles">Career Insights</a>
+      <a href="#consultation-card" data-i18n="nav_consultation_btn">Book Consultation</a>
+    </nav>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="prog-page-hero">
+    <div class="container">
+      <div class="prog-breadcrumb">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <span>/</span>
+        <a href="index.html#programs">Programs</a>
+        <span>/</span>
+        <span id="acu-bread-curr" style="color: #34d399;" data-i18n="prog_acu_title">Acupuncture &amp; Traditional Wellness</span>
+        <span style="margin-left: auto;">
+          <a href="admin.html?tab=programs&edit=acupuncture"
+            style="color: #cbd5e1; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+            <i class="fa-solid fa-pen"></i> Manage Program Page
+          </a>
+        </span>
+      </div>
+
+      <div class="prog-hero-badge" id="acu-hero-badge" data-i18n="acu_hero_badge">NON-VOCATIONAL ENRICHMENT PROGRAM</div>
+      <h1 class="prog-hero-title" id="acu-hero-title" data-i18n="acu_hero_title">Acupuncture &amp; Traditional Wellness Program</h1>
+      <p class="prog-hero-lead" id="acu-hero-lead" data-i18n="acu_hero_lead">
+        Discover the foundations of traditional wellness, holistic healthcare, and meridian balance. Designed for individuals seeking personal interest learning, wellness knowledge, or complementary health education.
+      </p>
+
+      <div class="prog-hero-ctas">
+        <a href="#consultation-card" class="btn-hero-primary" data-i18n="acu_hero_btn_book">
+          <i class="fa-solid fa-calendar-check"></i> <span>Book Free Consultation</span>
+        </a>
+        <a href="#curriculum" class="btn-hero-secondary" data-i18n="acu_hero_btn_curr">
+          <i class="fa-solid fa-book-open"></i> <span>View 2250-Hour Curriculum</span>
+        </a>
+      </div>
+
+      <div>
+        <span class="compliance-pill" id="acu-hero-compliance" data-i18n="acu_hero_compliance">
+          <i class="fa-solid fa-shield-halved"></i> Non-Vocational Program • MCU-Exempt • Ontario Career Colleges Act 2005 Exempt
+        </span>
+      </div>
+
+      <!-- Quick Stats Bar -->
+      <div class="prog-hero-stats-grid" style="margin-top: 36px;">
+        <div class="prog-hero-stat-item">
+          <div class="prog-stat-val" id="acu-stat-1-val" data-i18n="acu_stat_1_val">2250 Hours</div>
+          <div class="prog-stat-lbl" id="acu-stat-1-lbl" data-i18n="acu_stat_1_lbl">Comprehensive Study</div>
+          <div class="prog-stat-sub" id="acu-stat-1-sub" data-i18n="acu_stat_1_sub">Theory, Meridians &amp; Labs</div>
+        </div>
+        <div class="prog-hero-stat-item">
+          <div class="prog-stat-val" id="acu-stat-2-val" data-i18n="acu_stat_2_val">Hybrid Format</div>
+          <div class="prog-stat-lbl" id="acu-stat-2-lbl" data-i18n="acu_stat_2_lbl">Flexible Learning</div>
+          <div class="prog-stat-sub" id="acu-stat-2-sub" data-i18n="acu_stat_2_sub">Online Theory + Practical Labs</div>
+        </div>
+        <div class="prog-hero-stat-item">
+          <div class="prog-stat-val" id="acu-stat-3-val" data-i18n="acu_stat_3_val">Hands-on Clinic</div>
+          <div class="prog-stat-lbl" id="acu-stat-3-lbl" data-i18n="acu_stat_3_lbl">Practical Experience</div>
+          <div class="prog-stat-sub" id="acu-stat-3-sub" data-i18n="acu_stat_3_sub">Needling, Moxa, Cupping &amp; Tuina</div>
+        </div>
+        <div class="prog-hero-stat-item">
+          <div class="prog-stat-val" id="acu-stat-4-val" data-i18n="acu_stat_4_val">Flexible Schedule</div>
+          <div class="prog-stat-lbl" id="acu-stat-4-lbl" data-i18n="acu_stat_4_lbl">Weekday &amp; Weekend</div>
+          <div class="prog-stat-sub" id="acu-stat-4-sub" data-i18n="acu_stat_4_sub">Options to Fit Your Lifestyle</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Body Content -->
+  <main class="prog-main-section">
+    <div class="container">
+      <div class="prog-layout-grid">
+
+        <!-- Left Column: Detailed Academic & Practical Breakdown -->
+        <div class="prog-content-col">
+
+          <!-- 1. Why Choose Program Pillars -->
+          <section class="prog-card" id="why-choose">
+            <div class="prog-section-header">
+              <span class="prog-section-tag">Program Highlights</span>
+              <h2 class="prog-section-title" id="acu-why-title" data-i18n="acu_why_title">Why Choose Our Acupuncture &amp; Traditional Wellness Program?</h2>
+              <p class="prog-section-desc" id="acu-why-sub" data-i18n="acu_why_sub">
+                Immerse yourself in centuries of natural healing philosophy, meridian energetics, and hands-on non-invasive modalities for personal well-being.
+              </p>
+            </div>
+
+            <div class="prog-pillar-grid" id="acu-pillars-grid">
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid fa-yin-yang"></i></div>
+                <h3 class="prog-pillar-title" data-i18n="acu_why_1_title">Foundations of Ancient TCM Wisdom</h3>
+                <p class="prog-pillar-text" data-i18n="acu_why_1_desc">
+                  Master foundational Traditional Chinese Medicine concepts: Yin-Yang balance, Five Elements (Wu Xing), Zang-Fu organ systems, Qi, Blood, and Body Fluids.
+                </p>
+              </div>
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid fa-diagram-project"></i></div>
+                <h3 class="prog-pillar-title" data-i18n="acu_why_2_title">14 Meridian Channels &amp; Acupoint Anatomy</h3>
+                <p class="prog-pillar-text" data-i18n="acu_why_2_desc">
+                  Gain deep anatomical understanding of the 12 primary meridians, Ren &amp; Du extraordinary vessels, and precise landmark location of 100+ therapeutic acupoints.
+                </p>
+              </div>
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid fa-leaf"></i></div>
+                <h3 class="prog-pillar-title" data-i18n="acu_why_3_title">Holistic Health &amp; Preventative Life Cultivation</h3>
+                <p class="prog-pillar-text" data-i18n="acu_why_3_desc">
+                  Empower yourself and your family with natural wellness knowledge, seasonal Yang Sheng lifestyle habits, food energetics, and non-pharmacological health maintenance.
+                </p>
+              </div>
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid fa-hand-holding-medical"></i></div>
+                <h3 class="prog-pillar-title" data-i18n="acu_why_4_title">Practical Demonstrations &amp; Multimodality Labs</h3>
+                <p class="prog-pillar-text" data-i18n="acu_why_4_desc">
+                  Observe guided clean needle safety demonstrations, filiform needle insertion protocols, moxibustion (Ai Jiu), glass fire cupping, Gua Sha, and Tuina therapeutic massage.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. Flexible Schedules -->
+          <section class="prog-card" id="schedule">
+            <div class="prog-section-header">
+              <span class="prog-section-tag">Convenient Delivery</span>
+              <h2 class="prog-section-title" id="acu-sched-title" data-i18n="acu_sched_title">Flexible Schedule Options to Fit Your Life</h2>
+              <p class="prog-section-desc" id="acu-sched-desc" data-i18n="acu_sched_desc">
+                We understand our students balance careers, family, and studies. Victoria College provides multiple convenient schedules:
+              </p>
+            </div>
+
+            <div class="schedule-grid">
+              <div class="schedule-card">
+                <span class="schedule-badge">Accelerated Study</span>
+                <h4 data-i18n="acu_sched_week_title">Weekday Intensive Cohort</h4>
+                <div class="schedule-time"><i class="fa-regular fa-clock"></i> <span data-i18n="acu_sched_week_time">Monday to Friday: 9:00 AM – 5:00 PM</span></div>
+                <p data-i18n="acu_sched_week_desc">Accelerated full-time pace with immersive daily theory lectures and afternoon guided practical demonstrations.</p>
+              </div>
+              <div class="schedule-card" style="background: #fdf4ff; border-color: #f5d0fe;">
+                <span class="schedule-badge" style="background: #a21caf;">Popular for Working Adults</span>
+                <h4 style="color: #701a75;" data-i18n="acu_sched_end_title">Weekend &amp; Evening Professional Cohort</h4>
+                <div class="schedule-time" style="color: #a21caf;"><i class="fa-regular fa-clock"></i> <span data-i18n="acu_sched_end_time">Friday: 6:00 PM – 10:00 PM | Sat &amp; Sun: 10:00 AM – 6:30 PM</span></div>
+                <p data-i18n="acu_sched_end_desc">Specially designed for working professionals and wellness enthusiasts seeking flexible part-time study without quitting their day jobs.</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; padding: 14px 18px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13.5px; color: #475569; display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-video" style="color: #10b981; font-size: 16px;"></i>
+              <span data-i18n="acu_sched_format">Hybrid Delivery: Live interactive online theory lectures combined with in-person weekend practical clinic workshops.</span>
+            </div>
+          </section>
+
+          <!-- 3. Credentials & Certifications Awarded -->
+          <section class="prog-card" id="credentials">
+            <div class="prog-section-header">
+              <span class="prog-section-tag">Learning Outcomes</span>
+              <h2 class="prog-section-title" id="acu-cred-title" data-i18n="acu_cred_title">Credentials &amp; Learning Outcomes Awarded</h2>
+              <p class="prog-section-desc" id="acu-cred-sub" data-i18n="acu_cred_sub">
+                Upon successfully completing the program, graduates receive comprehensive academic and practical documentation:
+              </p>
+            </div>
+
+            <div class="credentials-grid" id="acu-credentials-grid">
+              <div class="credential-card">
+                <i class="fa-solid fa-certificate"></i>
+                <div>
+                  <h4 data-i18n="acu_cred_1_title">Victoria College Certificate of Completion</h4>
+                  <p data-i18n="acu_cred_1_desc">Official Certificate of Course Completion in Traditional Acupuncture Foundations &amp; Wellness (2250 Hours).</p>
+                </div>
+              </div>
+              <div class="credential-card">
+                <i class="fa-solid fa-shield-virus"></i>
+                <div>
+                  <h4 data-i18n="acu_cred_2_title">Clean Needle Technique (CNT) &amp; Safety Record</h4>
+                  <p data-i18n="acu_cred_2_desc">Comprehensive training in single-use needle hygiene, sterile protocols, contraindications, and clinic safety.</p>
+                </div>
+              </div>
+              <div class="credential-card">
+                <i class="fa-solid fa-fire-flame-curved"></i>
+                <div>
+                  <h4 data-i18n="acu_cred_3_title">Auxiliary Modalities Proficiency Portfolio</h4>
+                  <p data-i18n="acu_cred_3_desc">Practical mastery in moxibustion (Ai Jiu), fire cupping therapy, Gua Sha scraping, and Tuina acupressure.</p>
+                </div>
+              </div>
+              <div class="credential-card">
+                <i class="fa-solid fa-user-doctor"></i>
+                <div>
+                  <h4 data-i18n="acu_cred_4_title">Supervised Clinical Observation &amp; Lab Hours</h4>
+                  <p data-i18n="acu_cred_4_desc">Documented hours of live instructor demonstrations, palpation drills, and simulated case studies.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. Regulatory Notice & Compliance Statement -->
+          <section class="prog-card" id="compliance">
+            <div class="prog-section-header">
+              <span class="prog-section-tag" style="color: #b45309;">Official Notice</span>
+              <h2 class="prog-section-title" id="acu-comp-title" data-i18n="acu_comp_title">Regulatory Notice &amp; Compliance Statement</h2>
+            </div>
+
+            <div class="compliance-box">
+              <h4><i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="acu_comp_title">Regulatory Notice &amp; Compliance</span></h4>
+              <p id="acu-comp-reg" data-i18n="acu_comp_reg">
+                <strong>Regulatory Notice:</strong> This is a non-vocational program offered by Victoria International College of Business and Technology. It is intended for personal or professional development only and does not lead to licensure, certification, or authorization to practise acupuncture in Ontario.
+              </p>
+              <p id="acu-comp-mcu" data-i18n="acu_comp_mcu">
+                <strong>Compliance Statement:</strong> This is a non-vocational, MCU-exempt program offered by Victoria International College of Business and Technology. <em>This program does not require approval under the Ontario Career Colleges Act, 2005.</em>
+              </p>
+            </div>
+          </section>
+
+          <!-- 5. 2250-Hour Curriculum Outline (10 Modules) -->
+          <section class="prog-card" id="curriculum">
+            <div class="prog-section-header">
+              <span class="prog-section-tag">2250 Hours Structure</span>
+              <h2 class="prog-section-title" id="acu-curr-title" data-i18n="acu_curr_title">Official 2250-Hour Curriculum Outline (10 Comprehensive Modules)</h2>
+              <p class="prog-section-desc" id="acu-curr-desc" data-i18n="acu_curr_desc">
+                A rigorous, structured journey through traditional Chinese medicine theory, meridian anatomy, diagnostic arts, and practical healing modalities:
+              </p>
+            </div>
+
+            <ul class="curriculum-list" id="acu-curriculum-list">
+              <li class="curriculum-item">
+                <span class="curriculum-num">1</span>
+                <div>
+                  <strong><span data-i18n="acu_m1_t">Foundations &amp; Philosophy of Traditional Chinese Medicine (TCM)</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m1_h">225 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m1_d">Historical evolution of TCM, Yin-Yang philosophy, Five Elements (Wu Xing) correspondences, Zang-Fu organ systems, Qi, Blood, and Body Fluids physiology.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">2</span>
+                <div>
+                  <strong><span data-i18n="acu_m2_t">Meridian Channels &amp; Acupoint Anatomy (14 Main Channels)</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m2_h">250 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m2_d">Surface anatomy, pathway trajectories of the 12 Regular Meridians, Ren Mai and Du Mai extraordinary vessels, and landmark location of 100+ vital wellness acupoints.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">3</span>
+                <div>
+                  <strong><span data-i18n="acu_m3_t">TCM Diagnostic Fundamentals &amp; Syndrome Differentiation</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m3_h">225 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m3_d">The Four Diagnostic Methods: Inspection (Wang - tongue and complexion), Auscultation/Olfaction (Wen), Inquiry (Wen), and Palpation (Qie - radial pulse diagnosis).</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">4</span>
+                <div>
+                  <strong><span data-i18n="acu_m4_t">Acupuncture Needling Techniques &amp; Clean Needle Safety Protocols (CNT)</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m4_h">225 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m4_d">Needle anatomy and selection, single-use sterile filiform needles, insertion angles, depths, de-qi sensations, tonification/sedation, and safety contraindications.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">5</span>
+                <div>
+                  <strong><span data-i18n="acu_m5_t">Traditional Auxiliary Therapies: Moxibustion, Cupping &amp; Gua Sha</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m5_h">200 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m5_d">Direct and indirect moxibustion (Ai Jiu / moxa roll), fire cupping (glass and bamboo), moving cupping, flash cupping, and Gua Sha meridian scraping protocols.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">6</span>
+                <div>
+                  <strong><span data-i18n="acu_m6_t">Tuina Chinese Therapeutic Massage &amp; Acupressure for Pain Relief</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m6_h">225 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m6_d">Traditional hand techniques (pushing, kneading, grasping, rolling), meridian channel clearing, and acupressure protocols for muscle tension and stiffness.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">7</span>
+                <div>
+                  <strong><span data-i18n="acu_m7_t">TCM Internal Health &amp; Common Wellness Condition Analysis</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m7_h">225 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m7_d">Holistic strategies for digestive harmonization, stress management, sleep quality improvement, vitality enhancement, and seasonal respiratory support.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">8</span>
+                <div>
+                  <strong><span data-i18n="acu_m8_t">Musculoskeletal Wellness &amp; Pain Management Techniques</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m8_h">225 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m8_d">Acupressure protocols, meridian thermal therapy, and joint mobility enhancement for neck, shoulder, lower back, and knee comfort.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">9</span>
+                <div>
+                  <strong><span data-i18n="acu_m9_t">TCM Dietary Energetics, Food Therapy &amp; Yang Sheng Living</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m9_h">200 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m9_d">Thermal properties of foods (cold, cool, neutral, warm, hot), five flavors in nutrition, herbal tea formulations, seasonal dietetics, and mindful longevity practices.</div>
+                </div>
+              </li>
+              <li class="curriculum-item">
+                <span class="curriculum-num">10</span>
+                <div>
+                  <strong><span data-i18n="acu_m10_t">Supervised Clinical Demonstrations, Case Workshops &amp; Hands-on Labs</span></strong>
+                  <span class="curriculum-hours" data-i18n="acu_m10_h">250 Hours</span>
+                  <div style="margin-top: 4px;" data-i18n="acu_m10_d">In-clinic observation of master practitioners, palpation drills, safe mock simulation workshops, practical case scenario analysis, and professional ethics.</div>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 6. Who Should Attend & Admissions Prerequisites -->
+          <section class="prog-card" id="admissions">
+            <div class="prog-section-header">
+              <span class="prog-section-tag">Audience &amp; Entry</span>
+              <h2 class="prog-section-title" id="acu-adm-title" data-i18n="acu_adm_title">Who Should Attend &amp; Program Prerequisites</h2>
+            </div>
+
+            <ul class="admissions-list" id="acu-admissions-list">
+              <li>
+                <i class="fa-solid fa-circle-check"></i>
+                <span data-i18n="acu_adm_1">Individuals passionate about exploring traditional wellness concepts and natural holistic healing arts.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check"></i>
+                <span data-i18n="acu_adm_2">Anyone seeking personal interest learning, family health empowerment, and complementary self-care techniques.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check"></i>
+                <span data-i18n="acu_adm_3">Practicing wellness professionals, registered massage therapists (RMTs), aesthetic/spa specialists, and fitness trainers seeking to deepen their TCM knowledge.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check"></i>
+                <span data-i18n="acu_adm_4">No prior medical background required; classes are taught with clear, step-by-step bilingual instruction.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check"></i>
+                <span data-i18n="acu_adm_5">Applicants must be 18 years of age or older with a commitment to holistic health learning.</span>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 7. Interactive Frequently Asked Questions -->
+          <section class="prog-card" id="faqs">
+            <div class="prog-section-header">
+              <span class="prog-section-tag">Student Inquiries</span>
+              <h2 class="prog-section-title" id="acu-faq-title" data-i18n="acu_faq_title">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="faq-list" id="acu-faq-list">
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="acu_faq_q1">Is this program suitable for beginners with no prior medical background?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="acu_faq_a1">
+                  Yes, absolutely! The program is structured from the ground up, starting with core TCM philosophy and intuitive meridian charts before advancing to practical techniques. Instructors guide you step-by-step.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="acu_faq_q2">What schedule options are available and can I study while working full-time?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="acu_faq_a2">
+                  Yes! We offer a full-time Weekday Cohort (Mon–Fri 9am–5pm) and a flexible Weekend/Evening Cohort (Fri 6pm–10pm, Sat/Sun 10am–6:30pm). Live online theory lectures and recorded reviews make it easy for working professionals.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="acu_faq_q3">What is the regulatory status of this program in Ontario?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="acu_faq_a3">
+                  This is a Non-Vocational Program intended for personal interest, wellness knowledge, and complementary education. Under the Ontario Career Colleges Act, 2005, it is exempt from career college approval and does not lead to licensed acupuncturist registration (R.Ac) with CTCMPAO.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                  <span data-i18n="acu_faq_q4">What practical skills and auxiliary modalities will I learn?</span>
+                  <i class="fa-solid fa-angle-down"></i>
+                </div>
+                <div class="faq-body" style="display: none;" data-i18n="acu_faq_a4">
+                  You will gain hands-on knowledge in clean needle safety protocols, acupoint location, moxibustion (Ai Jiu), glass fire cupping, Gua Sha meridian scraping, Tuina Chinese therapeutic massage, and seasonal TCM dietary therapy.
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Right Column: Sticky Consultation & Program Snapshot -->
+        <aside class="prog-sidebar">
+
+          <!-- Sticky Consultation & Application Card -->
+          <div class="prog-consult-card" id="consultation-card">
+            <h3 id="acu-form-title" data-i18n="acu_form_title">Apply / Book Consultation</h3>
+            <p id="acu-form-desc" data-i18n="acu_form_desc">
+              Reserve your spot or request program details. An advisor will contact you within 24 hours.
+            </p>
+
+            <form id="acu-consultation-form" onsubmit="event.preventDefault(); handleAcuBooking(this);">
+              <div class="consult-form-group">
+                <label for="acu-name" data-i18n="acu_form_name_lbl">Your Full Name *</label>
+                <input type="text" id="acu-name" required placeholder="e.g. David Zhang / Sarah Miller"
+                  data-i18n-placeholder="acu_form_name_ph">
+              </div>
+
+              <div class="consult-form-group">
+                <label for="acu-email" data-i18n="acu_form_email_lbl">Email Address *</label>
+                <input type="email" id="acu-email" required placeholder="name@example.com"
+                  data-i18n-placeholder="acu_form_email_ph">
+              </div>
+
+              <div class="consult-form-group">
+                <label for="acu-phone" data-i18n="acu_form_phone_lbl">Phone Number *</label>
+                <input type="tel" id="acu-phone" required placeholder="416-665-6668"
+                  data-i18n-placeholder="acu_form_phone_ph">
+              </div>
+
+              <div class="consult-form-group" style="margin-top: 10px;">
+                <label style="display: flex; align-items: flex-start; gap: 8px; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox" id="acu-sched-check" checked style="width: auto; margin-top: 3px;">
+                  <span style="font-size: 12.5px; color: #475569;" data-i18n="acu_form_sched_pref">
+                    Preferred Schedule: Weekend / Evening Cohort
+                  </span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn-submit-consult" id="acu-btn-submit" data-i18n="acu_form_submit">
+                Submit Consultation Request
+              </button>
+
+              <div id="acu-form-feedback" style="display: none; margin-top: 12px; font-size: 13px; text-align: center;"></div>
+            </form>
+          </div>
+
+          <!-- Schedule Options Promo Card -->
+          <div class="prog-grant-card">
+            <span class="prog-grant-badge" data-i18n="acu_side_sched_badge">FLEXIBLE LEARNING</span>
+            <h4 data-i18n="acu_side_sched_title">Weekday &amp; Weekend Options</h4>
+            <p data-i18n="acu_side_sched_desc">
+              Study traditional acupuncture and wellness without disrupting your full-time job. Contact our admissions team to explore cohort start dates.
+            </p>
+            <a href="#consultation-card" class="btn-grant-check" data-i18n="acu_side_sched_btn">
+              Request Schedule Details
+            </a>
+          </div>
+
+          <!-- Program Snapshot Card -->
+          <div class="prog-snapshot-card">
+            <h4 data-i18n="acu_side_snap_title"><i class="fa-solid fa-circle-info" style="color: #047857;"></i> Program Snapshot</h4>
+            <ul class="prog-snapshot-list">
+              <li>
+                <span class="snap-lbl" data-i18n="acu_side_c_lbl">Credential:</span>
+                <span class="snap-val" id="acu-side-credential" data-i18n="acu_side_c_val">Certificate of Completion (2250 Hours)</span>
+              </li>
+              <li>
+                <span class="snap-lbl" data-i18n="acu_side_d_lbl">Duration:</span>
+                <span class="snap-val" id="acu-side-duration" data-i18n="acu_side_d_val">2250 Hours (Flexible)</span>
+              </li>
+              <li>
+                <span class="snap-lbl" data-i18n="acu_side_del_lbl">Delivery:</span>
+                <span class="snap-val" id="acu-side-delivery" data-i18n="acu_side_del_val">Hybrid (Online Theory + Practical Labs)</span>
+              </li>
+              <li>
+                <span class="snap-lbl" data-i18n="acu_side_loc_lbl">Locations:</span>
+                <span class="snap-val" id="acu-side-locations" data-i18n="acu_side_loc_val">Markham / North York / Live Online</span>
+              </li>
+              <li>
+                <span class="snap-lbl" data-i18n="acu_side_hot_lbl">Hotline:</span>
+                <span class="snap-val" id="acu-side-hotline"><a href="tel:416-665-6668" style="color: #047857; text-decoration: none;">416-665-6668</a></span>
+              </li>
+            </ul>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Column 1: Logo & About -->
+        <div class="footer-col">
+          <div class="footer-logo-row">
+            <img class="footer-logo-img" src="images/vic_logo.png" alt="Victoria College">
+            <span class="footer-brand-name">VICTORIA<br>INTERNATIONAL COLLEGE<br><span
+                style="font-size:12px; color:#888;" data-i18n="logo_brand_sub">OF BUSINESS &amp; TECHNOLOGY</span></span>
+          </div>
+          <p class="footer-reg-statement" data-i18n="footer_desc">Registered as a career college under the <i>Ontario
+              Career Colleges Act, 2005</i>.</p>
+          <div class="footer-socials">
+            <a href="https://www.facebook.com/profile.php?id=100078023242504" target="_blank" rel="noopener"><i
+                class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/vic.college/?utm_medium=copy_link" target="_blank" rel="noopener"><i
+                class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <!-- Column 2: Programs -->
+        <div class="footer-col">
+          <h3 data-i18n="footer_col_programs">Programs</h3>
+          <ul class="footer-prog-list" id="acu-footer-prog-list">
+            <li><a href="personal-support-worker-online-psw-course.html" data-i18n="prog_psw_title">NACC Personal Support Worker DE 2022</a></li>
+            <li><a href="computerized-accounting.html" data-i18n="prog_acc_title">Accounting, Tax and Payroll</a></li>
+            <li><a href="early-childcare-assistant-eca.html" data-i18n="prog_eca_title">Early Childcare Assistant</a></li>
+            <li><a href="acupuncture-program.html" class="active" data-i18n="prog_acu_title">Acupuncture &amp; Traditional Wellness</a></li>
+            <li><a href="electrician.html" data-i18n="prog_elec_title">Electrician (309A / 442A)</a></li>
+            <li><a href="software-development.html" data-i18n="prog_tech_title">Full Stack Web with AI Mini-Credential</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Contact -->
+        <div class="footer-col">
+          <h3 data-i18n="nav_contact">Contact</h3>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <a href="tel:416-665-6668">416-665-6668</a>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span data-i18n="campus_markham_addr">7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span data-i18n="campus_nyork_addr">306 Consumers Rd., North York, ON M2J 1P8</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-bar"
+        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <span data-i18n="footer_copyright">Copyright © 2026 VICTORIA INTERNATIONAL COLLEGE OF BUSINESS &amp; TECHNOLOGY.
+          All rights reserved.</span>
+        <div style="font-size: 12.5px;">
+          <a href="admin.html?tab=programs&edit=acupuncture"
+            style="color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s;"
+            onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#94a3b8'">
+            <i class="fa-solid fa-lock" style="font-size: 11px;"></i> Staff / Admin Portal
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Quick Admin Edit Floating Shortcut -->
+  <div id="quick-admin-edit-badge" style="position: fixed; bottom: 24px; left: 24px; z-index: 9999;">
+    <a href="admin.html?tab=programs&edit=acupuncture" title="Open Admin Portal to Edit Programs, Copy &amp; Media"
+      style="display: inline-flex; align-items: center; gap: 8px; background: #064e3b; color: #ffffff; padding: 10px 18px; border-radius: 24px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1.5px solid rgba(255,255,255,0.25); transition: transform 0.2s, background 0.2s;"
+      onmouseover="this.style.transform='translateY(-2px)'; this.style.background='#047857';"
+      onmouseout="this.style.transform='none'; this.style.background='#064e3b';">
+      <i class="fa-solid fa-pen-to-square" style="color: #34d399; font-size: 14px;"></i>
+      <span>Edit Acupuncture in Admin</span>
+    </a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ai-chatbot.js"></script>
+  <script>
+    // FAQ Toggle Handler
+    function toggleFaq(header) {
+      const body = header.nextElementSibling;
+      const isHidden = body.style.display === 'none' || window.getComputedStyle(body).display === 'none';
+      body.style.display = isHidden ? 'block' : 'none';
+      const icon = header.querySelector('i');
+      if (icon) {
+        icon.className = isHidden ? 'fa-solid fa-angle-up' : 'fa-solid fa-angle-down';
+      }
+    }
+
+    // Lead Consultation Submission
+    function handleAcuBooking(form) {
+      const name = document.getElementById('acu-name').value;
+      const email = document.getElementById('acu-email').value;
+      const phone = document.getElementById('acu-phone').value;
+      const schedPref = document.getElementById('acu-sched-check').checked;
+
+      const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/consultations') : '/api/consultations';
+      const feedback = document.getElementById('acu-form-feedback');
+      const submitBtn = document.getElementById('acu-btn-submit');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: phone,
+          program: 'Acupuncture & Traditional Wellness',
+          preferred_schedule: schedPref ? 'Weekend / Evening Cohort' : 'Weekday Cohort',
+          source_page: 'acupuncture-program'
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Submit Consultation Request';
+          feedback.style.display = 'block';
+          if (data.success) {
+            feedback.style.color = '#047857';
+            feedback.innerHTML = typeof window.translations !== 'undefined' && window.translations[currentLanguage] && window.translations[currentLanguage].acu_form_success
+              ? window.translations[currentLanguage].acu_form_success
+              : '<strong>Thank You!</strong> Your request has been submitted. Our admissions advisor will reach out shortly.';
+            form.reset();
+          } else {
+            feedback.style.color = '#dc2626';
+            feedback.innerHTML = 'Error: ' + (data.error || 'Failed to submit request.');
+          }
+        })
+        .catch(err => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Submit Consultation Request';
+          feedback.style.display = 'block';
+          feedback.style.color = '#dc2626';
+          feedback.innerHTML = 'Network error. Please call 416-665-6668 directly.';
+        });
+    }
+
+    // Language Handling & Dynamic DB Hydration
+    let currentLanguage = localStorage.getItem('vic_lang') || 'en';
+    let acuDynamicData = null;
+    let allProgramsList = [];
+
+    // 1. Fetch live dynamic content for Acupuncture program
+    async function loadAcuData() {
+      try {
+        const rawUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs/acupuncture') : '/api/programs/acupuncture';
+        const progApiUrl = rawUrl + (rawUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+        const res = await fetch(progApiUrl, { cache: 'no-store' });
+        const data = await res.json();
+        if (res.ok && data.success && data.program) {
+          acuDynamicData = data.program;
+          renderDynamicAcuContent(currentLanguage);
+        }
+      } catch (err) {
+        console.warn('Could not load dynamic Acupuncture program data from API:', err);
+      }
+
+      // Fetch all active programs for navigation dropdowns and footer
+      try {
+        const rawUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/programs') : '/api/programs';
+        const progsApiUrl = rawUrl + (rawUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+        const res = await fetch(progsApiUrl, { cache: 'no-store' });
+        const data = await res.json();
+        if (res.ok && data.success && Array.isArray(data.programs)) {
+          allProgramsList = data.programs;
+          renderDynamicNavPrograms(currentLanguage);
+        }
+      } catch (err) {
+        console.warn('Could not load dynamic programs list from API:', err);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // 2. Render Dynamic Acupuncture Content from DB
+    function renderDynamicAcuContent(lang = currentLanguage) {
+      if (!acuDynamicData) return;
+
+      const parseDetail = (val) => {
+        if (!val) return {};
+        if (typeof val === 'object') return val;
+        try {
+          let parsed = JSON.parse(val);
+          while (typeof parsed === 'string') parsed = JSON.parse(parsed);
+          return typeof parsed === 'object' && parsed !== null ? parsed : {};
+        } catch (e) {
+          return {};
+        }
+      };
+
+      const isZh = lang === 'zh';
+      const detailZh = parseDetail(acuDynamicData.detail_json_zh);
+      const detailEn = parseDetail(acuDynamicData.detail_json_en);
+      const detail = isZh ? (Object.keys(detailZh).length > 0 ? detailZh : detailEn) : (Object.keys(detailEn).length > 0 ? detailEn : detailZh);
+      const title = (isZh ? acuDynamicData.title_zh : acuDynamicData.title_en) || acuDynamicData.title_en;
+      const badge = (isZh ? acuDynamicData.badge_zh : acuDynamicData.badge_en) || acuDynamicData.badge_en;
+      const heroLead = detail.hero?.lead || (isZh ? acuDynamicData.overview_zh : acuDynamicData.overview_en) || (isZh ? acuDynamicData.desc_zh : acuDynamicData.desc_en) || '';
+      const duration = (isZh ? acuDynamicData.duration_zh : acuDynamicData.duration_en) || acuDynamicData.duration_en;
+      const credential = (isZh ? acuDynamicData.credential_zh : acuDynamicData.credential_en) || acuDynamicData.credential_en;
+
+      // 1. Hero Section
+      const badgeEl = document.getElementById('acu-hero-badge');
+      if (badgeEl && (detail.hero?.badge || badge)) badgeEl.textContent = detail.hero?.badge || badge;
+
+      const titleEl = document.getElementById('acu-hero-title');
+      if (titleEl && (detail.hero?.title || title)) titleEl.textContent = detail.hero?.title || title;
+
+      const leadEl = document.getElementById('acu-hero-lead');
+      if (leadEl && heroLead) leadEl.textContent = heroLead;
+
+      const breadCurrEl = document.getElementById('acu-bread-curr');
+      if (breadCurrEl && title) breadCurrEl.textContent = title;
+
+      // 2. Quick Stats Bar
+      const stats = Array.isArray(detail.stats) ? detail.stats : [];
+      if (stats.length > 0) {
+        stats.forEach((st, idx) => {
+          const valEl = document.getElementById(`acu-stat-${idx + 1}-val`);
+          const lblEl = document.getElementById(`acu-stat-${idx + 1}-lbl`);
+          const subEl = document.getElementById(`acu-stat-${idx + 1}-sub`);
+          if (valEl && st.val) valEl.textContent = st.val;
+          if (lblEl && st.lbl) lblEl.textContent = st.lbl;
+          if (subEl && st.sub) subEl.textContent = st.sub;
+        });
+      }
+
+      // 3. Why Choose Program Pillars
+      if (detail.why_choose) {
+        const whyTitle = document.getElementById('acu-why-title');
+        if (whyTitle && detail.why_choose.title) whyTitle.textContent = detail.why_choose.title;
+
+        const whySub = document.getElementById('acu-why-sub');
+        if (whySub && detail.why_choose.subtitle) whySub.textContent = detail.why_choose.subtitle;
+
+        if (Array.isArray(detail.why_choose.pillars) && detail.why_choose.pillars.length > 0) {
+          const pillarsGrid = document.getElementById('acu-pillars-grid');
+          if (pillarsGrid) {
+            const icons = ['fa-yin-yang', 'fa-diagram-project', 'fa-leaf', 'fa-hand-holding-medical'];
+            pillarsGrid.innerHTML = detail.why_choose.pillars.map((p, i) => `
+              <div class="prog-pillar-item">
+                <div class="prog-pillar-icon"><i class="fa-solid ${icons[i % icons.length]}"></i></div>
+                <h3 class="prog-pillar-title">${escapeHtml(p.title)}</h3>
+                <p class="prog-pillar-text">${escapeHtml(p.desc)}</p>
+              </div>
+            `).join('');
+          }
+        }
+      }
+
+      // 4. Credentials
+      if (detail.credentials) {
+        const credTitle = document.getElementById('acu-cred-title');
+        if (credTitle && detail.credentials.title) credTitle.textContent = detail.credentials.title;
+
+        const credSub = document.getElementById('acu-cred-sub');
+        if (credSub && detail.credentials.subtitle) credSub.textContent = detail.credentials.subtitle;
+
+        if (Array.isArray(detail.credentials.items) && detail.credentials.items.length > 0) {
+          const credGrid = document.getElementById('acu-credentials-grid');
+          if (credGrid) {
+            const icons = ['fa-certificate', 'fa-shield-virus', 'fa-fire-flame-curved', 'fa-user-doctor'];
+            credGrid.innerHTML = detail.credentials.items.map((c, i) => `
+              <div class="credential-card">
+                <i class="fa-solid ${icons[i % icons.length]}"></i>
+                <div>
+                  <h4>${escapeHtml(c.title)}</h4>
+                  <p>${escapeHtml(c.desc)}</p>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      }
+
+      // 5. Curriculum Modules
+      const currTitle = document.getElementById('acu-curr-title');
+      if (currTitle && detail.curriculum?.title) currTitle.textContent = detail.curriculum.title;
+
+      const currDesc = document.getElementById('acu-curr-desc');
+      if (currDesc && detail.curriculum?.desc) currDesc.textContent = detail.curriculum.desc;
+
+      const currList = document.getElementById('acu-curriculum-list');
+      if (currList) {
+        let modulesToRender = [];
+        if (Array.isArray(detail.curriculum_modules) && detail.curriculum_modules.length > 0) {
+          modulesToRender = detail.curriculum_modules;
+        } else {
+          const rawMods = isZh ? (acuDynamicData.modules_zh || acuDynamicData.modules_en) : (acuDynamicData.modules_en || acuDynamicData.modules_zh);
+          if (Array.isArray(rawMods)) {
+            modulesToRender = rawMods.map((m, idx) => ({
+              num: idx + 1,
+              title: typeof m === 'object' ? m.title : m,
+              hours: typeof m === 'object' ? m.hours : '',
+              desc: typeof m === 'object' ? m.desc : ''
+            }));
+          }
+        }
+
+        if (modulesToRender.length > 0) {
+          currList.innerHTML = modulesToRender.map((mod, idx) => {
+            const modNum = mod.num || (idx + 1);
+            const modTitle = typeof mod === 'object' ? mod.title : mod;
+            const modHours = mod.hours ? `<span class="curriculum-hours">${escapeHtml(mod.hours)}</span>` : '';
+            const modDesc = typeof mod === 'object' ? mod.desc : '';
+            return `
+              <li class="curriculum-item">
+                <span class="curriculum-num">${modNum}</span>
+                <div>
+                  <strong>${escapeHtml(modTitle)}</strong>
+                  ${modHours}
+                  ${modDesc ? `<div style="margin-top: 4px;">${escapeHtml(modDesc)}</div>` : ''}
+                </div>
+              </li>
+            `;
+          }).join('');
+        }
+      }
+
+      // 6. Admission Requirements
+      if (detail.admissions) {
+        const admTitle = document.getElementById('acu-adm-title');
+        if (admTitle && detail.admissions.title) admTitle.textContent = detail.admissions.title;
+
+        if (Array.isArray(detail.admissions.items) && detail.admissions.items.length > 0) {
+          const admList = document.getElementById('acu-admissions-list');
+          if (admList) {
+            admList.innerHTML = detail.admissions.items.map(item => `
+              <li><i class="fa-solid fa-circle-check"></i> <span>${escapeHtml(item)}</span></li>
+            `).join('');
+          }
+        }
+      }
+
+      // 7. Sidebar Snapshot
+      const sideDurationEl = document.getElementById('acu-side-duration');
+      if (sideDurationEl && duration) sideDurationEl.textContent = duration;
+
+      const sideCredEl = document.getElementById('acu-side-credential');
+      if (sideCredEl && credential) sideCredEl.textContent = credential;
+
+      if (detail.snapshot) {
+        const delEl = document.getElementById('acu-side-delivery');
+        if (delEl && detail.snapshot.delivery) delEl.textContent = detail.snapshot.delivery;
+
+        const locEl = document.getElementById('acu-side-locations');
+        if (locEl && detail.snapshot.locations) locEl.textContent = detail.snapshot.locations;
+      }
+
+      // 8. FAQs
+      if (Array.isArray(detail.faqs) && detail.faqs.length > 0) {
+        const faqList = document.getElementById('acu-faq-list');
+        if (faqList) {
+          faqList.innerHTML = detail.faqs.map(item => `
+            <div class="faq-item">
+              <div class="faq-header" onclick="toggleFaq(this)">
+                <span>${escapeHtml(item.q)}</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </div>
+              <div class="faq-body" style="display: none;">
+                ${escapeHtml(item.a)}
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    // 3. Render Dynamic Program Links in Nav Dropdown & Footer
+    function renderDynamicNavPrograms(lang = currentLanguage) {
+      if (!Array.isArray(allProgramsList) || allProgramsList.length === 0) return;
+      const isZh = lang === 'zh';
+
+      const navDropdown = document.getElementById('acu-nav-dropdown');
+      const footerList = document.getElementById('acu-footer-prog-list');
+
+      const programUrlMap = {
+        'psw': 'personal-support-worker-online-psw-course.html',
+        'accounting': 'computerized-accounting.html',
+        'eca': 'early-childcare-assistant-eca.html',
+        'acupuncture': 'acupuncture-program.html',
+        'electrician': 'electrician.html',
+        'tech': 'software-development.html',
+        'fullstack': 'software-development.html',
+        'software-development': 'software-development.html'
+      };
+
+      const itemsHtml = allProgramsList.filter(p => p.is_active !== 0).map(p => {
+        const title = isZh ? (p.title_zh || p.title_en) : (p.title_en || p.title_zh);
+        const url = programUrlMap[p.slug] || `index.html#${p.slug}`;
+        const activeClass = p.slug === 'acupuncture' ? ' class="active"' : '';
+        return `<a href="${url}"${activeClass}>${escapeHtml(title)}</a>`;
+      }).join('');
+
+      if (navDropdown && itemsHtml) navDropdown.innerHTML = itemsHtml;
+
+      const footerHtml = allProgramsList.filter(p => p.is_active !== 0).map(p => {
+        const title = isZh ? (p.title_zh || p.title_en) : (p.title_en || p.title_zh);
+        const url = programUrlMap[p.slug] || `index.html#${p.slug}`;
+        const activeClass = p.slug === 'acupuncture' ? ' class="active"' : '';
+        return `<li><a href="${url}"${activeClass}>${escapeHtml(title)}</a></li>`;
+      }).join('');
+
+      if (footerList && footerHtml) footerList.innerHTML = footerHtml;
+    }
+
+    // 4. Apply Language
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('vic_lang', lang);
+      document.documentElement.lang = lang;
+
+      const dict = window.translations && window.translations[lang] ? window.translations[lang] : {};
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.innerHTML = dict[key];
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (dict[key]) el.placeholder = dict[key];
+      });
+
+      document.querySelectorAll('.js-lang-toggle').forEach(btn => {
+        const labelSpan = btn.querySelector('.lang-label');
+        const badgeSpan = btn.querySelector('.lang-badge');
+        if (labelSpan) {
+          labelSpan.textContent = lang === 'en' ? '中文' : 'English';
+        }
+        if (badgeSpan) {
+          badgeSpan.textContent = lang === 'en' ? 'EN' : '中文';
+        }
+        btn.setAttribute('aria-label', lang === 'en' ? 'Switch to Chinese' : 'Switch to English');
+      });
+
+      renderDynamicAcuContent(lang);
+      renderDynamicNavPrograms(lang);
+    }
+
+    // Expose applyLanguage
+    window.applyLanguage = applyLanguage;
+
+    // Mobile Navigation Drawer Toggle
+    const mobileToggleBtn = document.querySelector('.mobile-toggle-btn');
+    const mobileDrawerClose = document.querySelector('.mobile-drawer-close');
+    const mobileDrawerOverlay = document.querySelector('.mobile-drawer-overlay');
+    const mobileNavDrawer = document.querySelector('.mobile-nav-drawer');
+
+    function openMobileDrawer() {
+      if (mobileNavDrawer) mobileNavDrawer.classList.add('active');
+      if (mobileDrawerOverlay) mobileDrawerOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileDrawer() {
+      if (mobileNavDrawer) mobileNavDrawer.classList.remove('active');
+      if (mobileDrawerOverlay) mobileDrawerOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileToggleBtn) mobileToggleBtn.addEventListener('click', openMobileDrawer);
+    if (mobileDrawerClose) mobileDrawerClose.addEventListener('click', closeMobileDrawer);
+    if (mobileDrawerOverlay) mobileDrawerOverlay.addEventListener('click', closeMobileDrawer);
+
+    // Attach click listeners to all language toggle buttons
+    document.querySelectorAll('.js-lang-toggle').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const nextLang = currentLanguage === 'en' ? 'zh' : 'en';
+        applyLanguage(nextLang);
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAcuData();
+      applyLanguage(currentLanguage);
+    });
+  </script>
+</body>
+
+</html>
