@@ -12,13 +12,13 @@
       en: {
         intro: "Victoria International College of Business & Technology is an Ontario registered career college (under the Ontario Career Colleges Act, 2005) with over 22 years of educational excellence and 15,000+ successful alumni across Canada.",
         contact: "📞 Phone: 416-665-6668 | ✉️ Email: info@viccollege.com | 🕒 Hours: Monday – Saturday, 9:00 AM – 6:00 PM.",
-        campuses: "📍 Markham Main Campus: 7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8\n📍 North York Campus: 306 Consumers Rd., North York, ON M2J 1P8",
+        campuses: "📍 Markham Main Campus: 7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8",
         leadership: "President Maria Sun is the Dean of Victoria International College and President of Victoria Education Group, with 22+ years of leadership empowering new immigrants and youth in Canada."
       },
       zh: {
         intro: "维多利亚职业学院（Victoria International College of Business & Technology）是经安大略省教育部（Ontario Career Colleges Act, 2005）正式注册认可的正规职业学院，办学逾22年，累计培养并协助15,000多名优秀毕业学员在加国高薪就业。",
         contact: "📞 咨询热线：416-665-6668 | ✉️ 邮箱：info@viccollege.com | 🕒 办公时间：周一至周六 9:00 AM – 6:00 PM",
-        campuses: "📍 万锦主校区：7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8\n📍 北约克校区：306 Consumers Rd., North York, ON M2J 1P8",
+        campuses: "📍 万锦主校区：7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8",
         leadership: "孙善勤（Maria Sun）校长为维多利亚教育集团总裁、维多利亚职业学院院长，深耕加国职业教育22年，帮助成千上万华人新移民和学子成功融入加国职场。"
       }
     },
@@ -211,7 +211,7 @@
         <span class="vic-launcher-badge">AI</span>
         <div class="vic-launcher-tooltip">
           <span class="pulse-dot"></span>
-          <span id="vic-launcher-tooltip-text">${lang === 'zh' ? '有疑问？问问 VIC 智能升学助手' : 'Have questions? Ask VIC AI Advisor'}</span>
+          <span id="vic-launcher-tooltip-text">${lang === 'zh' ? '有疑问？问问 AI 智能升学助手' : 'Have questions? Ask AI Advisor'}</span>
         </div>
       </button>
 
@@ -226,7 +226,7 @@
             </div>
             <div>
               <div class="vic-chat-title">
-                <span>VIC AI Advisor</span>
+                <span>AI Advisor</span>
                 <span class="vic-ai-chip">24/7 Live</span>
               </div>
               <div class="vic-chat-subtitle" id="vic-chat-status">
@@ -284,8 +284,9 @@
           </button>
         </form>
 
-        <div class="vic-chat-footer-brand">
-          <span>Ontario Registered Career College • Powered by Victoria AI</span>
+        <div class="vic-chat-footer-brand" id="vic-chat-footer-disclaimer">
+          <i class="fa-solid fa-triangle-exclamation" style="margin-right: 4px; color: #f59e0b;"></i>
+          <span id="vic-chat-disclaimer-text">${lang === 'zh' ? '本系统为 AI 智能助手，回复仅供参考。确切课程信息及资助评估请联系学院顾问：416-665-6668 / info@viccollege.com。' : 'AI-generated responses for guidance only. For official answers & grant assessments, please contact Victoria College at 416-665-6668 or info@viccollege.com.'}</span>
         </div>
       </div>
     `;
@@ -306,7 +307,8 @@
       clearBtn: container.querySelector('.js-clear-chat'),
       tooltipText: container.querySelector('#vic-launcher-tooltip-text'),
       statusText: container.querySelector('#vic-chat-status'),
-      bannerText: container.querySelector('#vic-chat-banner-text')
+      bannerText: container.querySelector('#vic-chat-banner-text'),
+      disclaimerText: container.querySelector('#vic-chat-disclaimer-text')
     };
 
     renderSuggestions();
@@ -925,8 +927,8 @@
     // Fallback: General helpful guidance
     return {
       text: lang === 'zh'
-        ? `您好！我是维多利亚职业学院的智能升学顾问。我可以为您提供：\n\n• 💰 **政府补助评估**（最高可获 $28,000+ 免费学费与生活补贴）\n• 🩺 **热门专业文凭**（PSW 护工、全栈开发、会计税务、幼教、电工）\n• 🏫 **校区与联系方式**（万锦 & 北约克两大校区）\n• 📅 **1对1 职业规划预约**\n\n请问您对哪个专业或政府补助感兴趣？`
-        : `Hello! I am your Victoria College AI Advisor. I can assist you with:\n\n• 💰 **Government Grants** (Up to $28,000+ for tuition & living allowances)\n• 🩺 **Career Programs** (PSW, Full Stack Web, Accounting & Tax, Early Childcare, Electrician)\n• 🏫 **Campus & Contact Info** (Markham & North York)\n• 📅 **1-on-1 Career Consultation Booking**\n\nWhich program or funding topic would you like to explore?`,
+        ? `您好！我是维多利亚职业学院的智能升学顾问。我可以为您提供：\n\n• 💰 **政府补助评估**（最高可获 $28,000+ 免费学费与生活补贴）\n• 🩺 **热门专业文凭**（PSW 护工、全栈开发、会计税务、幼教、电工）\n• 🏫 **校区与联系方式**（万锦主校区）\n• 📅 **1对1 职业规划预约**\n\n请问您对哪个专业或政府补助感兴趣？`
+        : `Hello! I am your Victoria College AI Advisor. I can assist you with:\n\n• 💰 **Government Grants** (Up to $28,000+ for tuition & living allowances)\n• 🩺 **Career Programs** (PSW, Full Stack Web, Accounting & Tax, Early Childcare, Electrician)\n• 🏫 **Campus & Contact Info** (Markham Main Campus)\n• 📅 **1-on-1 Career Consultation Booking**\n\nWhich program or funding topic would you like to explore?`,
       actions: [
         { label: lang === 'zh' ? '💰 评估 $28,000 政府补助' : '💰 Check $28,000 Grant', action: 'consult', param: 'aid' },
         { label: lang === 'zh' ? '🩺 查看 PSW 护工专业' : '🩺 View PSW Program', action: 'open_modal', param: 'psw' },
@@ -1164,7 +1166,7 @@
       if (lang === 'zh') {
         appendMessage({
           role: 'bot',
-          text: `### 🔒 维多利亚职业学院 • 智能升学顾问\n\n💡 **咨询范围：** 评估 **$28,000+ 政府助学金**、**PSW 护理 / IT 全栈 / 会计文凭** 及 **校区升学规划**。\n\n请先登录您的账号开启智能咨询：`,
+          text: `### 🔒 维多利亚职业学院 • 智能升学顾问\n\n💡 **咨询范围：** 评估 **$28,000+ 政府助学金**、**PSW 护理 / IT 全栈 / 会计文凭** 及 **校区升学规划**。\n\n⚠️ *温馨提示：本系统为 AI 智能顾问，所有回答仅供参考。确切课程信息、开班时间及官方资助评估，请直接联系学院顾问（热线：416-665-6668 / 邮箱：info@viccollege.com）获取最准确答复。*\n\n请先登录您的账号开启智能咨询：`,
           actions: [
             { label: '🔑 立即登录 / 注册账号', action: 'auth', param: 'login' },
             { label: '🌐 使用 Google 账号登录', action: 'auth_google', param: '' },
@@ -1175,7 +1177,7 @@
       } else {
         appendMessage({
           role: 'bot',
-          text: `### 🔒 Victoria College AI Career & Admissions Assistant\n\n💡 **Purpose:** Instant guidance on **$28,000+ Government Grants**, **PSW / IT / Business Diplomas**, and **campus admissions**.\n\nPlease sign in with your account to start chatting:`,
+          text: `### 🔒 Victoria College AI Career & Admissions Assistant\n\n💡 **Purpose:** Instant guidance on **$28,000+ Government Grants**, **PSW / IT / Business Diplomas**, and **campus admissions**.\n\n⚠️ *Please Note: This is an AI assistant for general guidance. For official answers, verified grant evaluations, and enrollment confirmations, please contact our admissions team directly at 416-665-6668 or info@viccollege.com.*\n\nPlease sign in with your account to start chatting:`,
           actions: [
             { label: '🔑 Sign In / Register Account', action: 'auth', param: 'login' },
             { label: '🌐 Continue with Google', action: 'auth_google', param: '' },
@@ -1189,7 +1191,7 @@
       if (lang === 'zh') {
         appendMessage({
           role: 'bot',
-          text: `### 👋 您好${user?.name ? '，' + user.name : ''}！欢迎咨询维多利亚职业学院\n\n💡 **咨询范围：** 快捷评估 **$28,000+ 政府助学金**、**PSW 护理 / IT 全栈 / 会计文凭** 及 **校区升学规划**。\n\n请在下方输入您想咨询的问题，或点击快捷推荐：`,
+          text: `### 👋 您好${user?.name ? '，' + user.name : ''}！欢迎咨询维多利亚职业学院\n\n💡 **咨询范围：** 快捷评估 **$28,000+ 政府助学金**、**PSW 护理 / IT 全栈 / 会计文凭** 及 **校区升学规划**。\n\n⚠️ *温馨提示：本系统为 AI 智能助手，回答仅供参考。确切课程信息、开课安排及资助审批请直接联系学院顾问（416-665-6668 / info@viccollege.com）获取官方准确答复。*\n\n请在下方输入您想咨询的问题，或点击快捷推荐：`,
           actions: [
             { label: '💰 评估 $28,000 政府补助', action: 'consult', param: 'aid' },
             { label: '🩺 了解 PSW 护工专业', action: 'open_modal', param: 'psw' },
@@ -1200,7 +1202,7 @@
       } else {
         appendMessage({
           role: 'bot',
-          text: `### 👋 Welcome back, ${userName}!\n\n💡 **Purpose:** Instant guidance on **$28,000+ Government Grants**, **PSW / IT / Accounting Diplomas**, and **campus admissions**.\n\nSelect a quick topic below or type your question:`,
+          text: `### 👋 Welcome back, ${userName}!\n\n💡 **Purpose:** Instant guidance on **$28,000+ Government Grants**, **PSW / IT / Accounting Diplomas**, and **campus admissions**.\n\n⚠️ *Please Note: This is an AI assistant for quick inquiries. For official answers and personalized grant evaluations, please connect directly with our admissions team at 416-665-6668 or info@viccollege.com.*\n\nSelect a quick topic below or type your question:`,
           actions: [
             { label: '💰 Check $28,000 Grant', action: 'consult', param: 'aid' },
             { label: '🩺 Explore PSW Healthcare', action: 'open_modal', param: 'psw' },
@@ -1224,13 +1226,18 @@
     if (!elements.container) return;
 
     if (elements.tooltipText) {
-      elements.tooltipText.textContent = lang === 'zh' ? '有疑问？问问 VIC 智能升学助手' : 'Have questions? Ask VIC AI Advisor';
+      elements.tooltipText.textContent = lang === 'zh' ? '有疑问？问问 AI 智能升学助手' : 'Have questions? Ask AI Advisor';
     }
     if (elements.statusText) {
       elements.statusText.textContent = lang === 'zh' ? '维多利亚职业学院 • 智能问答系统' : 'Victoria College • Career & Grant Assistant';
     }
     if (elements.bannerText) {
       elements.bannerText.textContent = lang === 'zh' ? '💡 Better Jobs Ontario 政府资助最高可达 $28,000+' : '💡 Qualify for up to $28,000+ Government Training Grants';
+    }
+    if (elements.disclaimerText) {
+      elements.disclaimerText.textContent = lang === 'zh'
+        ? '本系统为 AI 智能助手，回复仅供参考。确切课程信息及资助评估请联系学院顾问：416-665-6668 / info@viccollege.com。'
+        : 'AI-generated responses for guidance only. For official answers & grant assessments, please contact Victoria College at 416-665-6668 or info@viccollege.com.';
     }
     if (elements.input) {
       elements.input.placeholder = lang === 'zh' ? '输入您的问题（如：PSW就业、政府补助、学费）...' : 'Ask about programs, grants, tuition, admissions...';

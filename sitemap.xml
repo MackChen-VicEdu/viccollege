@@ -4,31 +4,31 @@
   <!-- Core Institutional Pages -->
   <url>
     <loc>https://viccollege.ca/</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://viccollege.ca/#programs</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://viccollege.ca/#financial-aid</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://viccollege.ca/#about</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://viccollege.ca/#consultation</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -64,6 +64,6 @@
       <geo:lat>43.7758</geo:lat>
       <geo:long>-79.3458</geo:long>
     </geo:geo>
-    <!-- GEO Target: Toronto & North York, Ontario -->
+    <!-- GEO Target: Toronto & Markham, Ontario -->
   </url>
 </urlset>

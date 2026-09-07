@@ -1672,7 +1672,7 @@
 
           setVal('prog-snap-del-en', snapEn.delivery || 'Hybrid (Online + Lab)');
           setVal('prog-snap-prac-en', snapEn.practicum || '310+ Hours (Guaranteed)');
-          setVal('prog-snap-loc-en', snapEn.locations || 'Markham / North York');
+          setVal('prog-snap-loc-en', snapEn.locations || 'Markham Main Campus / Live Online');
           setVal('prog-snap-hot-en', snapEn.hotline || '416-665-6668');
 
           setVal('prog-grant-badge-en', grantEn.badge || 'GOVERNMENT GRANTS');
@@ -1761,7 +1761,7 @@
 
           setVal('prog-snap-del-zh', snapZh.delivery || '混成教学（线上理论 + 校区实训）');
           setVal('prog-snap-prac-zh', snapZh.practicum || '310+ 小时（100% 对口安排）');
-          setVal('prog-snap-loc-zh', snapZh.locations || '万锦总校区 / 北约克校区');
+          setVal('prog-snap-loc-zh', snapZh.locations || '万锦主校区 / 在线直播');
           setVal('prog-snap-hot-zh', snapZh.hotline || '416-665-6668');
 
           setVal('prog-grant-badge-zh', grantZh.badge || '安省政府培训资助');
@@ -1937,7 +1937,7 @@
         snapshot: {
           delivery: getVal('prog-snap-del-en') || 'Hybrid (Online + Lab)',
           practicum: getVal('prog-snap-prac-en') || '310+ Hours (Guaranteed)',
-          locations: getVal('prog-snap-loc-en') || 'Markham / North York',
+          locations: getVal('prog-snap-loc-en') || 'Markham Main Campus / Live Online',
           hotline: getVal('prog-snap-hot-en') || '416-665-6668'
         },
         grants: {
@@ -2001,7 +2001,7 @@
         snapshot: {
           delivery: getVal('prog-snap-del-zh') || '混成教学（线上理论 + 校区实训）',
           practicum: getVal('prog-snap-prac-zh') || '310+ 小时（100% 对口安排）',
-          locations: getVal('prog-snap-loc-zh') || '万锦总校区 / 北约克校区',
+          locations: getVal('prog-snap-loc-zh') || '万锦主校区 / 在线直播',
           hotline: getVal('prog-snap-hot-zh') || '416-665-6668'
         },
         grants: {
