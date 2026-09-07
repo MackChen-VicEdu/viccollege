@@ -5557,6 +5557,43 @@ def serve_electrician_page():
 def serve_software_development_page():
     return send_from_directory(BASE_DIR, 'software-development.html')
 
+@app.route('/privacy-policy')
+@app.route('/privacy-policy/')
+@app.route('/privacy-policy.html')
+def serve_privacy_policy_page():
+    return send_from_directory(BASE_DIR, 'privacy-policy.html')
+
+@app.route('/KPI-audit-requirements')
+@app.route('/KPI-audit-requirements/')
+@app.route('/KPI-audit-requirements.html')
+@app.route('/kpi-audit-requirements')
+@app.route('/kpi-audit-requirements/')
+@app.route('/kpi-audit-requirements.html')
+def serve_kpi_audit_requirements_page():
+    return send_from_directory(BASE_DIR, 'kpi-audit-requirements.html')
+
+@app.route('/sexual-violence-policy')
+@app.route('/sexual-violence-policy/')
+@app.route('/sexual-violence-policy.html')
+def serve_sexual_violence_policy_page():
+    return send_from_directory(BASE_DIR, 'sexual-violence-policy.html')
+
+@app.route('/students-complaint-procedure')
+@app.route('/students-complaint-procedure/')
+@app.route('/students-complaint-procedure.html')
+@app.route('/student-complaint-procedure')
+@app.route('/student-complaint-procedure.html')
+def serve_students_complaint_procedure_page():
+    return send_from_directory(BASE_DIR, 'students-complaint-procedure.html')
+
+@app.route('/academic-accommodation-policy-and-procedure-for-students-with-disabilities')
+@app.route('/academic-accommodation-policy-and-procedure-for-students-with-disabilities/')
+@app.route('/academic-accommodation-policy-and-procedure-for-students-with-disabilities.html')
+@app.route('/academic-accommodation-policy')
+@app.route('/academic-accommodation')
+def serve_academic_accommodation_policy_page():
+    return send_from_directory(BASE_DIR, 'academic-accommodation-policy-and-procedure-for-students-with-disabilities.html')
+
 @app.route('/<path:path>')
 def serve_static(path):
     if path.startswith('api/'):

@@ -225,8 +225,17 @@ const translations = {
     footer_policy_kpi: "KPI Audit Requirements",
     footer_policy_sexual: "Sexual Violence Policy",
     footer_policy_complaint: "Students Complaint Procedure",
-    footer_policy_disability: "Academic Accommodation for Students with Disabilities",
+    footer_policy_disability: "Academic Accommodation policy & Procedure for student with disabilities",
     footer_copyright: "Copyright © 2026 Victoria International College of Business & Technology. All rights reserved.",
+
+    // Policy Pages (EN)
+    policy_bread_home: "Home",
+    policy_bread_policies: "Policies & Compliance",
+    policy_privacy_title: "Privacy Policy | Victoria International College",
+    policy_kpi_title: "KPI Audit Requirements | Victoria International College",
+    policy_sexual_title: "Sexual Violence Policy & Protocol | Victoria International College",
+    policy_complaint_title: "Student Complaint Resolution Procedure | Victoria International College",
+    policy_disability_title: "Academic Accommodation Policy & Procedure for Students with Disabilities | Victoria International College",
 
     // Dedicated PSW Course Page
     psw_page_title: "Online PSW Course • NACC Personal Support Worker DE 2022 | Victoria International College",
@@ -1112,10 +1121,20 @@ const translations = {
     footer_service_4: "专场招聘会与雇主直荐渠道",
     footer_col_legal: "合规与规章制度",
     footer_policy_privacy: "隐私政策 (Privacy Policy)",
-    footer_policy_kpi: "KPI 绩效审计指标 (KPI Audit)",
-    footer_policy_sexual: "反性暴力防范政策",
-    footer_policy_complaint: "学生申诉处理规程",
+    footer_policy_kpi: "KPI 绩效审计指标 (KPI Audit Requirements)",
+    footer_policy_sexual: "反性暴力防范政策 (Sexual Violence Policy)",
+    footer_policy_complaint: "学生申诉处理规程 (Students Complaint Procedure)",
+    footer_policy_disability: "残障学生学术通融政策与规程 (Academic Accommodation Policy)",
     footer_copyright: "版权所有 © 2026 维多利亚国际职业教育学院 (Victoria International College). 保留所有权利。",
+
+    // Policy Pages (ZH)
+    policy_bread_home: "首页",
+    policy_bread_policies: "规章制度与合规政策",
+    policy_privacy_title: "隐私政策 • Privacy Policy | 维多利亚国际职业教育学院",
+    policy_kpi_title: "KPI 绩效审计指标与报告 | 维多利亚国际职业教育学院",
+    policy_sexual_title: "反性暴力防范与应对政策 | 维多利亚国际职业教育学院",
+    policy_complaint_title: "学生申诉与纠纷处理规程 | 维多利亚国际职业教育学院",
+    policy_disability_title: "残障学生学术通融政策与操作规程 | 维多利亚国际职业教育学院",
 
     // Dedicated PSW Course Page
     psw_page_title: "线上 PSW 护工课程 • NACC 个人护理专业文凭 | 维多利亚国际职业教育学院",
