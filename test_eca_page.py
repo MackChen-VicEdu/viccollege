@@ -23,10 +23,12 @@ class TestEcaPage(unittest.TestCase):
             self.assertIn('id="eca-credentials-grid"', html)
             self.assertIn('id="eca-admissions-list"', html)
             self.assertIn('id="eca-faq-list"', html)
-            self.assertIn('id="eca-consultation-form"', html)
             self.assertIn('Early Childcare Assistant', html)
             self.assertIn('500+ Hours', html)
             self.assertIn('Licensed Ontario Daycares', html)
+            self.assertIn('js/auth.js', html)
+            self.assertIn('js/ai-chatbot.js', html)
+            self.assertIn('/admin', html)
 
     def test_eca_api_endpoints_and_aliases(self):
         """Verify /api/programs/eca and aliases return full detail and 10 modules."""

@@ -1440,14 +1440,24 @@
         </div>
       </div>
 
-      <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px; text-align: center; font-size: 13px; color: #64748b;">
-        &copy; 2026 Victoria International College of Business Healthcare Technology &amp; Trades. All Rights Reserved.
+      <div class="footer-bottom-bar"
+        style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 13px; color: #64748b;">
+        <span data-i18n="footer_copyright">&copy; 2026 Victoria International College of Business Healthcare Technology &amp; Trades. All Rights Reserved.</span>
+        <div style="font-size: 12.5px;">
+          <a href="/admin"
+            style="color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s;"
+            onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#94a3b8'">
+            <i class="fa-solid fa-lock" style="font-size: 11px;"></i> Staff / Admin Portal
+          </a>
+        </div>
       </div>
     </div>
   </footer>
 
   <!-- Scripts -->
   <script src="js/translations.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ai-chatbot.js"></script>
   <script>
     // State
     let currentLanguage = localStorage.getItem('vic_lang') || 'en';
@@ -1771,6 +1781,10 @@
 
       renderDynamicElectricianContent(lang);
       renderDynamicNavPrograms(lang);
+
+      if (typeof window.updateChatbotLanguage === 'function') {
+        window.updateChatbotLanguage(lang);
+      }
     }
 
     // Expose applyLanguage

@@ -41,11 +41,14 @@ class TestElectricianPage(unittest.TestCase):
             self.assertIn('id="elec-faq-list"', html)
             self.assertIn('id="elec-consultation-form"', html)
 
-            # Key domain terms
+            # Key domain terms and auth integration
             self.assertIn('309A', html)
             self.assertIn('442A', html)
             self.assertIn('Canadian Electrical Code (CEC)', html)
             self.assertIn('Ontario Career Colleges Act, 2005', html)
+            self.assertIn('js/auth.js', html)
+            self.assertIn('js/ai-chatbot.js', html)
+            self.assertIn('/admin', html)
 
     def test_electrician_api_endpoints_and_aliases(self):
         """Verify /api/programs/electrician and all alias routes return full detail and 10 modules."""
