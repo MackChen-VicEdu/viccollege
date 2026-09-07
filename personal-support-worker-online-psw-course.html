@@ -368,12 +368,6 @@
           <span class="lang-label" data-i18n="lang_btn">中文</span>
           <span class="lang-badge lang-current">EN</span>
         </button>
-        <a href="admin.html?tab=programs&edit=psw" class="desktop-only"
-          style="margin-left: 10px; display: inline-flex; align-items: center; gap: 6px; background: rgba(220, 38, 38, 0.08); border: 1px solid rgba(220, 38, 38, 0.25); color: #dc2626; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s;"
-          title="Edit this program in the Admin Portal">
-          <i class="fa-solid fa-pen-to-square"></i>
-          <span>Edit Program</span>
-        </a>
       </div>
 
       <!-- Mobile Hamburger Button -->
@@ -397,17 +391,13 @@
       </button>
     </div>
 
-    <div style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="margin-bottom: 20px;">
       <button type="button" class="lang-switcher-vic js-lang-toggle" style="width: 100%; justify-content: center;"
         aria-label="Toggle language">
         <i class="fa-solid fa-globe"></i>
         <span class="lang-label" data-i18n="lang_btn">中文</span>
         <span class="lang-badge lang-current">EN</span>
       </button>
-      <a href="admin.html?tab=programs&edit=psw"
-        style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #dc2626; color: #fff; padding: 10px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 13.5px;">
-        <i class="fa-solid fa-pen-to-square"></i> Edit Program in Admin
-      </a>
     </div>
 
     <nav class="mobile-nav-links" id="psw-mobile-nav-links">
@@ -423,7 +413,7 @@
   <!-- Hero Banner -->
   <section class="prog-page-hero">
     <div class="container">
-      <div class="prog-breadcrumb" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+      <div class="prog-breadcrumb">
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <a href="index.html#home"><i class="fa-solid fa-house"></i> <span data-i18n="psw_bread_home">Home</span></a>
           <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
@@ -433,14 +423,6 @@
           <i class="fa-solid fa-angle-right" style="font-size: 11px;"></i>
           <span id="psw-bread-curr" data-i18n="psw_bread_curr">NACC Personal Support Worker DE 2022</span>
         </div>
-        <a href="admin.html?tab=programs&edit=psw"
-          style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(8px); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.4); padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-decoration: none; transition: background 0.2s;"
-          onmouseover="this.style.background='rgba(255,255,255,0.3)'"
-          onmouseout="this.style.background='rgba(255,255,255,0.18)'"
-          title="Open Admin Portal to edit this program">
-          <i class="fa-solid fa-pen-to-square" style="color: #fbbf24;"></i>
-          <span>Edit This Page</span>
-        </a>
       </div>
 
       <span class="prog-hero-badge" id="psw-hero-badge" data-i18n="psw_hero_badge">Accredited Career Diploma • NACC PSW DE 2022</span>
@@ -910,17 +892,6 @@
       </div>
     </div>
   </footer>
-
-  <!-- Quick Admin Edit Floating Shortcut (Links directly to PSW program editor in Admin) -->
-  <div id="quick-admin-edit-badge" style="position: fixed; bottom: 24px; left: 24px; z-index: 9999;">
-    <a href="admin.html?tab=programs&edit=psw" title="Open Admin Portal to Edit Programs, Copy &amp; Media"
-      style="display: inline-flex; align-items: center; gap: 8px; background: #0f172a; color: #ffffff; padding: 10px 18px; border-radius: 24px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1.5px solid rgba(255,255,255,0.25); transition: transform 0.2s, background 0.2s;"
-      onmouseover="this.style.transform='translateY(-2px)'; this.style.background='#1e293b';"
-      onmouseout="this.style.transform='none'; this.style.background='#0f172a';">
-      <i class="fa-solid fa-pen-to-square" style="color: #f59e0b; font-size: 14px;"></i>
-      <span>Edit PSW in Admin</span>
-    </a>
-  </div>
 
   <!-- Scripts -->
   <script src="js/translations.js"></script>

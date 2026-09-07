@@ -32,7 +32,6 @@ class TestAcupuncturePage(unittest.TestCase):
             self.assertIn('id="acu-admissions-list"', html)
             self.assertIn('id="acu-faq-list"', html)
             self.assertIn('id="acu-consultation-form"', html)
-            self.assertIn('admin.html?tab=programs&edit=acupuncture', html)
             
             # Key domain terms
             self.assertIn('2250 Hours', html)

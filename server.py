@@ -437,12 +437,12 @@ def get_default_accounting_detail_zh():
 def get_default_eca_detail_en():
     return {
         "hero": {
-            "badge": "Ontario Approved Career Diploma • 28-Week Intensive Daycare Placement",
+            "badge": "Ontario Approved Career Diploma • 22-Week Intensive Daycare Placement",
             "title": "Launch Your Rewarding Career as a Certified Early Childcare Assistant (ECA)",
             "lead": "Help shape the next generation with Ontario-approved early childhood training. Master child development, health & safety, creative curriculum planning, and gain 500+ hours of guaranteed hands-on field placement in licensed daycares and preschools across the GTA."
         },
         "stats": [
-            {"value": "28 Weeks", "label": "Comprehensive Theory + 500+ Hours Daycare Placement"},
+            {"value": "22 Weeks", "label": "Comprehensive Theory + 500+ Hours Daycare Placement"},
             {"value": "$18 – $26 / hr", "label": "Competitive GTA Starting Wage + $2/hr Gov WEG Grant"},
             {"value": "100% Daycare Placement", "label": "Guaranteed Practicum in Accredited Daycare Centers"},
             {"value": "Up to $28,000+", "label": "Eligible for Full Better Jobs Ontario Government Funding"}
@@ -484,7 +484,7 @@ def get_default_eca_detail_en():
             ]
         },
         "curriculum": {
-            "title": "Comprehensive 28-Week Curriculum Modules (10 Core Subjects)",
+            "title": "Comprehensive 22-Week Curriculum Modules (10 Core Subjects)",
             "desc": "Our structured curriculum equips students with the exact competencies mandated by Ontario's Child Care and Early Years Act (CCEYA) and early learning frameworks:"
         },
         "curriculum_modules": [
@@ -514,8 +514,8 @@ def get_default_eca_detail_en():
         },
         "faqs": [
             {"q": "Can I study the theory portion of the ECA program online from home?", "a": "Yes! All theory lectures and interactive classroom modules are delivered live online with expert early childhood instructors. You will attend flexible online sessions, followed by your guaranteed in-person daycare practicum in your local area."},
-            {"q": "How long is the Early Childcare Assistant program?", "a": "The program is 28 weeks in total, combining comprehensive theoretical foundations, creative workshop labs, and 500+ hours of hands-on field practicum in licensed Ontario daycare centers."},
-            {"q": "What is the difference between an ECA and an ECE in Ontario?", "a": "An ECA (Early Childcare Assistant) works directly alongside Registered Early Childhood Educators (RECEs) in daycare rooms, assisting with daily routines, learning activities, nutrition, and child supervision. ECA is a fast-track 28-week diploma that allows you to start working in the childcare field quickly."},
+            {"q": "How long is the Early Childcare Assistant program?", "a": "The program is 22 weeks in total, combining comprehensive theoretical foundations, creative workshop labs, and 500+ hours of hands-on field practicum in licensed Ontario daycare centers."},
+            {"q": "What is the difference between an ECA and an ECE in Ontario?", "a": "An ECA (Early Childcare Assistant) works directly alongside Registered Early Childhood Educators (RECEs) in daycare rooms, assisting with daily routines, learning activities, nutrition, and child supervision. ECA is a fast-track 22-week diploma that allows you to start working in the childcare field quickly."},
             {"q": "Are there government grants available for this program?", "a": "Yes! This program is fully eligible for Better Jobs Ontario (formerly Second Career), offering up to $28,000+ in non-repayable government grants covering 100% of your tuition, learning materials, transportation, and living expenses for qualified applicants."},
             {"q": "Do you guarantee daycare field placement?", "a": "Yes! Victoria College coordinates 100% of your 500+ hours supervised field practicum with our extensive network of licensed daycares, Montessori schools, and early learning centers across the GTA."},
             {"q": "What are the job prospects and hourly wages after graduation?", "a": "Job prospects are exceptionally strong due to Ontario's $10/day childcare expansion. Starting wages typically range from $18 to $26/hour, plus an additional $2/hour Ontario Wage Enhancement Grant (WEG) for eligible childcare staff."}
@@ -525,12 +525,12 @@ def get_default_eca_detail_en():
 def get_default_eca_detail_zh():
     return {
         "hero": {
-            "badge": "安省注册幼教职业文凭 • 28 周持牌日托中心保障实习",
+            "badge": "安省注册幼教职业文凭 • 22 周持牌日托中心保障实习",
             "title": "开启充满爱心与高薪稳定的职业生涯 • 早期幼儿教育助理 (ECA) 职业文凭",
             "lead": "投身安省极度紧缺的早期幼儿教育行业。系统学习婴幼儿及学龄前儿童心理发展、健康营养、安全防护与启蒙教案设计，保障进入安省持牌正规幼儿园/日托中心进行 500+ 小时实地带薪/跟岗实习。"
         },
         "stats": [
-            {"value": "28 周", "label": "网课理论/校区实操 + 500+小时持牌幼儿园实地实习"},
+            {"value": "22 周", "label": "网课理论/校区实操 + 500+小时持牌幼儿园实地实习"},
             {"value": "$18 – $26 / 小时", "label": "大多伦多地区起薪 + 安省政府每小时 $2 薪资补贴 (WEG)"},
             {"value": "100% 保障实习", "label": "对口签约安省正规持牌日托中心与早教机构"},
             {"value": "$28,000+ 补贴", "label": "符合 Better Jobs Ontario 政府全额无偿资助"}
@@ -572,7 +572,7 @@ def get_default_eca_detail_zh():
             ]
         },
         "curriculum": {
-            "title": "官方 28 周教学大纲（10 门专业核心科目）",
+            "title": "官方 22 周教学大纲（10 门专业核心科目）",
             "desc": "严格遵循安省《托儿与早期儿童法案》（CCEYA 2014）与官方幼教发展指南（How Does Learning Happen?）精心设计："
         },
         "curriculum_modules": [
@@ -602,8 +602,8 @@ def get_default_eca_detail_zh():
         },
         "faqs": [
             {"q": "幼教 ECA 课程可以在家线上学习理论吗？", "a": "可以！所有理论课程与互动研讨均采用线上名师实时直播教学，配合课后录播复习，随后由学院为您就近安排当地安省持牌日托中心进行实地跟岗实习。"},
-            {"q": "ECA 幼教助理课程需要学习多久？", "a": "课程总计 28 周，包含系统的幼儿心理与启蒙教育理论课、教案设计工坊以及 500+ 小时持牌托儿所全真实战实习。"},
-            {"q": "在安省 ECA（幼教助理）和 ECE（注册幼教）有什么区别？", "a": "ECA 是协助主班 ECE 开展日常教学、幼儿生活照料与安全看护的专业人员。ECA 课程周期短（28周），学费更低，能帮助您以最快速度进入安省幼教行业并获得稳定收入，未来还可继续进修成为 RECE。"},
+            {"q": "ECA 幼教助理课程需要学习多久？", "a": "课程总计 22 周，包含系统的幼儿心理与启蒙教育理论课、教案设计工坊以及 500+ 小时持牌托儿所全真实战实习。"},
+            {"q": "在安省 ECA（幼教助理）和 ECE（注册幼教）有什么区别？", "a": "ECA 是协助主班 ECE 开展日常教学、幼儿生活照料与安全看护的专业人员。ECA 课程周期短（22周），学费更低，能帮助您以最快速度进入安省幼教行业并获得稳定收入，未来还可继续进修成为 RECE。"},
             {"q": "我可以申请政府学费资助吗？", "a": "完全可以！本课程符合安省 Better Jobs Ontario 政府资助计划，合资格者最高可获 $28,000+ 无偿政府全额补贴，无需偿还，学院专家免费协助全程申请。"},
             {"q": "学校会保障安排正规托儿所实习吗？", "a": "是的！维多利亚学院拥有遍布大多伦多地区的庞大签约日托中心网络，100% 为每位学员对口落实 500+ 小时正规实习岗位。"},
             {"q": "毕业后的就业前景和时薪待遇如何？", "a": "在安省 $10/天普惠日托政策推动下，全省幼教缺口巨大。ECA 起薪通常在 $18–$26/小时，且符合条件的机构员工还可额外享受安省政府每小时 $2 的工资补贴（WEG），福利完善，工作稳定。"}
@@ -1509,8 +1509,8 @@ def seed_default_programs(cursor, now_str):
             'desc_zh': '我们通过营造注重学术与专业卓越的温馨友善学习环境，为学生提供个人成长与成功的机会。涵盖科目包括：',
             'bullets_en': '[]',
             'bullets_zh': '[]',
-            'duration_en': '28 Weeks (Classroom Theory + Daycare Placement)',
-            'duration_zh': '28 周（理论课 + 正规持牌日托中心跟岗实习）',
+            'duration_en': '22 Weeks (Classroom Theory + Daycare Placement)',
+            'duration_zh': '22 周（理论课 + 正规持牌日托中心跟岗实习）',
             'credential_en': 'Early Childcare Assistant Diploma + Child CPR & First Aid',
             'credential_zh': '安省 ECA 幼教助理文凭 + 儿童急救与 CPR 证书',
             'overview_en': 'Equips students with the practical competencies, child psychology understanding, and health & safety expertise required to support Early Childhood Educators (ECEs) in licensed Ontario daycare facilities.',
@@ -2218,7 +2218,7 @@ Key College Knowledge:
    - NACC Personal Support Worker (PSW DE 2022): 23 weeks, clinical practicum (300+ hrs), $20-$28/hr starting wage.
    - Full Stack Web Technician: 32 weeks, Java, Spring Boot 3, React, TypeScript, AWS, $65k-$85k/yr.
    - Accounting, Tax and Payroll Administration: 30 weeks, QuickBooks, Sage 50, Canadian T1/T2 tax, CPA mentorship.
-   - Early Childcare Assistant (ECA): 28 weeks, child psychology, daycare practicum.
+   - Early Childcare Assistant (ECA): 22 weeks, child psychology, daycare practicum.
    - Electrician 309A / 442A: Canadian Electrical Code (CEC) exam prep, hands-on wiring labs, $35-$55+/hr.
    - Acupuncture & Wellness: TCM meridian theory, holistic health.
 3. Campus:
@@ -2243,6 +2243,9 @@ Key College Knowledge:
         needs_sp_update = False
         if 'PSW DE 2022): 30 weeks' in sp_val:
             sp_val = sp_val.replace('PSW DE 2022): 30 weeks', 'PSW DE 2022): 23 weeks')
+            needs_sp_update = True
+        if 'Early Childcare Assistant (ECA): 28 weeks' in sp_val:
+            sp_val = sp_val.replace('Early Childcare Assistant (ECA): 28 weeks', 'Early Childcare Assistant (ECA): 22 weeks')
             needs_sp_update = True
         if 'North York' in sp_val:
             lines = [l for l in sp_val.split('\n') if 'North York' not in l]
@@ -2306,6 +2309,26 @@ Key College Knowledge:
                 pass
         if updated_en or updated_zh:
             cursor.execute("UPDATE programs SET detail_json_en = ?, detail_json_zh = ?, updated_at = ? WHERE id = ?", (d_en_str, d_zh_str, now_str, prog_r['id']))
+
+    # Auto-migration: Update ECA program duration and detail to 22 weeks
+    cursor.execute("SELECT id, detail_json_en, detail_json_zh FROM programs WHERE slug = 'eca'")
+    eca_prog_row = cursor.fetchone()
+    if eca_prog_row:
+        eca_d_en = eca_prog_row['detail_json_en'] or ''
+        eca_d_zh = eca_prog_row['detail_json_zh'] or ''
+        if '28-Week' in eca_d_en or '28 Weeks' in eca_d_en or '28 weeks' in eca_d_en:
+            eca_d_en = eca_d_en.replace('28-Week', '22-Week').replace('28 Weeks', '22 Weeks').replace('28 weeks', '22 weeks')
+        if '28 周' in eca_d_zh or '28周' in eca_d_zh:
+            eca_d_zh = eca_d_zh.replace('28 周', '22 周').replace('28周', '22周')
+        cursor.execute("""
+            UPDATE programs SET 
+                duration_en = '22 Weeks (Classroom Theory + Daycare Placement)',
+                duration_zh = '22 周（理论课 + 正规持牌日托中心跟岗实习）',
+                detail_json_en = ?,
+                detail_json_zh = ?,
+                updated_at = ?
+            WHERE slug = 'eca'
+        """, (eca_d_en, eca_d_zh, now_str))
 
     # Drop legacy homepage_sections table if exists
     cursor.execute("DROP TABLE IF EXISTS homepage_sections")
@@ -3894,7 +3917,7 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
   <li>🩺 <strong>NACC Personal Support Worker (PSW DE 2022) 医疗护工文凭</strong>（23周，高薪紧缺）</li>
   <li>💻 <strong>Full Stack Web Technician 全栈开发技术员文凭</strong>（32周，起薪 $65k-$85k）</li>
   <li>📊 <strong>Accounting, Tax and Payroll 会计与税务管理文凭</strong>（30周，CPA 带教）</li>
-  <li>👶 <strong>Early Childcare Assistant (ECA) 幼教助理文凭</strong>（28周，持牌托儿所实习）</li>
+  <li>👶 <strong>Early Childcare Assistant (ECA) 幼教助理文凭</strong>（22周，持牌托儿所实习）</li>
   <li>⚡ <strong>Electrician 309A / 442A 电工考证与实操班</strong>（名师带教，高时薪）</li>
 </ul>
 
@@ -3920,7 +3943,7 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
   <li>🩺 <strong>NACC Personal Support Worker (PSW DE 2022):</strong> 23 weeks with guaranteed clinical practicum.</li>
   <li>💻 <strong>Full Stack Web Technician:</strong> 32 weeks, Java, React, TypeScript, AWS cloud.</li>
   <li>📊 <strong>Accounting, Tax and Payroll Administration:</strong> 30 weeks with CPA mentorship.</li>
-  <li>👶 <strong>Early Childcare Assistant (ECA):</strong> 28 weeks with licensed daycare placement.</li>
+  <li>👶 <strong>Early Childcare Assistant (ECA):</strong> 22 weeks with licensed daycare placement.</li>
   <li>⚡ <strong>Electrician (309A / 442A):</strong> Hands-on Canadian electrical code prep.</li>
 </ul>
 

@@ -96,7 +96,7 @@
       eca: {
         en: {
           name: "Early Childcare Assistant (ECA)",
-          duration: "28 Weeks (Includes Field Practicum in Licensed Daycares)",
+          duration: "22 Weeks (Includes Field Practicum in Licensed Daycares)",
           credential: "Early Childcare Assistant Career Diploma",
           salary: "$19 – $25 / hour with rewarding child care growth",
           highlights: "Child psychology, developmental milestones, safety & nutrition, CPR, direct daycare placements.",
@@ -104,7 +104,7 @@
         },
         zh: {
           name: "早期幼儿教育助理 (Early Childcare Assistant - ECA)",
-          duration: "28 周（理论学习 + 安省持牌正规幼儿园实习）",
+          duration: "22 周（理论学习 + 安省持牌正规幼儿园实习）",
           credential: "安省认证 Early Childcare Assistant 职业文凭",
           salary: "时薪 $19 – $25 加元/小时，托儿所长青热门需求",
           highlights: "儿童心理学、幼儿行为引导、膳食营养与紧急救护，100%安排安省持牌幼儿园实地实习。",

@@ -40,7 +40,6 @@ class TestElectricianPage(unittest.TestCase):
             self.assertIn('id="elec-admissions-list"', html)
             self.assertIn('id="elec-faq-list"', html)
             self.assertIn('id="elec-consultation-form"', html)
-            self.assertIn('admin.html?tab=programs&edit=electrician', html)
 
             # Key domain terms
             self.assertIn('309A', html)

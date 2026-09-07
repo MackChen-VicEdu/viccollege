@@ -130,7 +130,7 @@ const programDetailsData = {
     en: {
       title: "Early Childcare Assistant (ECA)",
       badge: "Career Diploma • Daycare Placement",
-      duration: "28 Weeks (Classroom Theory + Daycare Placement)",
+      duration: "22 Weeks (Classroom Theory + Daycare Placement)",
       credential: "Early Childcare Assistant Diploma + Child CPR & First Aid",
       overview: "Equips students with the practical competencies, child psychology understanding, and health & safety expertise required to support Early Childhood Educators (ECEs) in licensed Ontario daycare facilities.",
       modules: [
@@ -149,7 +149,7 @@ const programDetailsData = {
     zh: {
       title: "早期幼儿教育助理 (Early Childcare Assistant - ECA)",
       badge: "安省热门幼教职业文凭 • 保障实习",
-      duration: "28 周（理论课 + 正规持牌日托中心跟岗实习）",
+      duration: "22 周（理论课 + 正规持牌日托中心跟岗实习）",
       credential: "安省 ECA 幼教助理文凭 + 儿童急救与 CPR 证书",
       overview: "随着安省日托政策普及，持证幼教助理需求激增。课程系统培养学员在持牌日托中心配合主班幼教（ECE）开展日常照料、安全监管、早期启蒙游戏及家校沟通的专业能力。",
       modules: [

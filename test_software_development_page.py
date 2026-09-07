@@ -41,7 +41,6 @@ class TestSoftwareDevelopmentPage(unittest.TestCase):
             self.assertIn('id="tech-admissions-list"', html)
             self.assertIn('id="tech-faq-list"', html)
             self.assertIn('id="tech-consultation-form"', html)
-            self.assertIn('admin.html?tab=programs&edit=tech', html)
 
             # Key domain terms
             self.assertIn('React 19', html)
