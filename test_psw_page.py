@@ -138,7 +138,7 @@ class TestPswPageIntegration(unittest.TestCase):
                     'hero': {'lead': 'Updated dynamic hero lead for PSW course testing.'},
                     'stats': [
                         {'value': '23 Weeks', 'label': 'Hybrid Theory + Lab + Practicum'},
-                        {'value': '$22 – $30 / hr', 'label': 'Updated GTA Starting Wage'},
+                        {'value': 'High Demand', 'label': 'Updated GTA Industry Demand'},
                         {'value': '98% Placement', 'label': 'LTC Clinical Direct Hire'},
                         {'value': '$28,000+ Grant', 'label': 'Better Jobs Ontario'}
                     ],
@@ -161,7 +161,7 @@ class TestPswPageIntegration(unittest.TestCase):
             public_res = self.client.get('/api/programs/psw')
             self.assertEqual(public_res.status_code, 200)
             updated_prog = public_res.get_json()['program']
-            self.assertEqual(updated_prog['detail_json_en']['stats'][1]['value'], '$22 – $30 / hr')
+            self.assertEqual(updated_prog['detail_json_en']['stats'][1]['value'], 'High Demand')
             self.assertEqual(updated_prog['detail_json_en']['faqs'][0]['q'], 'Is the PSW course accredited?')
         finally:
             # Restore original detail JSON

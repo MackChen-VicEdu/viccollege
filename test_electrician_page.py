@@ -128,7 +128,7 @@ class TestElectricianPage(unittest.TestCase):
         """Verify js/app.js contains dynamic card and dropdown mappings for electrician.html."""
         res = self.client.get('/js/app.js')
         self.assertEqual(res.status_code, 200)
-        js = res.data.decode('utf-8')
+        js = res.data.decode('utf-8').replace('\r\n', '\n')
         self.assertIn("prog.slug === 'electrician'", js)
         self.assertIn('<a href="electrician.html" class="btn-learn-more">', js)
         self.assertIn("p.slug === 'electrician'\n                ? 'electrician.html'", js)

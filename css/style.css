@@ -207,8 +207,20 @@ ul {
 }
 
 @media (max-width: 992px) {
+  .logo-brand-main {
+    font-size: 1.05rem;
+  }
   .logo-brand-sub {
-    font-size: 0.72rem;
+    font-size: 0.70rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-brand-main {
+    font-size: 0.90rem;
+  }
+  .logo-brand-sub {
+    font-size: 0.62rem;
   }
 }
 

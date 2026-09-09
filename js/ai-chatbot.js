@@ -44,7 +44,7 @@
           name: "NACC Personal Support Worker (PSW DE 2022)",
           duration: "23 Weeks (Classroom + Simulation Lab + Clinical Practicum)",
           credential: "NACC PSW Diploma + Standard First Aid & CPR Level C",
-          salary: "$20 – $28 / hour with strong job security",
+          salary: "Competitive compensation with strong job security & full benefits",
           highlights: "Accredited curriculum, 300+ hours guaranteed clinical practicum in top long-term care homes, direct hiring fairs.",
           overview: "Prepares you for immediate employment in hospitals, nursing homes, and home healthcare agencies. Highly in-demand across Ontario."
         },
@@ -52,7 +52,7 @@
           name: "NACC 个人护理护工文凭 (PSW DE 2022)",
           duration: "23 周（理论课 + 实验室模拟实操 + 300+小时持牌养老院临床实习）",
           credential: "安省 NACC PSW 官方职业文凭 + CPR / First Aid 急救证书",
-          salary: "起薪时薪 $20 – $28 加元/小时，各大公立私立养老院紧缺",
+          salary: "优厚薪酬待遇、享工会全套福利，各大养老院长期紧缺",
           highlights: "配备标准病房模拟实验室，安省持牌资深护士亲授，毕业直接对接西人养老机构实习就业。",
           overview: "安省长期特缺黄金医疗岗位，工作稳定，福利健全，适合希望快速转行医疗领域人士。"
         }
@@ -62,7 +62,7 @@
           name: "Full Stack Web Technician (with AI Mini-Credential)",
           duration: "32 Weeks (Intensive Labs + Commercial Capstone Project)",
           credential: "Full Stack Web Technician Career Diploma + AI Mini-Credential",
-          salary: "$65,000 – $85,000 / year entry starting salary",
+          salary: "High-growth tech scale with rapid advancement in AI & cloud",
           highlights: "Core Java, Spring Boot 3, Spring Cloud, React, TypeScript, AWS Cloud, Docker, Generative AI / LLM APIs, and AI-assisted programming.",
           overview: "Enterprise-grade software engineering curriculum integrated with a cutting-edge AI Mini-Credential designed for landing modern IT jobs across Canadian banks, tech firms, and enterprises."
         },
@@ -70,7 +70,7 @@
           name: "全栈网页开发技术员 + AI 微证书 (Full Stack Web)",
           duration: "32 周（高强度代码实训 + 商业级大型云端微服务与 AI 大项目）",
           credential: "安省教育部认证 Full Stack Web 职业文凭 + AI 微证书 (AI Mini-Credential)",
-          salary: "加国毕业起薪 $65,000 – $85,000 加元/年",
+          salary: "加国紧缺高薪赛道，发展空间广阔，直通金融与科技名企",
           highlights: "涵盖 Java、Spring Boot 微服务架构、React 前端、TypeScript、AWS 云原生、Docker、生成式 AI/大模型 LLM API 与 AI 辅助编程实战。",
           overview: "零基础到企业级实战开发，双重认证（职业文凭 + AI 微证书），助您高效进入加国高薪科技与金融 IT 行业。"
         }
@@ -80,7 +80,7 @@
           name: "Accounting, Tax and Payroll Administration",
           duration: "30 Weeks (Hands-on Corporate Accounting Software)",
           credential: "Computerized Accounting & Payroll Diploma",
-          salary: "$48,000 – $65,000 / year with clear CPA progression",
+          salary: "Rewarding corporate compensation with clear progression to CPA",
           highlights: "QuickBooks Desktop & Online, Sage 50, Profile, TaxPrep, Canadian Payroll (CRA, EI, CPP, T4), Personal (T1) & Corporate (T2) Tax.",
           overview: "Taught by practicing Canadian CPAs. Master Canadian tax returns and corporate accounting workflows with real corporate ledgers."
         },
@@ -88,7 +88,7 @@
           name: "会计、税务与薪资管理文凭 (Accounting, Tax & Payroll)",
           duration: "30 周（资深持牌 CPA 亲授 + 企业真实账套实训）",
           credential: "安省认证 Computerized Accounting & Payroll 职业文凭",
-          salary: "加国起薪 $48,000 – $65,000 加元/年，稳定白领晋升路径",
+          salary: "稳定白领晋升通道，企业薪酬稳健增长，广阔职业发展路径",
           highlights: "精通 QuickBooks、Sage 50 财务软件，加拿大全流程工资税（CPP, EI, T4），CRA 个人税（T1）与公司税（T2）实操申报及税务审计应对。",
           overview: "适合希望在加国事务所、中小企业及金融财务部门从事全盘会计与税务工作的学员。"
         }
@@ -98,7 +98,7 @@
           name: "Early Childcare Assistant (ECA)",
           duration: "22 Weeks (Includes Field Practicum in Licensed Daycares)",
           credential: "Early Childcare Assistant Career Diploma",
-          salary: "$19 – $25 / hour with rewarding child care growth",
+          salary: "Rewarding career growth with Ontario Wage Enhancement (WEG) support",
           highlights: "Child psychology, developmental milestones, safety & nutrition, CPR, direct daycare placements.",
           overview: "Develop essential skills to care for infants, toddlers, and preschool children in licensed Ontario daycare facilities."
         },
@@ -106,7 +106,7 @@
           name: "早期幼儿教育助理 (Early Childcare Assistant - ECA)",
           duration: "22 周（理论学习 + 安省持牌正规幼儿园实习）",
           credential: "安省认证 Early Childcare Assistant 职业文凭",
-          salary: "时薪 $19 – $25 加元/小时，托儿所长青热门需求",
+          salary: "托儿所长青稳定需求，享安省政府薪资补贴 (WEG) 支持",
           highlights: "儿童心理学、幼儿行为引导、膳食营养与紧急救护，100%安排安省持牌幼儿园实地实习。",
           overview: "喜爱幼儿与教育工作人士的理想文凭课程，工作环境温馨，就业前景广阔。"
         }
@@ -116,7 +116,7 @@
           name: "Electrician Licensing & Training (309A / 442A)",
           duration: "Weekend & Flexible Fast-Track Schedules",
           credential: "Canadian Electrical Code (CEC) Pre-Exam & Apprenticeship Prep",
-          salary: "$35 – $55+ / hour as licensed journeyperson",
+          salary: "Top-tier trade compensation with Red Seal certification & union pension",
           highlights: "Taught by Canadian Master Electricians (20+ yrs experience), hands-on circuit wiring, conduit bending, code book mastery.",
           overview: "Coaches both domestic/commercial (309A) and industrial (442A) electrician license examination and Canadian apprenticeships."
         },
@@ -124,7 +124,7 @@
           name: "电工考证与上岗实训班 (309A / 442A Electrician)",
           duration: "周末实操班与强化考证班，时间灵活",
           credential: "加拿大电气规范 CEC 考证辅导与学徒工技能认证",
-          salary: "持牌电工时薪高达 $35 – $55+ 加币/小时，工会及商业项目薪资丰厚",
+          salary: "持牌金牌技工高薪待遇，工会养老金保障与加班津贴丰厚",
           highlights: "20余年加国老牌持牌 Master Electrician 名师带教，真刀实枪接线布管、工业配电盘组装，精准攻克考题重点。",
           overview: "适合工科背景或希望进入加拿大高收入建筑、工程与工业电气技工行业的学员。"
         }
@@ -155,7 +155,7 @@
     en: [
       "💰 How do I get the $28,000 grant?",
       "🩺 Tell me about PSW Program",
-      "💻 Full Stack Web duration & salary",
+      "💻 Full Stack Web duration & career outlook",
       "📊 Accounting & Payroll diploma",
       "📍 Campus locations & phone",
       "📅 Book a consultation"
@@ -163,7 +163,7 @@
     zh: [
       "💰 如何申请 $28,000 政府免费补助？",
       "🩺 了解 PSW 个人护理护工文凭",
-      "💻 全栈开发课程学多久？起薪多少？",
+      "💻 全栈开发课程学多久？就业前景如何？",
       "📊 会计与税务管理文凭详情",
       "📍 校区地址与联系电话",
       "📅 预约 1对1 免费规划咨询"
@@ -776,7 +776,7 @@
     ) {
       const p = VIC_KB.programs.psw[lang];
       return {
-        text: `### 🩺 ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '学制' : 'Duration'}:** ${p.duration}\n📜 **${lang === 'zh' ? '毕业证书' : 'Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '薪资待遇' : 'Salary Range'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '课程亮点' : 'Highlights'}:** ${p.highlights}`,
+        text: `### 🩺 ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '学制' : 'Duration'}:** ${p.duration}\n📜 **${lang === 'zh' ? '毕业证书' : 'Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '职业前景' : 'Career Outlook'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '课程亮点' : 'Highlights'}:** ${p.highlights}`,
         actions: [
           { label: lang === 'zh' ? '🔍 查看 PSW 完整大纲与实习' : '🔍 View PSW Full Details', action: 'open_modal', param: 'psw' },
           { label: lang === 'zh' ? '📅 预约 PSW 升学咨询' : '📅 Book PSW Consultation', action: 'consult', param: 'psw' }
@@ -792,7 +792,7 @@
     ) {
       const p = VIC_KB.programs.tech[lang];
       return {
-        text: `### 💻 ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '学制' : 'Duration'}:** ${p.duration}\n📜 **${lang === 'zh' ? '毕业证书' : 'Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '就业起薪' : 'Starting Salary'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '核心技术栈' : 'Key Stack'}:** ${p.highlights}`,
+        text: `### 💻 ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '学制' : 'Duration'}:** ${p.duration}\n📜 **${lang === 'zh' ? '毕业证书' : 'Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '发展前景' : 'Career Outlook'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '核心技术栈' : 'Key Stack'}:** ${p.highlights}`,
         actions: [
           { label: lang === 'zh' ? '🔍 查看 Full Stack 完整大纲' : '🔍 View Full Stack Curriculum', action: 'open_modal', param: 'tech' },
           { label: lang === 'zh' ? '📅 预约 IT 课程咨询' : '📅 Book IT Consultation', action: 'consult', param: 'tech' }
@@ -808,7 +808,7 @@
     ) {
       const p = VIC_KB.programs.accounting[lang];
       return {
-        text: `### 📊 ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '学制' : 'Duration'}:** ${p.duration}\n📜 **${lang === 'zh' ? '毕业证书' : 'Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '薪资前景' : 'Career Salary'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '实操技能' : 'Software & Tools'}:** ${p.highlights}`,
+        text: `### 📊 ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '学制' : 'Duration'}:** ${p.duration}\n📜 **${lang === 'zh' ? '毕业证书' : 'Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '职业前景' : 'Career Outlook'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '实操技能' : 'Software & Tools'}:** ${p.highlights}`,
         actions: [
           { label: lang === 'zh' ? '🔍 查看会计文凭大纲' : '🔍 View Accounting Curriculum', action: 'open_modal', param: 'accounting' },
           { label: lang === 'zh' ? '📅 预约会计课程规划' : '📅 Book Consultation', action: 'consult', param: 'accounting' }
@@ -823,7 +823,7 @@
     ) {
       const p = VIC_KB.programs.eca[lang];
       return {
-        text: `### 👶 ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '学制' : 'Duration'}:** ${p.duration}\n📜 **${lang === 'zh' ? '毕业证书' : 'Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '薪资水平' : 'Hourly Wage'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '实训优势' : 'Practicum'}:** ${p.highlights}`,
+        text: `### 👶 ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '学制' : 'Duration'}:** ${p.duration}\n📜 **${lang === 'zh' ? '毕业证书' : 'Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '行业前景' : 'Career Outlook'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '实训优势' : 'Practicum'}:** ${p.highlights}`,
         actions: [
           { label: lang === 'zh' ? '🔍 查看 ECA 幼教课程' : '🔍 View ECA Details', action: 'open_modal', param: 'eca' },
           { label: lang === 'zh' ? '📅 预约幼教升学咨询' : '📅 Book Consultation', action: 'consult', param: 'eca' }
@@ -838,7 +838,7 @@
     ) {
       const p = VIC_KB.programs.elec[lang];
       return {
-        text: `### ⚡ ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '班型安排' : 'Schedule'}:** ${p.duration}\n📜 **${lang === 'zh' ? '证书方向' : 'Target Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '持牌时薪' : 'Licensed Wage'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '教学特色' : 'Course Features'}:** ${p.highlights}`,
+        text: `### ⚡ ${p.name}\n\n${p.overview}\n\n⏱ **${lang === 'zh' ? '班型安排' : 'Schedule'}:** ${p.duration}\n📜 **${lang === 'zh' ? '证书方向' : 'Target Credential'}:** ${p.credential}\n💵 **${lang === 'zh' ? '行业前景' : 'Career Outlook'}:** ${p.salary}\n\n⭐ **${lang === 'zh' ? '教学特色' : 'Course Features'}:** ${p.highlights}`,
         actions: [
           { label: lang === 'zh' ? '🔍 查看电工班实训详情' : '🔍 View Electrician Details', action: 'open_modal', param: 'electrician' },
           { label: lang === 'zh' ? '📅 预约电工名师咨询' : '📅 Inquire Electrician Prep', action: 'consult', param: 'electrician' }

@@ -22,7 +22,7 @@ const programDetailsData = {
         "Clinical Practicum: 300+ Hours in Long-Term Care and Community Care"
       ],
       careers: "Personal Support Worker (PSW), Long-term Care Aide, Home Support Worker, Respite Caregiver, Hospital Patient Attendant.",
-      outcomes: "High demand across Ontario with starting wages from $20 to $28/hour. Government incentive grants and sign-on bonuses often available."
+      outcomes: "High demand across Ontario with strong career growth, comprehensive employee benefits, and stable full-time healthcare opportunities."
     },
     zh: {
       title: "NACC 个人护理护工文凭 (PSW DE 2022)",
@@ -41,7 +41,7 @@ const programDetailsData = {
         "临床实地实习：300+小时安省持牌长期护理院（LTC）实训"
       ],
       careers: "养老院私人护理员（PSW）、医院病患护理助理、社区家庭护理员、日间照料中心护理专员。",
-      outcomes: "安省各公立/私立医疗养老机构长期极度紧缺，时薪高达 $20–$28/小时，福利完善，常年具备全职高薪就业机会。"
+      outcomes: "安省各大公立及私立医疗养老机构长期紧缺，福利待遇完善，提供广阔的职业成长与长期全职就业机会。"
     }
   },
   tech: {
@@ -63,7 +63,7 @@ const programDetailsData = {
         "Full Stack Capstone Project: Production-grade E-Commerce / SaaS Platform with AI Features"
       ],
       careers: "Full Stack Developer, Java Backend Engineer, Frontend React Developer, AI/Web Applications Specialist, Cloud Software Associate.",
-      outcomes: "Average entry salary $65,000–$85,000/year. Direct preparation for technical white-boarding, system design, and AI-assisted workflow interviews."
+      outcomes: "High-demand tech career trajectory with rapid advancement in enterprise cloud and AI technologies. Direct preparation for technical interviews and system design."
     },
     zh: {
       title: "全栈开发与 AI 微证书 (Full Stack Web with AI Mini-Credential)",
@@ -83,7 +83,7 @@ const programDetailsData = {
         "毕业大项目：集成 AI 智能特性的工业级大型分布式电商 / 敏捷 SaaS 云平台实战"
       ],
       careers: "全栈开发工程师（Full Stack Developer）、Java 后端工程师、React 前端工程师、AI/Web 软件技术专员。",
-      outcomes: "加国起薪约 $65,000–$85,000/年。名师辅导 LeetCode 刷题、简历深度技术包装、AI 辅助编程与大厂模拟面试。"
+      outcomes: "紧跟加国高科技发展赛道，薪资待遇优厚，发展空间广阔。名师辅导简历深度技术包装、AI 辅助编程与企业级全真模拟面试。"
     }
   },
   accounting: {
@@ -220,7 +220,7 @@ const programDetailsData = {
         "Canadian Job Market Navigation, Safety Certification & Employer Referral"
       ],
       careers: "Licensed Construction Electrician (309A), Industrial Electrician (442A), Electrical Maintenance Specialist, Solar/Green Energy Installer.",
-      outcomes: "Top-tier trade with hourly wages ranging from $35 to $55+/hour in Ontario. High demand in commercial and residential developments."
+      outcomes: "Top-tier skilled trade with exceptional earning potential, union representation, comprehensive benefits, and strong career security across Ontario."
     },
     zh: {
       title: "建筑与维护电工考证培训班 (309A / 442A)",
@@ -239,7 +239,7 @@ const programDetailsData = {
         "协助申报学徒工时（Apprenticeship Hours）及大多伦多工程项目就业直推"
       ],
       careers: "安省持牌建筑电工（309A）、工业维护电工（442A）、电气工程承包商、太阳能与新能源技师。",
-      outcomes: "加国薪资最高的金牌技工之一，持牌时薪普遍达 $35–$55+/小时，工会福利完善，收入稳定抗周期。"
+      outcomes: "加国极受尊重的金牌持牌技工职业，享有优厚行业待遇、工会全套保障与丰厚退休金，职业前景稳健抗周期。"
     }
   }
 };

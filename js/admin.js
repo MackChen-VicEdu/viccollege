@@ -1608,8 +1608,8 @@
           setVal('prog-detail-hero-lead-en', heroEn.lead || p.overview_en || '');
           setVal('prog-stat1-val-en', statsEn[0]?.value || p.duration_en || '23 Weeks');
           setVal('prog-stat1-lbl-en', statsEn[0]?.label || 'Hybrid Theory + Lab + 310+ Hrs Practicum');
-          setVal('prog-stat2-val-en', statsEn[1]?.value || '$20 – $28 / hr');
-          setVal('prog-stat2-lbl-en', statsEn[1]?.label || 'Average Starting Wage Across GTA Facilities');
+          setVal('prog-stat2-val-en', statsEn[1]?.value || 'High Demand');
+          setVal('prog-stat2-lbl-en', statsEn[1]?.label || 'Competitive Compensation & Job Security across GTA');
           setVal('prog-stat3-val-en', statsEn[2]?.value || 'High Placement Rate');
           setVal('prog-stat3-lbl-en', statsEn[2]?.label || 'Direct LTC Nursing Home Clinical Placement');
           setVal('prog-stat4-val-en', statsEn[3]?.value || '$28,000+ Grant');
@@ -1718,8 +1718,8 @@
           setVal('prog-detail-hero-lead-zh', heroZh.lead || p.overview_zh || '');
           setVal('prog-stat1-val-zh', statsZh[0]?.value || p.duration_zh || '23 周');
           setVal('prog-stat1-lbl-zh', statsZh[0]?.label || '网课理论 + 校区实操 + 310+小时临床实习');
-          setVal('prog-stat2-val-zh', statsZh[1]?.value || '$20 – $28 / 小时');
-          setVal('prog-stat2-lbl-zh', statsZh[1]?.label || '大多伦多地区医疗养老机构平均起薪');
+          setVal('prog-stat2-val-zh', statsZh[1]?.value || '长期紧缺');
+          setVal('prog-stat2-lbl-zh', statsZh[1]?.label || '优厚薪资待遇、工会保障与全面福利');
           setVal('prog-stat3-val-zh', statsZh[2]?.value || '高就业率');
           setVal('prog-stat3-lbl-zh', statsZh[2]?.label || '签约长期护理院/医院对口直推');
           setVal('prog-stat4-val-zh', statsZh[3]?.value || '$28,000+ 补贴');
@@ -1894,7 +1894,7 @@
         },
         stats: [
           { value: getVal('prog-stat1-val-en') || durationEn, label: getVal('prog-stat1-lbl-en') || 'Hybrid Theory + Lab + 310+ Hrs Practicum' },
-          { value: getVal('prog-stat2-val-en') || '$20 – $28 / hr', label: getVal('prog-stat2-lbl-en') || 'Average Starting Wage Across GTA Facilities' },
+          { value: getVal('prog-stat2-val-en') || 'High Demand', label: getVal('prog-stat2-lbl-en') || 'Competitive Compensation & Job Security across GTA' },
           { value: getVal('prog-stat3-val-en') || 'High Placement Rate', label: getVal('prog-stat3-lbl-en') || 'Direct LTC Nursing Home Clinical Placement' },
           { value: getVal('prog-stat4-val-en') || '$28,000+ Grant', label: getVal('prog-stat4-lbl-en') || 'Second Career / Better Jobs Ontario Eligible' }
         ],
@@ -1958,7 +1958,7 @@
         },
         stats: [
           { value: getVal('prog-stat1-val-zh') || durationZh, label: getVal('prog-stat1-lbl-zh') || '网课理论 + 校区实操 + 310+小时临床实习' },
-          { value: getVal('prog-stat2-val-zh') || '$20 – $28 / 小时', label: getVal('prog-stat2-lbl-zh') || '大多伦多地区医疗养老机构平均起薪' },
+          { value: getVal('prog-stat2-val-zh') || '长期紧缺', label: getVal('prog-stat2-lbl-zh') || '优厚薪资待遇、工会保障与全面福利' },
           { value: getVal('prog-stat3-val-zh') || '高就业率', label: getVal('prog-stat3-lbl-zh') || '签约长期护理院/医院对口直推' },
           { value: getVal('prog-stat4-val-zh') || '$28,000+ 补贴', label: getVal('prog-stat4-lbl-zh') || '符合 Better Jobs Ontario 政府全额资助' }
         ],

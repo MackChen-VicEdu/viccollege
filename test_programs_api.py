@@ -96,8 +96,8 @@ class TestDynamicProgramsAPI(unittest.TestCase):
             'modules_zh': ['Linux 运维基础', 'AWS 核心云服务', 'Docker 与 K8s 容器化', 'IaC 自动化代码化运维'],
             'careers_en': 'DevOps Engineer, Cloud Architect, Site Reliability Engineer',
             'careers_zh': 'DevOps 工程师、云架构师、SRE 网站可靠性工程师',
-            'outcomes_en': 'Average entry salary $75,000–$95,000/year.',
-            'outcomes_zh': '起薪约 $75,000–$95,000/年，加国市场刚需。',
+            'outcomes_en': 'High employment demand and competitive industry compensation across Canada.',
+            'outcomes_zh': '加国市场刚需，行业薪资待遇优厚，职业发展前景广阔。',
             'display_order': 99,
             'is_active': 1
         }

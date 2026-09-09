@@ -83,7 +83,7 @@ def get_default_psw_detail_en():
         },
         "stats": [
             {"value": "23 Weeks", "label": "Hybrid Theory + Lab + 310+ Hrs Practicum"},
-            {"value": "$20 – $28 / hr", "label": "Average Starting Wage Across GTA Facilities"},
+            {"value": "High Demand", "label": "Competitive Compensation & Job Security across GTA"},
             {"value": "High Placement Rate", "label": "Direct LTC Nursing Home Clinical Placement"},
             {"value": "$28,000+ Grant", "label": "Second Career / Better Jobs Ontario Eligible"}
         ],
@@ -93,7 +93,7 @@ def get_default_psw_detail_en():
             "pillars": [
                 {"title": "Abundant Job Opportunities", "desc": "PSWs are in extreme high demand across Ontario hospitals, long-term care homes (LTC), retirement residences, and home healthcare agencies, ensuring rapid job placement upon graduation."},
                 {"title": "Personal Fulfillment", "desc": "Make a genuine difference every day by providing compassionate, dignified physical and emotional care that directly enhances the independence and quality of life for seniors and patients."},
-                {"title": "Competitive Compensation", "desc": "Earn competitive hourly wages ($20–$28/hr) with opportunities for shift premiums, overtime, union benefits, comprehensive dental/medical plans, and paid vacation time."},
+                {"title": "Competitive Compensation", "desc": "Earn competitive compensation with opportunities for shift premiums, overtime, union benefits, comprehensive dental/medical plans, and paid vacation time."},
                 {"title": "Flexible Hybrid Learning", "desc": "Study live interactive theory online from home, paired with hands-on practice in our fully equipped on-campus hospital simulation lab in Markham Campus."}
             ]
         },
@@ -176,7 +176,7 @@ def get_default_psw_detail_zh():
         },
         "stats": [
             {"value": "23 周", "label": "网课理论 + 校区实操 + 310+小时临床实习"},
-            {"value": "$20 – $28 / 小时", "label": "大多伦多地区医疗养老机构平均起薪"},
+            {"value": "长期紧缺", "label": "优厚薪资待遇、工会保障与全面福利"},
             {"value": "高就业率", "label": "签约长期护理院/医院对口直推"},
             {"value": "$28,000+ 补贴", "label": "符合 Better Jobs Ontario 政府全额资助"}
         ],
@@ -186,7 +186,7 @@ def get_default_psw_detail_zh():
             "pillars": [
                 {"title": "就业机会极多", "desc": "安省医院、长期护理院（LTC）、养老社区及家庭护理机构常年极度紧缺，毕业即对口就业。"},
                 {"title": "职业成就感高", "desc": "用专业与爱心提供身体与心理照料，真正改善长者与病患的生活质量，赢得社会尊重。"},
-                {"title": "薪酬待遇优厚", "desc": "起薪 $20–$28/小时，享晚夜班补贴、加班津贴、工会医疗保险、牙医保险及带薪年假。"},
+                {"title": "薪酬待遇优厚", "desc": "享受优厚薪资与发展空间，并可享受政府长期留任津贴、加班费、工会福利、全面的牙医医疗保险及带薪年假。"},
                 {"title": "灵活线上学习", "desc": "在家参加实时名师直播授课，结合万锦主校区先进模拟病房实操演练。"}
             ]
         },
@@ -269,7 +269,7 @@ def get_default_accounting_detail_en():
         },
         "stats": [
             {"value": "30 Weeks", "label": "Comprehensive Theory + Enterprise Software Labs"},
-            {"value": "$22 – $32 / hr", "label": "Average GTA Starting Wage for Corporate Bookkeepers"},
+            {"value": "High Growth", "label": "Rewarding Corporate Career & Stable Advancement"},
             {"value": "100% CPA Mentorship", "label": "Taught Exclusively by Seasoned Canadian CPAs"},
             {"value": "Up to $28,000+", "label": "Eligible for Better Jobs Ontario Full Government Funding"}
         ],
@@ -356,7 +356,7 @@ def get_default_accounting_detail_zh():
         },
         "stats": [
             {"value": "30 周", "label": "名师直播理论 + 真实商业账套上机实操"},
-            {"value": "$22 – $32 / 小时", "label": "大多伦多地区全盘簿记员与会计起薪"},
+            {"value": "发展广阔", "label": "稳定白领晋升通道与优厚企业薪酬"},
             {"value": "100% CPA 导师", "label": "资深加国注册会计师手把手带教"},
             {"value": "$28,000+ 补贴", "label": "符合 Better Jobs Ontario 政府全额资助"}
         ],
@@ -443,7 +443,7 @@ def get_default_eca_detail_en():
         },
         "stats": [
             {"value": "22 Weeks", "label": "Comprehensive Theory + 500+ Hours Daycare Placement"},
-            {"value": "$18 – $26 / hr", "label": "Competitive GTA Starting Wage + $2/hr Gov WEG Grant"},
+            {"value": "High Demand", "label": "Rewarding Career Growth + Ontario Wage Enhancement (WEG)"},
             {"value": "100% Daycare Placement", "label": "Guaranteed Practicum in Accredited Daycare Centers"},
             {"value": "Up to $28,000+", "label": "Eligible for Full Better Jobs Ontario Government Funding"}
         ],
@@ -518,7 +518,7 @@ def get_default_eca_detail_en():
             {"q": "What is the difference between an ECA and an ECE in Ontario?", "a": "An ECA (Early Childcare Assistant) works directly alongside Registered Early Childhood Educators (RECEs) in daycare rooms, assisting with daily routines, learning activities, nutrition, and child supervision. ECA is a fast-track 22-week diploma that allows you to start working in the childcare field quickly."},
             {"q": "Are there government grants available for this program?", "a": "Yes! This program is fully eligible for Better Jobs Ontario (formerly Second Career), offering up to $28,000+ in non-repayable government grants covering 100% of your tuition, learning materials, transportation, and living expenses for qualified applicants."},
             {"q": "Do you guarantee daycare field placement?", "a": "Yes! Victoria College coordinates 100% of your 500+ hours supervised field practicum with our extensive network of licensed daycares, Montessori schools, and early learning centers across the GTA."},
-            {"q": "What are the job prospects and hourly wages after graduation?", "a": "Job prospects are exceptionally strong due to Ontario's $10/day childcare expansion. Starting wages typically range from $18 to $26/hour, plus an additional $2/hour Ontario Wage Enhancement Grant (WEG) for eligible childcare staff."}
+            {"q": "What are the job prospects and career compensation after graduation?", "a": "Job prospects are exceptionally strong due to Ontario's $10/day childcare expansion, offering competitive compensation, full-time career stability, and additional Ontario Wage Enhancement Grant (WEG) support for eligible staff."}
         ]
     }
 
@@ -531,7 +531,7 @@ def get_default_eca_detail_zh():
         },
         "stats": [
             {"value": "22 周", "label": "网课理论/校区实操 + 500+小时持牌幼儿园实地实习"},
-            {"value": "$18 – $26 / 小时", "label": "大多伦多地区起薪 + 安省政府每小时 $2 薪资补贴 (WEG)"},
+            {"value": "极具潜力", "label": "大多伦多托儿幼教稳定高需求 + 安省政府薪资补贴 (WEG)"},
             {"value": "100% 保障实习", "label": "对口签约安省正规持牌日托中心与早教机构"},
             {"value": "$28,000+ 补贴", "label": "符合 Better Jobs Ontario 政府全额无偿资助"}
         ],
@@ -606,7 +606,7 @@ def get_default_eca_detail_zh():
             {"q": "在安省 ECA（幼教助理）和 ECE（注册幼教）有什么区别？", "a": "ECA 是协助主班 ECE 开展日常教学、幼儿生活照料与安全看护的专业人员。ECA 课程周期短（22周），学费更低，能帮助您以最快速度进入安省幼教行业并获得稳定收入，未来还可继续进修成为 RECE。"},
             {"q": "我可以申请政府学费资助吗？", "a": "完全可以！本课程符合安省 Better Jobs Ontario 政府资助计划，合资格者最高可获 $28,000+ 无偿政府全额补贴，无需偿还，学院专家免费协助全程申请。"},
             {"q": "学校会保障安排正规托儿所实习吗？", "a": "是的！维多利亚学院拥有遍布大多伦多地区的庞大签约日托中心网络，100% 为每位学员对口落实 500+ 小时正规实习岗位。"},
-            {"q": "毕业后的就业前景和时薪待遇如何？", "a": "在安省 $10/天普惠日托政策推动下，全省幼教缺口巨大。ECA 起薪通常在 $18–$26/小时，且符合条件的机构员工还可额外享受安省政府每小时 $2 的工资补贴（WEG），福利完善，工作稳定。"}
+            {"q": "毕业后的就业前景和薪酬待遇如何？", "a": "在安省 $10/天普惠日托政策推动下，全省幼教缺口巨大，薪资待遇优厚，且符合条件的机构员工还可额外享受安省政府工资补贴（WEG），福利完善，工作稳定。"}
         ]
     }
 
@@ -833,7 +833,7 @@ def get_default_electrician_detail_en():
             "lead": "Coached by veteran Master Electricians with 20+ years of Canadian union, commercial, and industrial contracting experience. Master the Canadian Electrical Code (CEC / OESC), hands-on residential & 3-phase commercial wiring, motor controls, blueprint reading, and trade exam test banks to pass your Certificate of Qualification (C of Q) on your first attempt."
         },
         "stats": [
-            {"val": "$35 – $55+ / hr", "lbl": "Average Licensed Hourly Wage", "sub": "Red Seal Journeyperson / Union Scale"},
+            {"val": "Top Earning", "lbl": "Red Seal Licensed Journeyperson", "sub": "Union Scale & Comprehensive Pension"},
             {"val": "20+ Yrs Mentorship", "lbl": "Master Electrician Taught", "sub": "Senior Project Leads from Top Firms"},
             {"val": "1-on-1 Hands-on Labs", "lbl": "Apprenticeship Facility", "sub": "Panels, 3-Phase, Motors & Transformers"},
             {"val": "Up to $28,000+ Grant", "lbl": "Government Funding Eligible", "sub": "Better Jobs Ontario & Apprentice Grants"}
@@ -844,7 +844,7 @@ def get_default_electrician_detail_en():
             "pillars": [
                 {
                     "title": "Top-Tier Earning Potential & Stability",
-                    "desc": "Licensed journeypersons in the GTA earn $35–$55+/hour ($75,000–$120,000+ annually) with extensive overtime, union pension plans, full health benefits, and strong job security."
+                    "desc": "Licensed journeypersons in the GTA command top-tier trade compensation with extensive overtime opportunities, comprehensive union pension plans, full health benefits, and strong career security."
                 },
                 {
                     "title": "100% CEC Code Mastery & Exam Fast-Track",
@@ -934,7 +934,7 @@ def get_default_electrician_detail_zh():
             "lead": "由安省 20 余年一线西人大型工程公司项目主管、资深持牌 Master Electrician 名师亲自授课。将加国最新电气规范（CEC / OESC）核心考点精讲、官方认可学徒实训基地 1对1 动手实操接线（民用配电箱/三相电/变压器/电机控制/管道弯管）与红宝书全真题库模考融为一体，助您一次性高分通关拿牌并对口就业！"
         },
         "stats": [
-            {"val": "$35 – $55+ / 小时", "lbl": "大多伦多地区持牌电工平均时薪", "sub": "红印执照 / 工会标准薪资待遇"},
+            {"val": "高薪典范", "lbl": "安省红印执照金牌技工 • 工会优厚待遇", "sub": "红印执照 / 工会优厚待遇与丰厚养老金"},
             {"val": "20+ 年名师带教", "lbl": "大师级持牌电工亲授", "sub": "加国一线大型西人工程公司资深项目主管"},
             {"val": "1对1 动手实操机房", "lbl": "官方认可学徒实训基地", "sub": "配电箱、三相电、变压器与电机控制"},
             {"val": "$28,000+ 政府补贴", "lbl": "符合政府全额无偿资助", "sub": "Better Jobs Ontario 及学徒专项津贴"}
@@ -945,7 +945,7 @@ def get_default_electrician_detail_zh():
             "pillars": [
                 {
                     "title": "行业顶薪与极佳稳定性",
-                    "desc": "大多伦多持牌电工时薪普遍达 $35–$55+/小时（年薪 $7.5万–$12万+），享高额加班费、工会丰厚养老金、全家医疗牙医保险及带薪年假。"
+                    "desc": "大多伦多持牌电工享有行业顶尖的丰厚薪酬与发展前景，享高额加班津贴、工会丰厚养老金、全家医疗牙医保险及带薪年假。"
                 },
                 {
                     "title": "100% 攻克加国电气规范 (CEC)",
@@ -1036,7 +1036,7 @@ def get_default_tech_detail_en():
             "cta_curriculum": "Explore 10-Module Curriculum"
         },
         "stats": [
-            {"value": "$75K – $120K+", "label": "GTA Software Dev Salary Range", "sub": "Entry to Mid-Level Full Stack Engineers"},
+            {"value": "High Demand", "label": "High-Growth Tech Career & AI Integration", "sub": "Enterprise Web & Cloud Solutions"},
             {"value": "100% Project Labs", "label": "Real-World Commercial Portfolio", "sub": "SaaS, AI Integrations & GitHub Repos"},
             {"value": "FAANG Mentorship", "label": "Senior Industry Tech Leads", "sub": "1-on-1 Code Reviews & Mock Tech Interviews"},
             {"value": "Up to $28,000+", "label": "Government Grants Available", "sub": "Better Jobs Ontario & Job Grant Eligible"}
@@ -1200,7 +1200,7 @@ def get_default_tech_detail_zh():
             "cta_curriculum": "查看 10 大核心模块大纲"
         },
         "stats": [
-            {"value": "$75K – $120K+", "label": "大多伦多软件开发薪资范围", "sub": "初级至中高级全栈开发工程师"},
+            {"value": "高薪赛道", "label": "北美高科技紧缺开发岗位与前沿 AI 实战", "sub": "企业级微服务与全栈云原生开发"},
             {"value": "100% 实战机房", "label": "商业级真实项目作品集", "sub": "企业级 SaaS、AI 集成与 GitHub 真实代码仓库"},
             {"value": "北美名企名师", "label": "一线资深架构师手把手带教", "sub": "一对一代码审查与全真大厂模拟技术面试"},
             {"value": "最高 $28,000+", "label": "安省政府培训全额助学金", "sub": "Better Jobs Ontario 资助计划合资格申请"}
@@ -1443,8 +1443,8 @@ def seed_default_programs(cursor, now_str):
             ], ensure_ascii=False),
             'careers_en': 'Personal Support Worker (PSW), Long-term Care Aide, Home Support Worker, Respite Caregiver, Hospital Patient Attendant.',
             'careers_zh': '养老院私人护理员（PSW）、医院病患护理助理、社区家庭护理员、日间照料中心护理专员。',
-            'outcomes_en': 'High demand across Ontario with starting wages from $20 to $28/hour. Government incentive grants and sign-on bonuses often available.',
-            'outcomes_zh': '安省各公立/私立医疗养老机构长期极度紧缺，时薪高达 $20–$28/小时，福利完善，常年具备全职高薪就业机会。',
+            'outcomes_en': 'High demand across Ontario with strong career growth, comprehensive employee benefits, and stable full-time opportunities.',
+            'outcomes_zh': '安省各大公立及私立医疗养老机构长期紧缺，福利待遇完善，提供广阔的职业成长与长期全职就业机会。',
             'detail_json_en': json.dumps(get_default_psw_detail_en(), ensure_ascii=False),
             'detail_json_zh': json.dumps(get_default_psw_detail_zh(), ensure_ascii=False),
             'display_order': 1,
@@ -1663,8 +1663,8 @@ def seed_default_programs(cursor, now_str):
             ], ensure_ascii=False),
             'careers_en': 'Licensed Construction Electrician (309A), Industrial Electrician (442A), Electrical Maintenance Specialist, Solar/Green Energy Installer.',
             'careers_zh': '安省持牌建筑电工（309A）、工业维护电工（442A）、电气工程承包商、太阳能与新能源技师。',
-            'outcomes_en': 'Top-tier trade with hourly wages ranging from $35 to $55+/hour in Ontario. High demand in commercial and residential developments.',
-            'outcomes_zh': '加国薪资最高的金牌技工之一，持牌时薪普遍达 $35–$55+/小时，工会福利完善，收入稳定抗周期。',
+            'outcomes_en': 'Top-tier skilled trade with exceptional earning potential, union representation, comprehensive benefits, and strong career security across Ontario.',
+            'outcomes_zh': '加国极受尊重的金牌持牌技工职业，享有优厚行业待遇、工会全套保障与丰厚退休金，职业前景稳健抗周期。',
             'detail_json_en': json.dumps(get_default_electrician_detail_en(), ensure_ascii=False),
             'detail_json_zh': json.dumps(get_default_electrician_detail_zh(), ensure_ascii=False),
             'display_order': 5,
@@ -1744,8 +1744,8 @@ def seed_default_programs(cursor, now_str):
             ], ensure_ascii=False),
             'careers_en': 'Full Stack Developer, React Frontend Engineer, Node/Java/Python Backend Developer, AI Application Engineer, Cloud Software Associate.',
             'careers_zh': '全栈开发工程师（Full Stack Developer）、React 前端开发工程师、后端开发工程师、AI 应用软件技术专员、云原生软件工程师。',
-            'outcomes_en': 'Average entry to mid salary $75,000–$120,000/year. Direct preparation for technical white-boarding, system design, and AI-assisted workflow interviews.',
-            'outcomes_zh': '加国起薪约 $75,000–$120,000/年。名师辅导 LeetCode 刷题、简历深度技术包装、AI 辅助编程与大厂全真模拟面试。',
+            'outcomes_en': 'High-demand tech career trajectory with rapid advancement in enterprise cloud and AI technologies. Direct preparation for technical interviews and system design.',
+            'outcomes_zh': '紧跟加国高科技发展赛道，薪资待遇优厚，发展空间广阔。名师辅导简历深度技术包装、AI 辅助编程与企业级全真模拟面试。',
             'detail_json_en': json.dumps(get_default_tech_detail_en(), ensure_ascii=False),
             'detail_json_zh': json.dumps(get_default_tech_detail_zh(), ensure_ascii=False),
             'display_order': 6,
@@ -1910,14 +1910,14 @@ def init_database():
                 'programs',
                 'NACC Personal Support Worker (PSW) DE 2022 Certificate Program',
                 'psw, personal support worker, healthcare, nursing home, clinic, practicum placement, cpr, first aid, nacc, caregiving, hospital, medical, duration, how long, 23 weeks',
-                'The NACC Personal Support Worker (PSW) DE 2022 Certificate Program is an intensive 23-week accredited program consisting of online/classroom theory, hands-on clinical lab simulations, and 300+ hours of guaranteed clinical practicum placement in top Ontario nursing homes and healthcare facilities. Graduates receive their official NACC PSW Certificate, Standard First Aid & CPR Level C certification. High employment demand across hospitals, long-term care homes, and community healthcare with $20-$28/hr starting wage. Better Jobs Ontario government funding grants (up to $28,000+) are applicable.',
+                'The NACC Personal Support Worker (PSW) DE 2022 Certificate Program is an intensive 23-week accredited program consisting of online/classroom theory, hands-on clinical lab simulations, and 300+ hours of guaranteed clinical practicum placement in top Ontario nursing homes and healthcare facilities. Graduates receive their official NACC PSW Certificate, Standard First Aid & CPR Level C certification. High employment demand across hospitals, long-term care homes, and community healthcare with strong employment demand, competitive compensation, and comprehensive employee benefits. Better Jobs Ontario government funding grants (up to $28,000+) are applicable.',
                 2, now_str, now_str
             ),
             (
                 'programs',
                 'Full Stack Web Technician Diploma + AI Mini-Credential',
                 'full stack, web development, software, programming, java, springboot, react, javascript, nodejs, aws, mysql, cloud, coding, developer, diploma, ai, artificial intelligence, mini credential, llm, prompt engineering',
-                'The Full Stack Web Technician Diploma covers core & advanced Java, SpringBoot, Spring Cloud, React, Node.js, Webpack, MySQL, Netty, AWS Cloud deployment, enterprise software engineering design patterns, and an integrated AI Mini-Credential (Generative AI, OpenAI/Claude LLM APIs, and AI-assisted programming). Includes hands-on real-world capstone projects and resume/interview preparation for high-paying tech careers ($65k-$85k/yr) in Canada.',
+                'The Full Stack Web Technician Diploma covers core & advanced Java, SpringBoot, Spring Cloud, React, Node.js, Webpack, MySQL, Netty, AWS Cloud deployment, enterprise software engineering design patterns, and an integrated AI Mini-Credential (Generative AI, OpenAI/Claude LLM APIs, and AI-assisted programming). Includes hands-on real-world capstone projects and resume/interview preparation for high-demand, rewarding tech careers in Canada.',
                 2, now_str, now_str
             ),
             (
@@ -1945,7 +1945,7 @@ def init_database():
                 'programs',
                 'Electrician (Construction & Maintenance 309A / 442A)',
                 'electrician, 309a, 442a, construction, maintenance, apprenticeship, red seal, electrical, wiring, code, cec',
-                'Taught by master electricians with 20+ years Canadian industry experience in major Ontario electrical contracting. Features 1-on-1 hands-on training at recognized apprenticeship training facilities, placement on real construction projects, and preparation for Ontario 309A Construction & Maintenance Electrician certification with $35-$55+/hr earning potential.',
+                'Taught by master electricians with 20+ years Canadian industry experience in major Ontario electrical contracting. Features 1-on-1 hands-on training at recognized apprenticeship training facilities, placement on real construction projects, and preparation for Ontario 309A Construction & Maintenance Electrician certification with exceptional earning potential and union benefits.',
                 1, now_str, now_str
             ),
             (
@@ -2021,7 +2021,7 @@ def init_database():
                 "psw-training-grant-toronto-markham",
                 "Complete 2026 guide for Ontario residents seeking high-demand Personal Support Worker (PSW) certification with up to $28,000+ government funding in Toronto and Markham.",
                 """<h2>High Demand for Personal Support Workers in the Greater Toronto Area</h2>
-<p>As Ontario's healthcare system expands to meet the needs of an aging population, the demand for certified <strong>Personal Support Workers (PSW)</strong> across Toronto, Markham, and Scarborough has reached unprecedented levels. Hospitals, long-term care homes, and community healthcare agencies are actively recruiting qualified caregivers offering competitive wages from <strong>$20 to $28 per hour</strong>, complete benefit packages, and flexible shifts.</p>
+<p>As Ontario's healthcare system expands to meet the needs of an aging population, the demand for certified <strong>Personal Support Workers (PSW)</strong> across Toronto, Markham, and Scarborough has reached unprecedented levels. Hospitals, long-term care homes, and community healthcare agencies are actively recruiting qualified caregivers offering competitive industry compensation, complete benefit packages, and flexible shifts.</p>
 
 <h3>How to Access Up to $28,000+ in Better Jobs Ontario Funding</h3>
 <p>Through the Ontario provincial government's <em>Better Jobs Ontario</em> (formerly Second Career) program, eligible residents can receive non-repayable grants covering:</p>
@@ -2067,12 +2067,12 @@ def init_database():
             (
                 "Full Stack Web Developer Career Roadmap in Markham & Toronto Tech Corridor",
                 "full-stack-web-developer-careers-markham-toronto",
-                "Explore in-demand software developer salaries ($65,000-$85,000/yr), Java Spring Boot, React, and cloud skills in the Markham-Toronto tech corridor.",
+                "Explore in-demand software developer career opportunities, Java Spring Boot, React, and cloud skills in the Markham-Toronto tech corridor.",
                 """<h2>Why Markham is Canada's Premier Tech Innovation Hub</h2>
 <p>Markham is widely recognized as the <em>High-Tech Capital of Canada</em>, home to over 1,500 technology and life sciences enterprises including IBM, AMD, Qualcomm, and Honeywell. As companies transition to cloud-native platforms, demand for skilled <strong>Full Stack Web Developers</strong> proficient in Java, Spring Boot 3, React, TypeScript, and AWS Cloud continues to skyrocket.</p>
 
-<h3>Salary Outlook for Web Technicians in the GTA</h3>
-<p>According to recent Canadian tech job market data, entry-level to intermediate software developers in the Greater Toronto Area command average salaries between <strong>$65,000 and $85,000 annually</strong>, with senior engineers earning in excess of $110,000+.</p>
+<h3>Career Outlook for Web Technicians in the GTA</h3>
+<p>According to recent Canadian tech job market data, full-stack software developers in the Greater Toronto Area enjoy high employment demand, accelerated promotion pathways into cloud architecture, and competitive industry compensation.</p>
 
 <h3>What You Will Master in Our 32-Week Diploma</h3>
 <ul>
@@ -2102,7 +2102,7 @@ def init_database():
                 1,
                 "Victoria College Tech Institute",
                 "Full Stack Web Developer Roadmap Markham & Toronto | Victoria College",
-                "Master Java, Spring Boot, React, and AWS Cloud in Markham. Fast-track your tech career with starting salaries of $65k-$85k. Free consultation.",
+                "Master Java, Spring Boot, React, and AWS Cloud in Markham. Fast-track your tech career with high-demand development skills. Free consultation.",
                 35,
                 now_str, now_str, now_str
             ),
@@ -2215,11 +2215,11 @@ Your tone is professional, warm, encouraging, and highly knowledgeable.
 Key College Knowledge:
 1. Government Grants: Candidates may qualify for Better Jobs Ontario (Second Career) for up to $28,000+ non-repayable government funding covering tuition, books, transportation, and living allowances. Eligible: laid-off, gig/contract workers, low-income, permanent residents, citizens.
 2. Featured Programs:
-   - NACC Personal Support Worker (PSW DE 2022): 23 weeks, clinical practicum (300+ hrs), $20-$28/hr starting wage.
-   - Full Stack Web Technician: 32 weeks, Java, Spring Boot 3, React, TypeScript, AWS, $65k-$85k/yr.
+   - NACC Personal Support Worker (PSW DE 2022): 23 weeks, clinical practicum (300+ hrs), competitive compensation & full benefits.
+   - Full Stack Web Technician: 32 weeks, Java, Spring Boot 3, React, TypeScript, AWS, high-growth tech career path.
    - Accounting, Tax and Payroll Administration: 30 weeks, QuickBooks, Sage 50, Canadian T1/T2 tax, CPA mentorship.
    - Early Childcare Assistant (ECA): 22 weeks, child psychology, daycare practicum.
-   - Electrician 309A / 442A: Canadian Electrical Code (CEC) exam prep, hands-on wiring labs, $35-$55+/hr.
+   - Electrician 309A / 442A: Canadian Electrical Code (CEC) exam prep, hands-on wiring labs, Red Seal licensed career.
    - Acupuncture & Wellness: TCM meridian theory, holistic health.
 3. Campus:
    - Markham Main Campus: 7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8
@@ -3163,13 +3163,13 @@ def generate_local_knowledge_reply(query: str) -> str:
         return "### 🎯 Better Jobs Ontario (Second Career) 政府助学金\n\n您可申请最高 **$28,000+ 加币全额政府无偿资助**，涵盖 100% 学费、生活津贴、书本及交通费！\n\n**申请资格：**\n• 被解雇人士 / 领过 EI\n• 自雇、零工、合约工及低收入人士\n• 加拿大永久居民 (PR) 或公民\n\n维多利亚学院提供全程 1对1 免费规划与材料准备，欢迎致电 416-665-6668 或在线预约咨询！" if is_zh else "### 🎯 Better Jobs Ontario ($28,000+ Government Grants)\n\nYou may qualify for up to **$28,000+ in non-repayable government funding** covering 100% tuition, books, transportation, and monthly living allowances!\n\n**Key Eligibility:**\n• Laid-off workers or former EI recipients\n• Gig / contract / low-income workers\n• Canadian Permanent Residents & Citizens\n\nOur team provides 100% complimentary step-by-step assistance. Call us at 416-665-6668 or book a consultation!"
 
     if any(k in q for k in ['psw', 'support worker', 'nurse', 'caregiver', '护工', '护理', '养老院']):
-        return "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **学制：** 23 周（包含 300+ 小时持牌长期护理院临床实地实习）\n• **毕业证书：** NACC PSW 官方文凭 + CPR/AED 急救证书\n• **薪资待遇：** 起薪时薪 $20 – $28 加元/小时\n• **亮点：** 安省持牌资深护士带教，配备标准病房模拟实验室，毕业直接对接西人养老机构就业。" if is_zh else "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **Duration:** 23 Weeks (Includes 300+ hours clinical practicum)\n• **Credential:** NACC PSW Diploma + CPR & First Aid Certification\n• **Salary:** $20 – $28 / hour with strong demand across Ontario\n• **Highlights:** Fully accredited, hands-on simulation labs, and direct placement in top healthcare facilities."
+        return "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **学制：** 23 周（包含 300+ 小时持牌长期护理院临床实地实习）\n• **毕业证书：** NACC PSW 官方文凭 + CPR/AED 急救证书\n• **薪酬前景：** 行业薪资优厚，享工会全套福利\n• **亮点：** 安省持牌资深护士带教，配备标准病房模拟实验室，毕业直接对接西人养老机构就业。" if is_zh else "### 🩺 NACC Personal Support Worker (PSW DE 2022)\n\n• **Duration:** 23 Weeks (Includes 300+ hours clinical practicum)\n• **Credential:** NACC PSW Diploma + CPR & First Aid Certification\n• **Compensation:** Competitive industry compensation & union benefits\n• **Highlights:** Fully accredited, hands-on simulation labs, and direct placement in top healthcare facilities."
 
     if any(k in q for k in ['tech', 'full stack', 'web', 'code', 'java', 'react', 'developer', 'ai', 'mini credential', '全栈', '编程', '前端', '后端', '软件', '人工智能']):
-        return "### 💻 Full Stack Web Technician (全栈开发文凭 + AI 微证书)\n\n• **双重认证：** 安省官方 Full Stack Web 职业文凭 + **AI Mini-Credential 微证书**\n• **学制：** 32 周（高强度实战机房 + 商业级微服务与 AI 大项目）\n• **技术栈：** Java, Spring Boot 3, React, TypeScript, AWS 云原生, Docker, OpenAI/Claude API, 智能辅助编程\n• **起薪前景：** 加拿大毕业起薪 $65,000 – $85,000 加元/年\n• **就业支持：** 名师辅导 LeetCode 刷题与大厂模拟面试，直通金融与科技名企。" if is_zh else "### 💻 Full Stack Web Technician Diploma + AI Mini-Credential\n\n• **Dual Credentials:** Accredited Career Diploma + **AI Mini-Credential**\n• **Duration:** 32 Weeks (Live Projects + Intensive Labs)\n• **Stack:** Core Java, Spring Boot 3, React, TypeScript, AWS Cloud, Docker, GenAI & LLM Integration\n• **Starting Salary:** $65,000 – $85,000 / year in Canadian tech & banking sectors\n• **Support:** 1-on-1 resume polish, LeetCode algorithms, and mock interview coaching."
+        return "### 💻 Full Stack Web Technician (全栈开发文凭 + AI 微证书)\n\n• **双重认证：** 安省官方 Full Stack Web 职业文凭 + **AI Mini-Credential 微证书**\n• **学制：** 32 周（高强度实战机房 + 商业级微服务与 AI 大项目）\n• **技术栈：** Java, Spring Boot 3, React, TypeScript, AWS 云原生, Docker, OpenAI/Claude API, 智能辅助编程\n• **职业前景：** 北美高科技高薪赛道，发展空间广阔\n• **就业支持：** 名师辅导 LeetCode 刷题与大厂模拟面试，直通金融与科技名企。" if is_zh else "### 💻 Full Stack Web Technician Diploma + AI Mini-Credential\n\n• **Dual Credentials:** Accredited Career Diploma + **AI Mini-Credential**\n• **Duration:** 32 Weeks (Live Projects + Intensive Labs)\n• **Stack:** Core Java, Spring Boot 3, React, TypeScript, AWS Cloud, Docker, GenAI & LLM Integration\n• **Career Outlook:** High-growth tech scale with rapid AI & cloud advancement\n• **Support:** 1-on-1 resume polish, LeetCode algorithms, and mock interview coaching."
 
     if any(k in q for k in ['account', 'tax', 'payroll', 'bookkeep', 'cpa', '会计', '报税', '薪资']):
-        return "### 📊 Accounting, Tax and Payroll Administration (会计与税务文凭)\n\n• **学制：** 30 周（资深持牌 CPA 亲授 + 真账实训）\n• **软件技能：** QuickBooks Desktop/Online, Sage 50, Profile, TaxPrep, Advanced Excel\n• **核心业务：** 全流程记账、加拿大个人税 (T1) 与公司税 (T2)、CRA 工资税 (CPP, EI, T4)\n• **薪资待遇：** 起薪 $48,000 – $65,000 加元/年，稳健白领晋升路径。" if is_zh else "### 📊 Accounting, Tax & Payroll Administration\n\n• **Duration:** 30 Weeks (Hands-on corporate accounting software)\n• **Software:** QuickBooks Desktop/Online, Sage 50, Profile, TaxPrep, Excel\n• **Core Skills:** Full-cycle bookkeeping, Canadian T1/T2 tax returns, CRA payroll filings\n• **Salary:** $48,000 – $65,000 / year with clear progression to CPA designation."
+        return "### 📊 Accounting, Tax and Payroll Administration (会计与税务文凭)\n\n• **学制：** 30 周（资深持牌 CPA 亲授 + 真账实训）\n• **软件技能：** QuickBooks Desktop/Online, Sage 50, Profile, TaxPrep, Advanced Excel\n• **核心业务：** 全流程记账、加拿大个人税 (T1) 与公司税 (T2)、CRA 工资税 (CPP, EI, T4)\n• **职业前景：** 稳定白领晋升通道，企业薪资稳健增长。" if is_zh else "### 📊 Accounting, Tax & Payroll Administration\n\n• **Duration:** 30 Weeks (Hands-on corporate accounting software)\n• **Software:** QuickBooks Desktop/Online, Sage 50, Profile, TaxPrep, Excel\n• **Core Skills:** Full-cycle bookkeeping, Canadian T1/T2 tax returns, CRA payroll filings\n• **Career Outlook:** Rewarding corporate progression toward senior roles & CPA."
 
     if any(k in q for k in ['campus', 'location', 'address', 'where', 'phone', '校区', '地址', '电话', '万锦', '北约克']):
         return "### 🏫 校区地址与联系电话\n\n📍 **万锦主校区 (Markham Campus):**\n7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8\n\n📞 咨询电话：416-665-6668\n🕒 办公时间：周一至周六 9:00 AM – 6:00 PM" if is_zh else "### 🏫 Campus Location & Contact Info\n\n📍 **Markham Main Campus:**\n7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8\n\n📞 Phone: 416-665-6668\n🕒 Hours: Monday – Saturday, 9:00 AM – 6:00 PM"
@@ -3773,10 +3773,10 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
         if is_zh:
             title = f"{current_year} 安省 PSW 护工就业前景与最高 $28,000 政府免费培训助学金全指南 ({geo})"
             meta_title = f"{current_year} 安省 PSW 护工培训与 $28,000 政府助学金申请 | 维多利亚职业学院"
-            meta_desc = f"深度解析 {geo} 地区 PSW 个人护理护工时薪 ($20-$28/h)、300+小时持牌养老院临床实习及 Better Jobs Ontario 免费学费申请攻略。"
+            meta_desc = f"深度解析 {geo} 地区 PSW 个人护理护工就业前景、300+小时持牌养老院临床实习及 Better Jobs Ontario 免费学费申请攻略。"
             summary = f"全面解读 {geo} 紧缺医疗护理行业需求、PSW 护工高薪就业机遇，以及如何通过安省政府补助实现 0 元学费入读并获生活津贴。"
             content = f"""<h2>1. {geo} 医疗护理行业现状与 PSW 护工急迫需求</h2>
-<p>随着安大略省人口结构老龄化加速与长期护理院（LTC）床位的大规模扩建，<strong>{geo}</strong> 各大医院、公立/私立长期护理中心及社区家庭护理机构对持牌 <strong>Personal Support Worker (PSW)</strong> 的需求呈现爆发式增长。持牌护工起薪高达 <strong>$20 – $28 加元/小时</strong>，并享有完整的牙医保险、带薪年假与退休金等优厚福利。</p>
+<p>随着安大略省人口结构老龄化加速与长期护理院（LTC）床位的大规模扩建，<strong>{geo}</strong> 各大医院、公立/私立长期护理中心及社区家庭护理机构对持牌 <strong>Personal Support Worker (PSW)</strong> 的需求呈现爆发式增长。持牌护工享受 <strong>极具竞争力的优厚薪酬与发展前景</strong>，并享有完整的牙医保险、带薪年假与退休金等优厚福利。</p>
 
 <h3>2. 核心教学体系：NACC 官方认证与 300+ 小时实地临床实习</h3>
 <p>维多利亚职业学院（Victoria International College）提供的 <strong>NACC Personal Support Worker (PSW DE 2022)</strong> 证书课程，由安省资深注册护士（RN）小班授课：</p>
@@ -3812,10 +3812,10 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
         else:
             title = f"{current_year} In-Demand PSW Healthcare Training & $28,000+ Government Grants Guide ({geo})"
             meta_title = f"{current_year} PSW Healthcare Training & $28,000 Grant Guide {geo} | Victoria College"
-            meta_desc = f"Discover high-demand PSW careers in {geo}. Learn about $20-$28/hr starting wages, NACC certification, and Better Jobs Ontario grant eligibility."
-            summary = f"Comprehensive guide to accredited Personal Support Worker (PSW) diploma training, $20-$28/hr career outlook, and up to $28,000+ government funding in {geo}."
+            meta_desc = f"Discover high-demand PSW careers in {geo}. Learn about competitive healthcare compensation, NACC certification, and Better Jobs Ontario grant eligibility."
+            summary = f"Comprehensive guide to accredited Personal Support Worker (PSW) diploma training, rewarding career outlook, and up to $28,000+ government funding in {geo}."
             content = f"""<h2>1. Healthcare Workforce Demand Across {geo}</h2>
-<p>Ontario's healthcare infrastructure is rapidly expanding to support seniors and long-term care facilities. In <strong>{geo}</strong>, certified <strong>Personal Support Workers (PSWs)</strong> are among the most recruited frontline professionals, offering strong job security, flexible scheduling, and competitive hourly wages between <strong>$20 and $28 per hour</strong>.</p>
+<p>Ontario's healthcare infrastructure is rapidly expanding to support seniors and long-term care facilities. In <strong>{geo}</strong>, certified <strong>Personal Support Workers (PSWs)</strong> are among the most recruited frontline professionals, offering strong job security, flexible scheduling, and competitive industry compensation.</p>
 
 <h3>2. NACC Accredited Curriculum & 300+ Clinical Practicum Hours</h3>
 <p>Victoria International College's <strong>NACC Personal Support Worker DE 2022</strong> program combines intensive clinical simulation with guaranteed placement:</p>
@@ -3856,10 +3856,10 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
         if is_zh:
             title = f"{current_year} {geo} 全栈软件开发工程师高薪就业路径与 Java / React 实战指南"
             meta_title = f"{current_year} {geo} 全栈开发培训与高薪 IT 就业规划 | 维多利亚职业学院"
-            meta_desc = f"万锦及大多伦多高科技走廊 IT 职位急缺。维多利亚学院全栈开发文凭，覆盖 Java Spring Boot, React, AWS，起薪 $65k-$85k。"
+            meta_desc = f"万锦及大多伦多高科技走廊 IT 职位急缺。维多利亚学院全栈开发文凭，覆盖 Java Spring Boot, React, AWS，发展前景广阔。"
             summary = f"深度剖析 {geo} 科技企业微服务与云计算招聘需求，如何通过 32 周工业级项目实战快速锁定 $65,000–$85,000/年 软件工程师职位。"
             content = f"""<h2>1. {geo} 高科技产业集群与软件工程岗位需求</h2>
-<p>作为加国科技创新重镇，<strong>{geo}</strong> 聚集了包括 IBM、AMD、高通等在内的数千家高科技与金融跨国名企。随着微服务架构与云原生转型的普及，企业对掌握 <strong>Java Spring Boot 3、React、TypeScript 与 AWS 云端架构</strong> 的全栈开发人员（Full Stack Developer）需求持续高涨，初中级起薪普遍达 <strong>$65,000 – $85,000 加元/年</strong>。</p>
+<p>作为加国科技创新重镇，<strong>{geo}</strong> 聚集了包括 IBM、AMD、高通等在内的数千家高科技与金融跨国名企。随着微服务架构与云原生转型的普及，企业对掌握 <strong>Java Spring Boot 3、React、TypeScript 与 AWS 云端架构</strong> 的全栈开发人员（Full Stack Developer）需求持续高涨，初中级开发人员享有 <strong>广阔的发展空间与优厚薪资待遇</strong>。</p>
 
 <h3>2. 32 周企业级工业实战课程架构</h3>
 <ul>
@@ -3881,7 +3881,7 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
         else:
             title = f"{current_year} Full Stack Software Engineer Career Blueprint in {geo}"
             meta_title = f"{current_year} Full Stack Web Developer Training {geo} | Victoria College"
-            meta_desc = f"Fast-track your tech career in {geo}. Learn Java, Spring Boot 3, React, TypeScript, and AWS. Average salaries $65k-$85k/yr."
+            meta_desc = f"Fast-track your tech career in {geo}. Learn Java, Spring Boot 3, React, TypeScript, and AWS. High-demand tech career outlook."
             summary = f"Career roadmap for aspiring software engineers in {geo}, covering core Java, microservices, modern React, cloud architecture, and government grant eligibility."
             content = f"""<h2>1. The High-Tech Corridor of {geo}</h2>
 <p>Known as Canada's premier innovation cluster, <strong>{geo}</strong> houses hundreds of technology and fintech leaders. Organizations are actively recruiting <strong>Full Stack Web Technicians</strong> capable of delivering scalable backends in Java Spring Boot and responsive frontends in modern React, with entry compensation ranging from <strong>$65,000 to $85,000/year</strong>.</p>
@@ -3915,10 +3915,10 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
 <h3>2. 助学金可申请哪些维多利亚职业文凭？</h3>
 <ul>
   <li>🩺 <strong>NACC Personal Support Worker (PSW DE 2022) 医疗护工文凭</strong>（23周，高薪紧缺）</li>
-  <li>💻 <strong>Full Stack Web Technician 全栈开发技术员文凭</strong>（32周，起薪 $65k-$85k）</li>
+  <li>💻 <strong>Full Stack Web Technician 全栈开发技术员文凭</strong>（32周，北美高薪赛道，前沿 AI 实战）</li>
   <li>📊 <strong>Accounting, Tax and Payroll 会计与税务管理文凭</strong>（30周，CPA 带教）</li>
   <li>👶 <strong>Early Childcare Assistant (ECA) 幼教助理文凭</strong>（22周，持牌托儿所实习）</li>
-  <li>⚡ <strong>Electrician 309A / 442A 电工考证与实操班</strong>（名师带教，高时薪）</li>
+  <li>⚡ <strong>Electrician 309A / 442A 电工考证与实操班</strong>（名师带教，持牌金牌技工高薪待遇）</li>
 </ul>
 
 <blockquote>
@@ -4305,7 +4305,7 @@ Return ONLY a valid, parseable JSON object with these EXACT keys:
   "meta_title": "SEO Meta Title (under 60 chars)",
   "meta_description": "Compelling Meta Description (150-160 chars) with CTA and Geo Keyword",
   "summary": "2-sentence executive summary of the article",
-  "content": "Rich HTML content with <h2>, <h3>, <p>, <ul>, <li>, <blockquote>, wage facts ($20-$28/hr for PSW, $65k-$85k for IT, $48k-$65k for Accounting), Better Jobs Ontario grants up to $28,000+, Markham Main Campus address (7050 Woodbine Ave., Unit 300, Markham), and a closing CTA consultation box with phone 416-665-6668.",
+  "content": "Rich HTML content with <h2>, <h3>, <p>, <ul>, <li>, <blockquote>, career demand facts (high demand for PSW, accelerated growth for IT, stable corporate advancement for Accounting), Better Jobs Ontario grants up to $28,000+, Markham Main Campus address (7050 Woodbine Ave., Unit 300, Markham), and a closing CTA consultation box with phone 416-665-6668.",
   "category": "{category}",
   "keywords": "{keywords}",
   "geo_target": "{geo_target}",
