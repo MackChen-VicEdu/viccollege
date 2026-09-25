@@ -1,0 +1,55 @@
+# ==============================================================================
+# Victoria International College - Robots.txt & AI Search Directives
+# Fully optimized for Google, Bing, GPT Search, SearchGPT, Perplexity, Claude & Gemini
+# ==============================================================================
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/admin/
+Disallow: /data/
+
+# OpenAI GPT Search, ChatGPT Search & Web Crawlers
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Perplexity AI Search Crawler
+User-agent: PerplexityBot
+Allow: /
+
+# Anthropic Claude Search Crawler
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Google Extended & Google Gemini Crawlers
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+# Microsoft Bing & Copilot Crawler
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Dynamic XML Sitemap
+Sitemap: https://viccollege.ca/sitemap.xml
+
+# LLM AI Context Document (https://llmstxt.org)
+# https://viccollege.ca/llms.txt
+# https://viccollege.ca/llms-full.txt

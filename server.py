@@ -4799,7 +4799,7 @@ def build_sitemap_xml() -> str:
         xml_lines.append(f'    <!-- Job Fair Event: {clean_jf_title} -->')
         xml_lines.append('  </url>')
 
-    # Add Knowledge Base Articles
+    # Add Knowledge Base Articles (Direct Crawlable URLs for GPT Search & Search Engines)
     xml_lines.append('  <!-- College Knowledge Base Articles -->')
     xml_lines.append('  <url>')
     xml_lines.append(f'    <loc>{base_url}/#knowledge-base</loc>')
@@ -4812,7 +4812,7 @@ def build_sitemap_xml() -> str:
         mod_date = (kb['updated_at'] or kb['created_at'] or today_str)[:10]
         clean_title = (kb['title'] or f"KB-{kb['id']}").replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
         xml_lines.append('  <url>')
-        xml_lines.append(f'    <loc>{base_url}/#kb-article-{kb["id"]}</loc>')
+        xml_lines.append(f'    <loc>{base_url}/article.html?kb={kb["id"]}</loc>')
         xml_lines.append(f'    <lastmod>{mod_date}</lastmod>')
         xml_lines.append('    <changefreq>monthly</changefreq>')
         xml_lines.append('    <priority>0.78</priority>')
@@ -4854,7 +4854,7 @@ def build_sitemap_xml() -> str:
     xml_lines.append('</urlset>')
     sitemap_content = '\n'.join(xml_lines)
 
-    # Save to disk as well
+    # Save sitemap.xml, robots.txt, and llms.txt to disk as well
     try:
         sitemap_path = os.path.join(BASE_DIR, 'sitemap.xml')
         with open(sitemap_path, 'w', encoding='utf-8') as f:
@@ -4862,11 +4862,208 @@ def build_sitemap_xml() -> str:
     except Exception as e:
         print(">> Warning: could not write sitemap.xml to disk:", e)
 
+    try:
+        build_robots_txt()
+        build_llms_txt(full=False)
+        build_llms_txt(full=True)
+    except Exception as e:
+        print(">> Warning: could not auto-generate robots.txt / llms.txt:", e)
+
     return sitemap_content
 
 
+def build_robots_txt() -> str:
+    """
+    Generate robots.txt explicitly permitting Google, Bing, and AI search bots:
+    OAI-SearchBot (OpenAI SearchGPT), GPTBot, ChatGPT-User, PerplexityBot, ClaudeBot, Google-Extended, Applebot.
+    """
+    content = """# ==============================================================================
+# Victoria International College - Robots.txt & AI Search Directives
+# Fully optimized for Google, Bing, GPT Search, SearchGPT, Perplexity, Claude & Gemini
 # ==============================================================================
-# Public Article & Sitemap APIs
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/admin/
+Disallow: /data/
+
+# OpenAI GPT Search, ChatGPT Search & Web Crawlers
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Perplexity AI Search Crawler
+User-agent: PerplexityBot
+Allow: /
+
+# Anthropic Claude Search Crawler
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Google Extended & Google Gemini Crawlers
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+# Microsoft Bing & Copilot Crawler
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Dynamic XML Sitemap
+Sitemap: https://viccollege.ca/sitemap.xml
+
+# LLM AI Context Document (https://llmstxt.org)
+# https://viccollege.ca/llms.txt
+# https://viccollege.ca/llms-full.txt
+"""
+    try:
+        file_path = os.path.join(BASE_DIR, 'robots.txt')
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+    except Exception as e:
+        print(">> Warning: could not write robots.txt to disk:", e)
+    return content
+
+
+def build_llms_txt(full: bool = False) -> str:
+    """
+    Generate dynamic Markdown document conforming to the llms.txt standard (https://llmstxt.org).
+    Provides structured, high-density grounding context for GPT Search, ChatGPT, Perplexity, Claude, and Gemini.
+    """
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("SELECT id, slug, title, summary, geo_target, category, updated_at FROM articles WHERE is_active = 1 AND status = 'active' ORDER BY id DESC")
+    active_articles = cursor.fetchall()
+
+    cursor.execute("SELECT id, category, title, keywords, content FROM knowledge_base WHERE COALESCE(is_active, 1) = 1 ORDER BY priority DESC, id DESC")
+    kb_items = cursor.fetchall()
+
+    cursor.execute("SELECT id, slug, title_en, title_zh, desc_en, duration_en, credential_en FROM programs WHERE is_active = 1 ORDER BY display_order ASC, id ASC")
+    programs = cursor.fetchall()
+
+    cursor.execute("SELECT id, title_en, title_zh, subtitle_en, date_en, location_en FROM job_fairs WHERE is_active = 1 ORDER BY id DESC")
+    job_fairs = cursor.fetchall()
+
+    lines = [
+        "# Victoria International College of Business & Technology",
+        "",
+        "> Victoria International College is an Ontario-registered career college (under the Ontario Career Colleges Act, 2005) with over 22 years of educational excellence located in Markham (Greater Toronto Area), Ontario, Canada. Specializing in high-demand vocational diplomas in Healthcare (PSW), Technology (Full Stack Web), Business & Accounting, Trades (Electrician), Childcare (ECA), and Traditional Wellness. Up to $28,000+ in non-repayable Ontario government training grants (Better Jobs Ontario) available for qualified individuals with $0 loan repayment.",
+        "",
+        "## Institutional Overview & Official Contact",
+        "- **Legal Name:** Victoria International College of Business & Technology",
+        "- **Accreditation:** Registered as a Career College under the Ontario Career Colleges Act, 2005",
+        "- **History:** 22+ Years of Career Training Excellence (Founded 2002)",
+        "- **Main Campus Address:** 7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8, Canada (Woodbine & Steeles)",
+        "- **Admissions Telephone:** 416-665-6668",
+        "- **Admissions Email:** info@viccollege.com",
+        "- **Official Website:** https://viccollege.ca",
+        "- **XML Sitemap:** https://viccollege.ca/sitemap.xml",
+        "- **Office Hours:** Monday – Saturday: 9:00 AM – 6:00 PM EST",
+        "",
+        "## Ontario Government Grants & Financial Aid ($28,000+ Non-Repayable)",
+        "- **Better Jobs Ontario (BJO / Second Career):** Up to $28,000+ in 100% non-repayable government funding covering tuition, living allowance, books, transportation, and childcare. Never needs to be paid back ($0 debt).",
+        "- **Eligibility Criteria:** Laid-off workers, former EI recipients, contract or gig workers, low-income earners who are Canadian Permanent Residents (PR) or Canadian Citizens.",
+        "- **Comparison to OSAP:** Better Jobs Ontario is a 100% grant (gift money with $0 debt), whereas OSAP includes repayable student loans that accrue interest.",
+        "- **College Assistance:** Victoria International College provides 100% complimentary step-by-step grant eligibility assessment and application support (Call 416-665-6668).",
+        "",
+        "## Academic Diploma Programs"
+    ]
+
+    STATIC_PROGRAM_HTML_MAP = {
+        'psw': 'personal-support-worker-online-psw-course.html',
+        'tech': 'software-development.html',
+        'software-development': 'software-development.html',
+        'accounting': 'computerized-accounting.html',
+        'computerized-accounting': 'computerized-accounting.html',
+        'eca': 'early-childcare-assistant-eca.html',
+        'early-childcare-assistant': 'early-childcare-assistant-eca.html',
+        'electrician': 'electrician.html',
+        'acupuncture': 'acupuncture-program.html',
+        'acupuncture-program': 'acupuncture-program.html',
+    }
+
+    for p in programs:
+        title = p['title_en']
+        slug = p['slug']
+        dur = p['duration_en'] or "Fast-Track Diploma"
+        desc = p['desc_en'] or ""
+        cred = p['credential_en'] or "College Diploma"
+        html_file = STATIC_PROGRAM_HTML_MAP.get(slug)
+        link = f"https://viccollege.ca/{html_file}" if html_file else f"https://viccollege.ca/#programs-{slug}"
+        lines.append(f"- [{title}]({link}): {dur} | {cred}. {desc}")
+
+    if job_fairs:
+        lines.extend([
+            "",
+            "## Upcoming Job Fairs & Career Hiring Events"
+        ])
+        for jf in job_fairs:
+            lines.append(f"- **{jf['title_en']}** ({jf['date_en'] or 'Upcoming'} at {jf['location_en'] or 'Markham Main Campus'}): {jf['subtitle_en'] or ''}")
+
+    lines.extend([
+        "",
+        "## Knowledge Base & Frequently Asked Questions"
+    ])
+    for kb in kb_items:
+        clean_ans = kb['content'].replace('\n', ' ').strip()
+        if not full and len(clean_ans) > 280:
+            clean_ans = clean_ans[:280] + '...'
+        lines.append(f"### {kb['title']}")
+        lines.append(f"- **Category:** {kb['category']}")
+        lines.append(f"- **Direct URL:** https://viccollege.ca/article.html?kb={kb['id']}")
+        lines.append(f"- **Answer:** {clean_ans}")
+        lines.append("")
+
+    lines.extend([
+        "## GEO-Targeted Career Insights & Guides"
+    ])
+    for art in active_articles:
+        summary = (art['summary'] or '').replace('\n', ' ').strip()
+        lines.append(f"- [{art['title']}](https://viccollege.ca/article.html?slug={art['slug']}): Target GEO: {art['geo_target']}. {summary}")
+
+    lines.extend([
+        "",
+        "## Regulatory & Compliance Policies",
+        "- [Academic Accommodation Policy](https://viccollege.ca/academic-accommodation-policy-and-procedure-for-students-with-disabilities.html)",
+        "- [KPI Audit Requirements](https://viccollege.ca/kpi-audit-requirements.html)",
+        "- [Privacy Policy](https://viccollege.ca/privacy-policy.html)",
+        "- [Sexual Violence Policy](https://viccollege.ca/sexual-violence-policy.html)",
+        "- [Students Complaint Procedure](https://viccollege.ca/students-complaint-procedure.html)"
+    ])
+
+    content = '\n'.join(lines)
+
+    try:
+        filename = 'llms-full.txt' if full else 'llms.txt'
+        file_path = os.path.join(BASE_DIR, filename)
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+    except Exception as e:
+        print(">> Warning: could not write llms.txt to disk:", e)
+
+    return content
+
+
+# ==============================================================================
+# Public Article, Sitemap, Robots & LLM APIs
 # ==============================================================================
 
 @app.route('/sitemap.xml', methods=['GET'])
@@ -4874,6 +5071,57 @@ def serve_sitemap_xml():
     """Serve dynamically built GEO & SEO XML sitemap."""
     xml_content = build_sitemap_xml()
     return Response(xml_content, mimetype='application/xml')
+
+@app.route('/robots.txt', methods=['GET'])
+def serve_robots_txt():
+    """Serve AI-optimized and search-engine-friendly robots.txt."""
+    content = build_robots_txt()
+    return Response(content, mimetype='text/plain')
+
+@app.route('/llms.txt', methods=['GET'])
+def serve_llms_txt():
+    """Serve standard llms.txt context document for AI search engines & LLM crawlers."""
+    content = build_llms_txt(full=False)
+    return Response(content, mimetype='text/plain')
+
+@app.route('/llms-full.txt', methods=['GET'])
+def serve_llms_full_txt():
+    """Serve comprehensive full-text llms-full.txt document for LLM deep grounding."""
+    content = build_llms_txt(full=True)
+    return Response(content, mimetype='text/plain')
+
+@app.route('/api/knowledge/<int:kb_id>', methods=['GET'])
+def public_get_knowledge_item(kb_id):
+    """Public API: Get a single knowledge base article for article.html?kb={id} and AI search citations."""
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id, category, title, keywords, content, priority, COALESCE(is_active, 1) as is_active, created_at, updated_at FROM knowledge_base WHERE id = ?", (kb_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Knowledge base article not found.'}), 404
+
+    item = dict(row)
+    return jsonify({
+        'success': True,
+        'knowledge': item,
+        'article': {
+            'id': item['id'],
+            'title': item['title'],
+            'slug': f"kb-{item['id']}",
+            'summary': item['content'][:250] + ('...' if len(item['content']) > 250 else ''),
+            'content': item['content'],
+            'category': item['category'],
+            'keywords': item['keywords'],
+            'geo_target': 'Toronto & Markham, Ontario',
+            'geo_lat': 43.8561,
+            'geo_lng': -79.3370,
+            'created_at': item['created_at'],
+            'updated_at': item['updated_at'],
+            'published_at': item['created_at'],
+            'author': 'Victoria College Admissions Advisory',
+            'is_kb': True
+        }
+    })
 
 @app.route('/api/articles', methods=['GET'])
 def public_get_articles():

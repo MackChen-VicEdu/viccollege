@@ -13,13 +13,13 @@
         intro: "Victoria International College of Business & Technology is an Ontario registered career college (under the Ontario Career Colleges Act, 2005) with over 22 years of educational excellence and 15,000+ successful alumni across Canada.",
         contact: "📞 Phone: 416-665-6668 | ✉️ Email: info@viccollege.com | 🕒 Hours: Monday – Saturday, 9:00 AM – 6:00 PM.",
         campuses: "📍 Markham Main Campus: 7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8",
-        leadership: "President Maria Sun is the Dean of Victoria International College and President of Victoria Education Group, with 22+ years of leadership empowering new immigrants and youth in Canada."
+        leadership: "President Maria Sun is the Dean of Victoria International College, with 22+ years of leadership empowering new immigrants and youth in Canada."
       },
       zh: {
         intro: "维多利亚职业学院（Victoria International College of Business & Technology）是经安大略省教育部（Ontario Career Colleges Act, 2005）正式注册认可的正规职业学院，办学逾22年，累计培养并协助15,000多名优秀毕业学员在加国高薪就业。",
         contact: "📞 咨询热线：416-665-6668 | ✉️ 邮箱：info@viccollege.com | 🕒 办公时间：周一至周六 9:00 AM – 6:00 PM",
         campuses: "📍 万锦主校区：7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8",
-        leadership: "孙善勤（Maria Sun）校长为维多利亚教育集团总裁、维多利亚职业学院院长，深耕加国职业教育22年，帮助成千上万华人新移民和学子成功融入加国职场。"
+        leadership: "孙善勤（Maria Sun）院长为维多利亚国际学院院长，深耕加国职业教育22年，帮助成千上万华人新移民和学子成功融入加国职场。"
       }
     },
     grant: {
@@ -286,7 +286,7 @@
 
         <div class="vic-chat-footer-brand" id="vic-chat-footer-disclaimer">
           <i class="fa-solid fa-triangle-exclamation" style="margin-right: 4px; color: #f59e0b;"></i>
-          <span id="vic-chat-disclaimer-text">${lang === 'zh' ? '本系统为 AI 智能助手，回复仅供参考。确切课程信息及资助评估请联系学院顾问：416-665-6668 / info@viccollege.com。' : 'AI-generated responses for guidance only. For official answers & grant assessments, please contact Victoria College at 416-665-6668 or info@viccollege.com.'}</span>
+          <span id="vic-chat-disclaimer-text">${lang === 'zh' ? '本系统为 AI 智能助手，回复仅供参考。确切课程信息及资助评估请联系学院顾问：416-665-6668 / info@viccollege.com。' : 'AI-generated responses for guidance only. For official answers & grant assessments, please contact Victoria International College at 416-665-6668 or info@viccollege.com.'}</span>
         </div>
       </div>
     `;
@@ -338,7 +338,7 @@
           <div class="vic-chat-auth-gate">
             <div class="vic-auth-gate-text">
               <i class="fa-solid fa-lock"></i>
-              <span>${lang === 'zh' ? '仅限注册及登录用户使用 AI 顾问系统' : 'Sign in required to chat with Victoria College AI Assistant'}</span>
+              <span>${lang === 'zh' ? '仅限注册及登录用户使用 AI 顾问系统' : 'Sign in required to chat with Victoria International College AI Assistant'}</span>
             </div>
             <div class="vic-auth-gate-buttons">
               <button type="button" class="vic-gate-btn vic-gate-btn-auth js-gate-login">
@@ -744,7 +744,7 @@
       <span class="chat-compare-value">Traditional multi-year academic degrees/diplomas</span>
     </div>
   </div>
-</div>\n\n💡 **Victoria College Advisor Tip:** If you are currently laid off, underemployed, or a contract worker, **Better Jobs Ontario** is vastly superior because it is **100% free gift money** with **no debt**, unlike OSAP which requires student loan repayment!`,
+</div>\n\n💡 **Victoria International College Advisor Tip:** If you are currently laid off, underemployed, or a contract worker, **Better Jobs Ontario** is vastly superior because it is **100% free gift money** with **no debt**, unlike OSAP which requires student loan repayment!`,
           actions: [
             { label: '💰 Free BJO $28,000 Eligibility Check', action: 'consult', param: 'aid' },
             { label: '📞 Call Advisor 416-665-6668', action: 'call', param: '4166656668' }
@@ -1193,7 +1193,7 @@
       } else {
         appendMessage({
           role: 'bot',
-          text: `### 🔒 Victoria College AI Career & Admissions Assistant\n\n💡 **Purpose:** Instant guidance on **$28,000+ Government Grants**, **PSW / IT / Business Diplomas**, and **campus admissions**.\n\n⚠️ *Please Note: This is an AI assistant for general guidance. For official answers, verified grant evaluations, and enrollment confirmations, please contact our admissions team directly at 416-665-6668 or info@viccollege.com.*\n\nPlease sign in with your account to start chatting:`,
+          text: `### 🔒 Victoria International College AI Career & Admissions Assistant\n\n💡 **Purpose:** Instant guidance on **$28,000+ Government Grants**, **PSW / IT / Business Diplomas**, and **campus admissions**.\n\n⚠️ *Please Note: This is an AI assistant for general guidance. For official answers, verified grant evaluations, and enrollment confirmations, please contact our admissions team directly at 416-665-6668 or info@viccollege.com.*\n\nPlease sign in with your account to start chatting:`,
           actions: [
             { label: '🔑 Sign In / Register Account', action: 'auth', param: 'login' },
             { label: '🌐 Continue with Google', action: 'auth_google', param: '' },
@@ -1253,7 +1253,7 @@
     if (elements.disclaimerText) {
       elements.disclaimerText.textContent = lang === 'zh'
         ? '本系统为 AI 智能助手，回复仅供参考。确切课程信息及资助评估请联系学院顾问：416-665-6668 / info@viccollege.com。'
-        : 'AI-generated responses for guidance only. For official answers & grant assessments, please contact Victoria College at 416-665-6668 or info@viccollege.com.';
+        : 'AI-generated responses for guidance only. For official answers & grant assessments, please contact Victoria International College at 416-665-6668 or info@viccollege.com.';
     }
     if (elements.input) {
       elements.input.placeholder = lang === 'zh' ? '输入您的问题（如：PSW就业、政府补助、学费）...' : 'Ask about programs, grants, tuition, admissions...';

@@ -92,7 +92,7 @@ class TestSitemapAutoSync(unittest.TestCase):
         kb_id = res_kb.get_json()['id']
 
         # 2. Verify sitemap includes the new KB URL
-        expected_kb_url = f'https://viccollege.ca/#kb-article-{kb_id}'
+        expected_kb_url = f'https://viccollege.ca/article.html?kb={kb_id}'
         _, urls = self.get_current_sitemap()
         self.assertIn(expected_kb_url, urls, "Newly added KB article must be immediately in sitemap.xml")
 

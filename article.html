@@ -203,9 +203,10 @@
   <script>
     (async function() {
       const urlParams = new URLSearchParams(window.location.search);
+      const kbParam = urlParams.get('kb') || urlParams.get('kb_id');
       let slug = urlParams.get('slug') || urlParams.get('id');
 
-      if (!slug) {
+      if (!slug && !kbParam) {
         // Check path like /articles/<slug>
         const pathParts = window.location.pathname.split('/').filter(Boolean);
         if (pathParts[0] === 'articles' && pathParts[1]) {
@@ -213,7 +214,10 @@
         }
       }
 
-      if (!slug) {
+      const isKb = Boolean(kbParam || (slug && slug.startsWith('kb-')));
+      const resolvedKbId = kbParam || (slug && slug.startsWith('kb-') ? slug.replace('kb-', '') : null);
+
+      if (!slug && !isKb) {
         slug = 'psw-training-grant-toronto-north-york'; // fallback default
       }
 
@@ -221,16 +225,24 @@
         const token = localStorage.getItem('vic_auth_token');
         const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
-        const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl(`/api/articles/${encodeURIComponent(slug)}`) : `/api/articles/${encodeURIComponent(slug)}`;
+        let apiUrl;
+        if (isKb && resolvedKbId) {
+          const ep = `/api/knowledge/${encodeURIComponent(resolvedKbId)}`;
+          apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl(ep) : ep;
+        } else {
+          const ep = `/api/articles/${encodeURIComponent(slug)}`;
+          apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl(ep) : ep;
+        }
+
         const res = await fetch(apiUrl, { headers });
         const data = await res.json();
 
         if (!res.ok || !data.article) {
-          document.getElementById('art-title').textContent = 'Article Not Found or Unpublished';
+          document.getElementById('art-title').textContent = isKb ? 'Knowledge Base Article Not Found' : 'Article Not Found or Unpublished';
           document.getElementById('art-content-body').innerHTML = `
             <div style="text-align: center; padding: 40px; color: #64748B;">
-              <p>The requested article could not be found or has not been published yet.</p>
-              <a href="/#articles" class="btn-vic-red" style="margin-top: 15px; display: inline-block;">Browse Available Articles</a>
+              <p>The requested ${isKb ? 'knowledge base entry' : 'article'} could not be found or has not been published yet.</p>
+              <a href="${isKb ? '/#knowledge-base' : '/#articles'}" class="btn-vic-red" style="margin-top: 15px; display: inline-block;">Browse Available ${isKb ? 'FAQ & Knowledge Base' : 'Articles'}</a>
             </div>
           `;
           return;
@@ -253,13 +265,31 @@
 
         // Content bindings
         document.getElementById('breadcrumb-title').textContent = a.title;
-        document.getElementById('breadcrumb-category').textContent = (a.category || 'Programs').toUpperCase();
-        document.getElementById('art-geo-badge').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${a.geo_target || 'Toronto, Ontario'}`;
-        document.getElementById('art-category-badge').textContent = a.category || 'Programs';
+        const breadCat = document.getElementById('breadcrumb-category');
+        if (breadCat) {
+          breadCat.textContent = isKb ? 'KNOWLEDGE BASE & FAQ' : (a.category || 'Programs').toUpperCase();
+        }
+
+        document.getElementById('art-geo-badge').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${a.geo_target || 'Toronto & Markham, Ontario'}`;
+        document.getElementById('art-category-badge').textContent = isKb ? (a.category ? a.category.toUpperCase() + ' FAQ' : 'FAQ') : (a.category || 'Programs');
         document.getElementById('art-date').textContent = (a.published_at || a.created_at || '2026').substring(0, 10);
         document.getElementById('art-title').textContent = a.title;
         document.getElementById('art-summary-box').textContent = a.summary || a.meta_description || '';
-        document.getElementById('art-content-body').innerHTML = a.content;
+
+        // Render content body (support both HTML and plaintext paragraphs)
+        let formattedContent = a.content;
+        if (isKb && (!formattedContent.includes('<p>') && !formattedContent.includes('<div>'))) {
+          const lines = formattedContent.split('\n\n').filter(Boolean);
+          formattedContent = lines.map(p => `<p style="margin-bottom: 16px;">${p.replace(/\n/g, '<br>')}</p>`).join('');
+          formattedContent += `
+            <div style="margin-top: 30px; padding: 20px; background: #EEF2FF; border: 1px solid #C7D2FE; border-radius: 10px; color: #1E1B4B;">
+              <strong><i class="fa-solid fa-circle-question" style="color: #4F46E5;"></i> Have further questions?</strong>
+              <p style="margin: 6px 0 0; font-size: 14.5px; color: #3730A3;">Our certified academic and financial aid advisors are available Monday to Saturday to guide you through course details and $28,000+ government grant applications.</p>
+              <a href="/#consultation" class="btn-vic-red" style="margin-top: 12px; display: inline-block; padding: 8px 16px; font-size: 13px;">Book Free Consultation</a>
+            </div>
+          `;
+        }
+        document.getElementById('art-content-body').innerHTML = formattedContent;
         if (a.author) document.getElementById('art-author').textContent = a.author;
 
         // Preview banner
@@ -299,36 +329,81 @@
         const fbLink = document.getElementById('share-facebook');
         if (fbLink) fbLink.href = `https://www.facebook.com/sharer/sharer.php?u=${curUrl}`;
 
-        // Inject Schema.org JSON-LD
+        // Inject Schema.org JSON-LD (FAQPage + Article if KB, or Article if regular)
         const jsonLdScript = document.getElementById('article-json-ld');
         if (jsonLdScript) {
-          jsonLdScript.textContent = JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": a.title,
-            "description": a.meta_description || a.summary,
-            "datePublished": a.published_at || a.created_at,
-            "dateModified": a.updated_at || a.created_at,
-            "author": {
-              "@type": "Organization",
-              "name": a.author || "Victoria International College"
-            },
-            "publisher": {
-              "@type": "EducationalOrganization",
-              "name": "Victoria International College of Business & Technology",
-              "url": "https://viccollege.ca",
-              "logo": "https://viccollege.ca/images/vic_logo.png"
-            },
-            "contentLocation": {
-              "@type": "Place",
-              "name": a.geo_target || "Toronto, Ontario, Canada",
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": a.geo_lat || 43.7758,
-                "longitude": a.geo_lng || -79.3458
+          if (isKb) {
+            jsonLdScript.textContent = JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "FAQPage",
+                  "mainEntity": [{
+                    "@type": "Question",
+                    "name": a.title,
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": a.content
+                    }
+                  }]
+                },
+                {
+                  "@type": "Article",
+                  "headline": a.title,
+                  "description": a.meta_description || a.summary,
+                  "datePublished": a.published_at || a.created_at,
+                  "dateModified": a.updated_at || a.created_at,
+                  "author": {
+                    "@type": "Organization",
+                    "name": a.author || "Victoria International College"
+                  },
+                  "publisher": {
+                    "@type": "EducationalOrganization",
+                    "name": "Victoria International College of Business & Technology",
+                    "url": "https://viccollege.ca",
+                    "logo": "https://viccollege.ca/images/vic_logo.png"
+                  },
+                  "contentLocation": {
+                    "@type": "Place",
+                    "name": a.geo_target || "Toronto, Ontario, Canada",
+                    "geo": {
+                      "@type": "GeoCoordinates",
+                      "latitude": a.geo_lat || 43.8561,
+                      "longitude": a.geo_lng || -79.3370
+                    }
+                  }
+                }
+              ]
+            });
+          } else {
+            jsonLdScript.textContent = JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              "headline": a.title,
+              "description": a.meta_description || a.summary,
+              "datePublished": a.published_at || a.created_at,
+              "dateModified": a.updated_at || a.created_at,
+              "author": {
+                "@type": "Organization",
+                "name": a.author || "Victoria International College"
+              },
+              "publisher": {
+                "@type": "EducationalOrganization",
+                "name": "Victoria International College of Business & Technology",
+                "url": "https://viccollege.ca",
+                "logo": "https://viccollege.ca/images/vic_logo.png"
+              },
+              "contentLocation": {
+                "@type": "Place",
+                "name": a.geo_target || "Toronto, Ontario, Canada",
+                "geo": {
+                  "@type": "GeoCoordinates",
+                  "latitude": a.geo_lat || 43.8561,
+                  "longitude": a.geo_lng || -79.3370
+                }
               }
-            }
-          });
+            });
+          }
         }
 
       } catch (err) {

@@ -173,7 +173,7 @@ class TestKBJobFairSitemapSearch(unittest.TestCase):
             cursor.execute("SELECT id FROM knowledge_base")
             kb_rows = cursor.fetchall()
             for r in kb_rows:
-                self.assertIn(f'https://viccollege.ca/#kb-article-{r["id"]}', urls)
+                self.assertIn(f'https://viccollege.ca/article.html?kb={r["id"]}', urls)
 
         # 3. Test GET /sitemap.xml endpoint
         res = self.app.get('/sitemap.xml')
