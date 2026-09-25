@@ -122,7 +122,7 @@
         currentUser = data.user;
         this.renderUserUI();
         this.closeAuthModal();
-        this.showToast(`Welcome to Victoria College, ${currentUser.name}!`, 'success');
+        this.showToast(`Welcome to Victoria International College, ${currentUser.name}!`, 'success');
         return data;
       } catch (err) {
         if (err.message && (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch') || err.message.includes('Network request failed'))) {
@@ -362,7 +362,7 @@
 
           <div class="vic-auth-modal-header">
             <img src="images/vic_logo.png" alt="Victoria College" class="auth-logo">
-            <h3 id="vic-auth-modal-title">Welcome to Victoria College</h3>
+            <h3 id="vic-auth-modal-title">Welcome to Victoria International College</h3>
             <p id="vic-auth-modal-sub">Sign in to access student grants, save AI conversations, and track applications.</p>
           </div>
 

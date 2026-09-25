@@ -25,6 +25,13 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 app = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
 
+import smtplib
+import ssl
+import threading
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
+
 # Optional requests for calling OpenAI API
 try:
     import requests
@@ -41,6 +48,12 @@ def get_db():
         g.db = sqlite3.connect(DB_PATH)
         g.db.row_factory = sqlite3.Row
     return g.db
+
+def get_db_connection():
+    """Standalone SQLite connection for scripts and tests."""
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 @app.teardown_appcontext
 def close_db(error):
@@ -2209,6 +2222,15 @@ def init_database():
         'temperature': '0.7',
         'max_tokens': '800',
         'require_login': 'true',
+        'smtp_host': '',
+        'smtp_port': '587',
+        'smtp_user': '',
+        'smtp_pass': '',
+        'smtp_from': 'Victoria International College <info@viccollege.com>',
+        'notification_email': 'info@viccollege.com',
+        'smtp_tls': 'true',
+        'smtp_ssl': 'false',
+        'send_student_confirmation': 'true',
         'system_prompt': """You are the official AI Admissions & Career Advisor for Victoria International College of Business & Technology (registered under Ontario Career Colleges Act, 2005).
 Your tone is professional, warm, encouraging, and highly knowledgeable.
 
@@ -2462,6 +2484,8 @@ Key College Knowledge:
         email TEXT,
         phone TEXT,
         program TEXT,
+        campus TEXT,
+        interest TEXT,
         interested_in_grant INTEGER DEFAULT 0,
         source_page TEXT,
         notes TEXT,
@@ -2469,6 +2493,23 @@ Key College Knowledge:
         created_at TEXT NOT NULL
     )
     ''')
+
+    # Ensure schema migrations for newly added columns
+    try:
+        cursor.execute("ALTER TABLE consultations ADD COLUMN campus TEXT")
+    except Exception:
+        pass
+    try:
+        cursor.execute("ALTER TABLE consultations ADD COLUMN interest TEXT")
+    except Exception:
+        pass
+    try:
+        cursor.execute("PRAGMA table_info(knowledge_base)")
+        kb_cols = [c['name'] for c in cursor.fetchall()]
+        if 'is_active' not in kb_cols:
+            cursor.execute("ALTER TABLE knowledge_base ADD COLUMN is_active INTEGER DEFAULT 1")
+    except Exception:
+        pass
 
     conn.commit()
     conn.close()
@@ -2812,17 +2853,18 @@ def admin_reset_user_password(user_id):
 # Local-First Knowledge Base Retrieval Engine & AI Chat Proxy
 # ==============================================================================
 
-def search_knowledge_base(query: str, limit: int = 5, min_score: float = 0.15) -> list:
+def search_knowledge_base(query: str, limit: int = 5, min_score: float = 0.15, include_inactive: bool = True) -> list:
     """
     Search SQLite knowledge_base using weighted tokenization and keyword matching.
-    Returns sorted list of matches: [{id, category, title, keywords, content, priority, score}]
+    Returns sorted list of matches: [{id, category, title, keywords, content, priority, is_active, score}]
+    Searches across ALL articles (including inactive ones) for full discoverability.
     """
     if not query:
         return []
 
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT id, category, title, keywords, content, priority FROM knowledge_base ORDER BY priority DESC")
+    cursor.execute("SELECT id, category, title, keywords, content, priority, COALESCE(is_active, 1) as is_active FROM knowledge_base ORDER BY priority DESC")
     articles = cursor.fetchall()
     if not articles:
         return []
@@ -2842,10 +2884,10 @@ def search_knowledge_base(query: str, limit: int = 5, min_score: float = 0.15) -
     scored_matches = []
 
     for row in articles:
-        title = row['title'].lower()
-        keywords = [k.strip().lower() for k in row['keywords'].split(',') if k.strip()]
-        content = row['content'].lower()
-        category = row['category'].lower()
+        title = (row['title'] or '').lower()
+        keywords = [k.strip().lower() for k in (row['keywords'] or '').split(',') if k.strip()]
+        content = (row['content'] or '').lower()
+        category = (row['category'] or '').lower()
 
         score = 0.0
 
@@ -2900,11 +2942,323 @@ def search_knowledge_base(query: str, limit: int = 5, min_score: float = 0.15) -
                 'keywords': row['keywords'],
                 'content': row['content'],
                 'priority': row['priority'],
+                'is_active': row['is_active'],
                 'score': final_score
             })
 
     scored_matches.sort(key=lambda x: x['score'], reverse=True)
     return scored_matches[:limit]
+
+
+def search_job_fairs(query: str, limit: int = 5, min_score: float = 0.15, include_inactive: bool = True) -> list:
+    """
+    Search SQLite job_fairs using weighted tokenization and keyword matching.
+    Searches across ALL job fair and event records even when inactive (is_active = 0).
+    Returns sorted list of matches: [{id, title_en, title_zh, subtitle_en, subtitle_zh, date_en, date_zh, location_en, location_zh, tag_en, tag_zh, btn_text_en, btn_link, bg_image_url, is_active, score}]
+    """
+    if not query:
+        return []
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM job_fairs ORDER BY is_active DESC, id DESC")
+    events = cursor.fetchall()
+    if not events:
+        return []
+
+    stop_words = {
+        'the', 'is', 'a', 'an', 'how', 'what', 'where', 'when', 'who', 'why', 'can', 'i', 'to', 
+        'for', 'in', 'of', 'about', 'and', 'or', 'do', 'you', 'have', 'there', 'any', 'my', 'me', 
+        'with', 'on', 'at', 'by', 'from', 'up', 'out', 'if', 'as', 'tell', 'info', 'please'
+    }
+    query_lower = query.lower().strip()
+    raw_tokens = re.findall(r'[\w\u4e00-\u9fff]+', query_lower)
+    tokens = [t for t in raw_tokens if t not in stop_words and len(t) > 1]
+    if not tokens:
+        tokens = raw_tokens
+
+    scored_matches = []
+    for row in events:
+        d = format_job_fair_dict(row)
+        title_en = (d.get('title_en') or '').lower()
+        title_zh = (d.get('title_zh') or '').lower()
+        sub_en = (d.get('subtitle_en') or '').lower()
+        sub_zh = (d.get('subtitle_zh') or '').lower()
+        loc_en = (d.get('location_en') or '').lower()
+        loc_zh = (d.get('location_zh') or '').lower()
+        date_en = (d.get('date_en') or '').lower()
+        date_zh = (d.get('date_zh') or '').lower()
+        tag_en = (d.get('tag_en') or '').lower()
+        tag_zh = (d.get('tag_zh') or '').lower()
+
+        full_text = f"{title_en} {title_zh} {sub_en} {sub_zh} {loc_en} {loc_zh} {date_en} {date_zh} {tag_en} {tag_zh}"
+        score = 0.0
+
+        if query_lower in title_en or query_lower in title_zh:
+            score += 0.60
+        elif query_lower in full_text:
+            score += 0.40
+
+        matched_toks = 0
+        for tok in tokens:
+            if tok in title_en or tok in title_zh:
+                score += 0.30
+                matched_toks += 1
+            elif tok in full_text:
+                score += 0.20
+                matched_toks += 1
+
+        if tokens:
+            coverage = matched_toks / len(tokens)
+            score = score * (0.6 + 0.4 * coverage)
+
+        final_score = round(min(score, 1.0), 3)
+        if final_score >= min_score:
+            d['score'] = final_score
+            scored_matches.append(d)
+
+    scored_matches.sort(key=lambda x: x['score'], reverse=True)
+    return scored_matches[:limit]
+
+
+def search_articles(query: str = '', limit: int = 10, min_score: float = 0.10, include_inactive: bool = True, category: str = None, geo: str = None) -> list:
+    """
+    Search SQLite articles using weighted tokenization and keyword matching across title, slug, keywords, summary, content, and geo_target.
+    Searches across ALL articles (including inactive/hidden ones) for maximum discoverability.
+    Returns sorted list of matches: [{id, slug, title, summary, category, keywords, geo_target, geo_lat, geo_lng, cover_image, author, is_active, status, views, published_at, updated_at, url, score}]
+    """
+    db = get_db()
+    cursor = db.cursor()
+
+    where_clauses = ["1=1"]
+    params = []
+    if not include_inactive:
+        where_clauses.append("is_active = 1 AND status = 'active'")
+    if category and category != 'all':
+        where_clauses.append("category = ?")
+        params.append(category)
+    if geo and geo != 'all':
+        where_clauses.append("LOWER(geo_target) LIKE ?")
+        params.append(f"%{geo.lower()}%")
+
+    sql = f"SELECT * FROM articles WHERE {' AND '.join(where_clauses)} ORDER BY is_active DESC, id DESC"
+    cursor.execute(sql, params)
+    articles = cursor.fetchall()
+    if not articles:
+        return []
+
+    if not query:
+        # Return top articles if no query string provided
+        results = []
+        for row in articles[:limit]:
+            d = dict(row)
+            d['score'] = 1.0 if d.get('is_active') == 1 else 0.8
+            d['url'] = f"/article.html?slug={d['slug']}"
+            results.append(d)
+        return results
+
+    stop_words = {
+        'the', 'is', 'a', 'an', 'how', 'what', 'where', 'when', 'who', 'why', 'can', 'i', 'to', 
+        'for', 'in', 'of', 'about', 'and', 'or', 'do', 'you', 'have', 'there', 'any', 'my', 'me', 
+        'with', 'on', 'at', 'by', 'from', 'up', 'out', 'if', 'as', 'tell', 'info', 'please', 'article', 'post'
+    }
+    query_lower = query.lower().strip()
+    raw_tokens = re.findall(r'[\w\u4e00-\u9fff]+', query_lower)
+    tokens = [t for t in raw_tokens if t not in stop_words and len(t) > 1]
+    if not tokens:
+        tokens = raw_tokens
+
+    scored_matches = []
+    for row in articles:
+        d = dict(row)
+        title = (d.get('title') or '').lower()
+        slug = (d.get('slug') or '').lower()
+        keywords = [k.strip().lower() for k in (d.get('keywords') or '').split(',') if k.strip()]
+        geo_target = (d.get('geo_target') or '').lower()
+        summary = (d.get('summary') or '').lower()
+        content = (d.get('content') or '').lower()
+        cat = (d.get('category') or '').lower()
+
+        score = 0.0
+
+        # Exact whole query matches
+        if query_lower in title:
+            score += 0.55
+        if query_lower in slug:
+            score += 0.45
+        if any(query_lower in k or k in query_lower for k in keywords):
+            score += 0.45
+        if query_lower in geo_target:
+            score += 0.40
+        if query_lower in summary:
+            score += 0.30
+        if query_lower in content:
+            score += 0.20
+
+        # Token matching
+        matched_tokens = 0
+        for token in tokens:
+            token_hit = False
+            if token in title:
+                score += 0.30
+                token_hit = True
+            if token in slug:
+                score += 0.25
+                token_hit = True
+            for k in keywords:
+                if token in k or k in token:
+                    score += 0.25
+                    token_hit = True
+                    break
+            if token in geo_target:
+                score += 0.25
+                token_hit = True
+            if token in cat:
+                score += 0.15
+                token_hit = True
+            if token in summary:
+                score += 0.15
+                token_hit = True
+            if token in content:
+                score += 0.08
+                token_hit = True
+
+            if token_hit:
+                matched_tokens += 1
+
+        if tokens:
+            coverage = matched_tokens / len(tokens)
+            score = score * (0.6 + 0.4 * coverage)
+
+        # Boost active articles slightly (+0.05)
+        if d.get('is_active') == 1:
+            score += 0.05
+
+        final_score = round(min(score, 1.0), 3)
+        if final_score >= min_score:
+            d['score'] = final_score
+            d['url'] = f"/article.html?slug={d['slug']}"
+            scored_matches.append(d)
+
+    scored_matches.sort(key=lambda x: (x['score'], x.get('is_active', 0)), reverse=True)
+    return scored_matches[:limit]
+
+
+# ==============================================================================
+# Unified Public & Admin Search APIs
+# ==============================================================================
+
+@app.route('/api/search', methods=['GET'])
+def global_search():
+    """
+    Unified Search API across Knowledge Base, Job Fair & Events, Articles, and Programs.
+    Explicitly searches and includes inactive items for full discoverability.
+    """
+    q = request.args.get('q', '').strip()
+    if not q:
+        return jsonify({
+            'success': True,
+            'query': '',
+            'total_results': 0,
+            'knowledge_base': [],
+            'job_fairs': [],
+            'articles': [],
+            'programs': [],
+            'results': {
+                'knowledge_base': [],
+                'job_fairs': [],
+                'articles': [],
+                'programs': []
+            }
+        })
+
+    # 1. Knowledge Base (including inactive)
+    kb_matches = search_knowledge_base(q, limit=8, min_score=0.08, include_inactive=True)
+
+    # 2. Job Fairs & Events (including inactive)
+    jf_matches = search_job_fairs(q, limit=6, min_score=0.08, include_inactive=True)
+
+    # 3. Articles (all matching SEO & GEO articles including inactive)
+    art_matches = search_articles(q, limit=8, min_score=0.05, include_inactive=True)
+
+    # 4. Programs
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT id, slug, title_en, title_zh, desc_en, desc_zh, badge_en, badge_zh, image_url, is_active
+        FROM programs
+        WHERE LOWER(title_en) LIKE ? OR LOWER(title_zh) LIKE ? OR LOWER(desc_en) LIKE ? OR LOWER(desc_zh) LIKE ? OR LOWER(slug) LIKE ?
+        ORDER BY is_active DESC, display_order ASC
+        LIMIT 6
+    """, (f"%{q.lower()}%", f"%{q.lower()}%", f"%{q.lower()}%", f"%{q.lower()}%", f"%{q.lower()}%"))
+    prog_matches = [dict(r) for r in cursor.fetchall()]
+
+    total_cnt = len(kb_matches) + len(jf_matches) + len(art_matches) + len(prog_matches)
+
+    return jsonify({
+        'success': True,
+        'query': q,
+        'total_results': total_cnt,
+        'knowledge_base': kb_matches,
+        'job_fairs': jf_matches,
+        'articles': art_matches,
+        'programs': prog_matches,
+        'results': {
+            'knowledge_base': kb_matches,
+            'job_fairs': jf_matches,
+            'articles': art_matches,
+            'programs': prog_matches
+        }
+    })
+
+
+@app.route('/api/articles/search', methods=['GET'])
+def public_articles_search():
+    """Public API: Search SEO & GEO articles (both active and draft/hidden) across title, keywords, content, and geo target."""
+    q = request.args.get('q', '').strip()
+    category = request.args.get('category', '').strip()
+    geo = request.args.get('geo', '').strip()
+    limit = int(request.args.get('limit', 10))
+    include_inactive = request.args.get('include_inactive', '1') in ['1', 'true', 'True']
+
+    matches = search_articles(q, limit=limit, min_score=0.05, include_inactive=include_inactive, category=category, geo=geo)
+    return jsonify({
+        'success': True,
+        'query': q,
+        'count': len(matches),
+        'results': matches,
+        'matches': matches
+    })
+
+
+@app.route('/api/knowledge/search', methods=['GET'])
+def public_knowledge_search():
+    """Search Knowledge Base articles (both active & inactive)."""
+    q = request.args.get('q', '').strip()
+    limit = int(request.args.get('limit', 5))
+    matches = search_knowledge_base(q, limit=limit, min_score=0.05, include_inactive=True)
+    return jsonify({
+        'success': True,
+        'query': q,
+        'count': len(matches),
+        'results': matches,
+        'matches': matches
+    })
+
+
+@app.route('/api/job-fairs/search', methods=['GET'])
+def public_job_fair_search():
+    """Search Job Fair & Event banners (both active & inactive)."""
+    q = request.args.get('q', '').strip()
+    limit = int(request.args.get('limit', 5))
+    matches = search_job_fairs(q, limit=limit, min_score=0.05, include_inactive=True)
+    return jsonify({
+        'success': True,
+        'query': q,
+        'count': len(matches),
+        'results': matches,
+        'matches': matches
+    })
 
 
 @app.route('/api/chat', methods=['POST'])
@@ -2928,7 +3282,7 @@ def chat_proxy():
     if require_login and not user:
         return jsonify({
             'require_auth': True,
-            'error': 'Authentication required. Please log in with Google, LinkedIn, or Email to chat with the Victoria College AI Advisor.',
+            'error': 'Authentication required. Please log in with Google, LinkedIn, or Email to chat with the Victoria International College AI Advisor.',
             'response': '🔒 Please log in with Google, LinkedIn, or Email to continue chatting with the Victoria College AI Career & Admissions Advisor.'
         }), 401
 
@@ -2942,27 +3296,47 @@ def chat_proxy():
     tokens_used = 0
     knowledge_source = "local_heuristics"
 
-    # Step 1: Search SQLite Knowledge Base
-    matches = search_knowledge_base(query, limit=4)
+    # Step 1: Search SQLite Knowledge Base, Job Fairs & Events, and SEO/GEO Articles (including inactive)
+    matches = search_knowledge_base(query, limit=4, include_inactive=True)
+    jf_matches = search_job_fairs(query, limit=2, include_inactive=True)
+    art_matches = search_articles(query, limit=3, include_inactive=True)
     top_match = matches[0] if matches else None
+    top_jf = jf_matches[0] if jf_matches else None
+    top_art = art_matches[0] if art_matches else None
 
     # Step 2: Check for High Confidence Direct Knowledge Hit (Score >= 0.70)
-    # If the user asked a clear question covered in our curated official knowledge base,
+    # If the user asked a clear question covered in our curated official knowledge base or job fair,
     # serve the exact verified official response instantly (0ms delay, zero OpenAI cost, 100% accurate)
     if top_match and top_match['score'] >= 0.70:
         response_text = top_match['content']
         model = "vic-knowledge-base-direct"
         knowledge_source = f"local_kb (Direct Hit: {top_match['title']} - Score: {top_match['score']})"
+    elif top_jf and top_jf.get('score', 0) >= 0.70:
+        is_zh = any(u'\u4e00' <= c <= u'\u9fa5' for c in query)
+        if is_zh:
+            response_text = f"### 🎪 维多利亚国际学院近期招聘会与大型活动\n\n**{top_jf['title_zh']}** ({top_jf['title_en']})\n\n• **活动简介**：{top_jf['subtitle_zh'] or top_jf['subtitle_en']}\n• **举办时间**：{top_jf['date_zh'] or top_jf['date_en']}\n• **活动地点**：{top_jf['location_zh'] or top_jf['location_en']}\n• **报名抢座**：可直接在官网首页预约登记或拨打学院热线 **416-665-6668** 免费预留席位。"
+        else:
+            response_text = f"### 🎪 Victoria International College Career Fair & Event\n\n**{top_jf['title_en']}**\n\n• **Overview**: {top_jf['subtitle_en'] or top_jf['subtitle_zh']}\n• **Date & Time**: {top_jf['date_en'] or top_jf['date_zh']}\n• **Location**: {top_jf['location_en'] or top_jf['location_zh']}\n• **Registration**: Reserve your spot online on our homepage or call **416-665-6668**."
+        model = "vic-jobfair-direct"
+        knowledge_source = f"local_job_fair (Event Hit: {top_jf['title_en']} - Score: {top_jf['score']})"
+    elif top_art and top_art.get('score', 0) >= 0.70:
+        response_text = f"### 📰 {top_art['title']}\n\n{top_art['summary']}\n\n📍 **Target Region:** {top_art.get('geo_target')}\n\n👉 [Read Full Official Guide](/article.html?slug={top_art['slug']})"
+        model = "vic-article-direct"
+        knowledge_source = f"local_articles (Article Hit: {top_art['title']} - Score: {top_art['score']})"
 
     # Step 3: If not a direct match and OpenAI API key is configured, perform RAG Synthesis
     elif api_key and requests is not None:
         try:
             # Build Grounded Knowledge Context from top matches
             kb_context_str = ""
-            if matches:
-                kb_context_str = "\n\n=== RELEVANT OFFICIAL VICTORIA COLLEGE KNOWLEDGE BASE FACTS ===\n"
+            if matches or jf_matches or art_matches:
+                kb_context_str = "\n\n=== RELEVANT OFFICIAL VICTORIA INTERNATIONAL COLLEGE KNOWLEDGE BASE, EVENTS & ARTICLES ===\n"
                 for i, m in enumerate(matches[:3], 1):
-                    kb_context_str += f"\n[Document {i}: {m['title']} (Category: {m['category']})]\n{m['content']}\n"
+                    kb_context_str += f"\n[Knowledge Document {i}: {m['title']} (Category: {m['category']})]\n{m['content']}\n"
+                for j, jf in enumerate(jf_matches[:2], 1):
+                    kb_context_str += f"\n[Event Document {j}: {jf['title_en']} / {jf['title_zh']}]\nDate: {jf['date_en']} | Location: {jf['location_en']}\nDetails: {jf['subtitle_en']}\n"
+                for k, art in enumerate(art_matches[:2], 1):
+                    kb_context_str += f"\n[Article Guide {k}: {art['title']} (GEO: {art.get('geo_target')})]\nSummary: {art['summary']}\nURL: /article.html?slug={art['slug']}\n"
                 kb_context_str += "\n=== INSTRUCTION: Ground your response in the official facts above. If information is not covered, provide helpful advice and direct to 416-665-6668 or consultation booking. ==="
 
             messages = [{"role": "system", "content": system_prompt + kb_context_str}]
@@ -2993,18 +3367,30 @@ def chat_proxy():
                 res_json = api_res.json()
                 response_text = res_json['choices'][0]['message']['content']
                 tokens_used = res_json.get('usage', {}).get('total_tokens', 0)
-                knowledge_source = f"openai_rag ({model} + {len(matches)} KB docs)"
+                knowledge_source = f"openai_rag ({model} + {len(matches)} KB docs + {len(jf_matches)} Events + {len(art_matches)} Articles)"
             else:
                 print(f">> OpenAI API error: {api_res.status_code} {api_res.text}")
         except Exception as e:
             print(f">> OpenAI API Exception: {e}")
 
-    # Step 4: Fallback to best local knowledge match or heuristic reply
+    # Step 4: Fallback to best local knowledge match, event, article or heuristic reply
     if not response_text:
         if top_match:
-            response_text = f"{top_match['content']}\n\n💡 *Note: This response is generated by Victoria College AI Advisor. For official confirmation, grant eligibility assessment, and admissions planning, please contact college advisors at 416-665-6668 or info@viccollege.com.*"
+            response_text = f"{top_match['content']}\n\n💡 *Note: This response is generated by Victoria International College AI Advisor. For official confirmation, grant eligibility assessment, and admissions planning, please contact college advisors at 416-665-6668 or info@viccollege.com.*"
             model = "vic-knowledge-base-fallback"
             knowledge_source = f"local_kb (Fallback: {top_match['title']} - Score: {top_match['score']})"
+        elif top_jf:
+            is_zh = any(u'\u4e00' <= c <= u'\u9fa5' for c in query)
+            if is_zh:
+                response_text = f"### 🎪 维多利亚国际学院近期招聘会与大型活动\n\n**{top_jf['title_zh']}** ({top_jf['title_en']})\n\n• **活动简介**：{top_jf['subtitle_zh'] or top_jf['subtitle_en']}\n• **举办时间**：{top_jf['date_zh'] or top_jf['date_en']}\n• **活动地点**：{top_jf['location_zh'] or top_jf['location_en']}\n• **报名抢座**：可直接在官网首页预约登记或拨打学院热线 **416-665-6668** 免费预留席位。"
+            else:
+                response_text = f"### 🎪 Victoria International College Career Fair & Event\n\n**{top_jf['title_en']}**\n\n• **Overview**: {top_jf['subtitle_en'] or top_jf['subtitle_zh']}\n• **Date & Time**: {top_jf['date_en'] or top_jf['date_zh']}\n• **Location**: {top_jf['location_en'] or top_jf['location_zh']}\n• **Registration**: Reserve your spot online on our homepage or call **416-665-6668**."
+            model = "vic-jobfair-fallback"
+            knowledge_source = f"local_job_fair (Fallback: {top_jf['title_en']} - Score: {top_jf['score']})"
+        elif top_art and top_art.get('score', 0) >= 0.35:
+            response_text = f"### 📰 Recommended Guide: {top_art['title']}\n\n{top_art['summary']}\n\n👉 **Read the full in-depth article here:** [https://viccollege.ca/article.html?slug={top_art['slug']}](/article.html?slug={top_art['slug']})\n\n💡 *For 1-on-1 admissions assistance, contact 416-665-6668.*"
+            model = "vic-article-fallback"
+            knowledge_source = f"local_articles (Fallback: {top_art['title']} - Score: {top_art['score']})"
         else:
             response_text = generate_local_knowledge_reply(query)
             model = "vic-college-offline-ai"
@@ -3174,7 +3560,7 @@ def generate_local_knowledge_reply(query: str) -> str:
     if any(k in q for k in ['campus', 'location', 'address', 'where', 'phone', '校区', '地址', '电话', '万锦', '北约克']):
         return "### 🏫 校区地址与联系电话\n\n📍 **万锦主校区 (Markham Campus):**\n7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8\n\n📞 咨询电话：416-665-6668\n🕒 办公时间：周一至周六 9:00 AM – 6:00 PM" if is_zh else "### 🏫 Campus Location & Contact Info\n\n📍 **Markham Main Campus:**\n7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8\n\n📞 Phone: 416-665-6668\n🕒 Hours: Monday – Saturday, 9:00 AM – 6:00 PM"
 
-    return "您好！我是维多利亚职业学院 AI 智能升学顾问。我可以为您提供：\n\n• 💰 **政府最高 $28,000+ 免费培训助学金**\n• 🩺 **PSW 护工、全栈开发、会计税务、幼教、电工** 热门高薪专业\n• 🏫 **万锦主校区信息及预约规划**\n\n⚠️ *温馨提示：本系统为 AI 智能助手，回复仅供参考。确切课程信息及资助评估请直接联系学院顾问：416-665-6668 或 info@viccollege.com。*" if is_zh else "Hello! I am your Victoria College AI Advisor. How can I help you today?\n\n• 💰 **Better Jobs Ontario ($28,000+ Government Grants)**\n• 🩺 **Diplomas in PSW Healthcare, Full Stack Web, Accounting, Early Childcare, Electrician**\n• 🏫 **Markham Main Campus Details & Free Consultation Booking**\n\n⚠️ *Please Note: This is an AI assistant for guidance. For official answers and individualized grant assessment, please contact our college advisors directly at 416-665-6668 or info@viccollege.com.*"
+    return "您好！我是维多利亚职业学院 AI 智能升学顾问。我可以为您提供：\n\n• 💰 **政府最高 $28,000+ 免费培训助学金**\n• 🩺 **PSW 护工、全栈开发、会计税务、幼教、电工** 热门高薪专业\n• 🏫 **万锦主校区信息及预约规划**\n\n⚠️ *温馨提示：本系统为 AI 智能助手，回复仅供参考。确切课程信息及资助评估请直接联系学院顾问：416-665-6668 或 info@viccollege.com。*" if is_zh else "Hello! I am your Victoria International College AI Advisor. How can I help you today?\n\n• 💰 **Better Jobs Ontario ($28,000+ Government Grants)**\n• 🩺 **Diplomas in PSW Healthcare, Full Stack Web, Accounting, Early Childcare, Electrician**\n• 🏫 **Markham Main Campus Details & Free Consultation Booking**\n\n⚠️ *Please Note: This is an AI assistant for guidance. For official answers and individualized grant assessment, please contact our college advisors directly at 416-665-6668 or info@viccollege.com.*"
 
 
 # ==============================================================================
@@ -3229,6 +3615,11 @@ def admin_stats():
     cursor.execute("SELECT COUNT(*) as active_jf FROM job_fairs WHERE is_active = 1")
     active_jf = cursor.fetchone()['active_jf']
 
+    cursor.execute("SELECT COUNT(*) as total_leads FROM consultations")
+    total_leads = cursor.fetchone()['total_leads']
+    cursor.execute("SELECT COUNT(*) as new_leads FROM consultations WHERE status = 'new'")
+    new_leads = cursor.fetchone()['new_leads']
+
     cursor.execute("SELECT value FROM settings WHERE key = 'openai_api_key'")
     key_row = cursor.fetchone()
     has_key = bool(key_row and key_row['value'].strip())
@@ -3242,6 +3633,8 @@ def admin_stats():
         'google_users': google_users,
         'linkedin_users': linkedin_users,
         'total_chats': total_chats,
+        'total_leads': total_leads,
+        'new_leads': new_leads,
         'knowledge_articles': kb_count,
         'total_articles': total_art,
         'active_articles': active_art,
@@ -3251,7 +3644,7 @@ def admin_stats():
         'total_job_fairs': total_jf,
         'active_job_fairs': active_jf,
         'job_fair_active': bool(active_jf > 0),
-        'sitemap_urls': 5 + active_art,
+        'sitemap_urls': 18 + total_jf + kb_count + active_art,
         'has_api_key': has_key,
         'current_model': model
     })
@@ -3267,13 +3660,19 @@ def admin_get_knowledge():
 
     category = request.args.get('category', '').strip().lower()
     search = request.args.get('search', '').strip().lower()
+    status = request.args.get('status', '').strip().lower()
 
-    query = "SELECT id, category, title, keywords, content, priority, created_at, updated_at FROM knowledge_base WHERE 1=1"
+    query = "SELECT id, category, title, keywords, content, priority, COALESCE(is_active, 1) as is_active, created_at, updated_at FROM knowledge_base WHERE 1=1"
     params = []
 
     if category and category != 'all':
         query += " AND category = ?"
         params.append(category)
+
+    if status == 'active':
+        query += " AND COALESCE(is_active, 1) = 1"
+    elif status == 'inactive':
+        query += " AND COALESCE(is_active, 1) = 0"
 
     if search:
         query += " AND (LOWER(title) LIKE ? OR LOWER(keywords) LIKE ? OR LOWER(content) LIKE ?)"
@@ -3299,6 +3698,7 @@ def admin_create_knowledge():
     keywords = (data.get('keywords') or '').strip()
     content = (data.get('content') or '').strip()
     priority = int(data.get('priority') or 1)
+    is_active = int(data.get('is_active', 1))
 
     if not title or not content:
         return jsonify({'error': 'Title and Content are required.'}), 400
@@ -3307,10 +3707,12 @@ def admin_create_knowledge():
     db = get_db()
     cursor = db.cursor()
     cursor.execute('''
-    INSERT INTO knowledge_base (category, title, keywords, content, priority, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (category, title, keywords, content, priority, now_str, now_str))
+    INSERT INTO knowledge_base (category, title, keywords, content, priority, is_active, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (category, title, keywords, content, priority, is_active, now_str, now_str))
     db.commit()
+
+    build_sitemap_xml()
 
     return jsonify({
         'success': True,
@@ -3325,7 +3727,7 @@ def admin_get_knowledge_item(kb_id):
 
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT id, category, title, keywords, content, priority, created_at, updated_at FROM knowledge_base WHERE id = ?", (kb_id,))
+    cursor.execute("SELECT id, category, title, keywords, content, priority, COALESCE(is_active, 1) as is_active, created_at, updated_at FROM knowledge_base WHERE id = ?", (kb_id,))
     row = cursor.fetchone()
     if not row:
         return jsonify({'error': 'Knowledge article not found.'}), 404
@@ -3350,6 +3752,7 @@ def admin_update_knowledge(kb_id):
     keywords = data.get('keywords')
     content = data.get('content')
     priority = data.get('priority')
+    is_active = data.get('is_active')
 
     updates = []
     params = []
@@ -3369,6 +3772,9 @@ def admin_update_knowledge(kb_id):
     if priority is not None:
         updates.append("priority = ?")
         params.append(int(priority))
+    if is_active is not None:
+        updates.append("is_active = ?")
+        params.append(int(is_active))
 
     updates.append("updated_at = ?")
     params.append(datetime.utcnow().isoformat())
@@ -3378,7 +3784,36 @@ def admin_update_knowledge(kb_id):
     db.execute(query, params)
     db.commit()
 
+    build_sitemap_xml()
+
     return jsonify({'success': True, 'message': 'Knowledge article updated successfully.'})
+
+@app.route('/api/admin/knowledge/<int:kb_id>/toggle-status', methods=['PATCH'])
+def admin_toggle_knowledge_status(kb_id):
+    """Admin API: 1-click Toggle knowledge article active status."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id, title, COALESCE(is_active, 1) as is_active FROM knowledge_base WHERE id = ?", (kb_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Knowledge article not found.'}), 404
+
+    new_active = 0 if row['is_active'] == 1 else 1
+    now_str = datetime.utcnow().isoformat()
+    db.execute("UPDATE knowledge_base SET is_active = ?, updated_at = ? WHERE id = ?", (new_active, now_str, kb_id))
+    db.commit()
+
+    build_sitemap_xml()
+
+    status_str = "Active" if new_active == 1 else "Inactive"
+    return jsonify({
+        'success': True,
+        'is_active': new_active,
+        'message': f'Knowledge article "{row["title"]}" status set to {status_str}.'
+    })
 
 @app.route('/api/admin/knowledge/<int:kb_id>', methods=['DELETE'])
 def admin_delete_knowledge(kb_id):
@@ -3394,6 +3829,8 @@ def admin_delete_knowledge(kb_id):
 
     db.execute("DELETE FROM knowledge_base WHERE id = ?", (kb_id,))
     db.commit()
+
+    build_sitemap_xml()
 
     return jsonify({'success': True, 'message': f'Knowledge article "{row["title"]}" deleted.'})
 
@@ -3466,6 +3903,8 @@ def admin_create_knowledge_from_log(log_id):
     VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', (category, title, keywords, content, priority, now_str, now_str))
     db.commit()
+
+    build_sitemap_xml()
 
     new_id = cursor.lastrowid
     return jsonify({
@@ -3597,6 +4036,52 @@ def admin_delete_user(user_id):
     db.commit()
     return jsonify({'success': True})
 
+DEFAULT_STUDENT_EMAIL_SUBJECT = "Thank you for contacting Victoria International College! ({program})"
+DEFAULT_STUDENT_EMAIL_BODY = """Thank you for reaching out to Victoria International College! We have received your inquiry regarding {program}.
+
+What Happens Next:
+One of our dedicated admissions advisors will connect with you within 24 business hours to answer your questions, arrange your free demo class or consultation, and evaluate your eligibility for up to $28,000+ in non-repayable Ontario government training grants (Better Jobs Ontario).
+
+If you have any urgent questions or would like to speak to an advisor right away:
+• Admissions Phone: 416-665-6668
+• Admissions Email: info@viccollege.com
+• Markham Main Campus: 7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8
+
+We look forward to helping you take the next big step in your career!"""
+
+DEFAULT_ADMIN_EMAIL_SUBJECT = "🎓 New Student Lead: {name} - {program}"
+
+def format_template_string(template_str, lead_data):
+    """Replace placeholder variables in template strings."""
+    if not template_str:
+        return ""
+    name = lead_data.get('name', 'Student')
+    email = lead_data.get('email', '')
+    phone = lead_data.get('phone', '')
+    program = lead_data.get('program', 'your selected program')
+    campus = lead_data.get('campus', 'Markham Main Campus') or 'Markham Main Campus'
+    hotline = "416-665-6668"
+    admissions_email = "info@viccollege.com"
+    source = lead_data.get('source_page', 'Website')
+    notes = lead_data.get('notes', '')
+
+    res = template_str
+    replacements = {
+        '{name}': name,
+        '{email}': email,
+        '{phone}': phone,
+        '{program}': program,
+        '{campus}': campus,
+        '{admissions_phone}': hotline,
+        '{admissions_email}': admissions_email,
+        '{hotline}': hotline,
+        '{source}': source,
+        '{notes}': notes
+    }
+    for k, v in replacements.items():
+        res = res.replace(k, str(v))
+    return res
+
 @app.route('/api/admin/settings', methods=['GET'])
 def admin_get_settings():
     err = require_admin()
@@ -3616,15 +4101,44 @@ def admin_get_settings():
         else:
             masked_key = "••••••••••••"
 
-    return jsonify({
+    # Mask SMTP password for UI security
+    raw_smtp_pass = settings.get('smtp_pass', '')
+    masked_smtp_pass = ""
+    if raw_smtp_pass:
+        masked_smtp_pass = "••••••••••••"
+
+    recip = settings.get('notification_email') or settings.get('smtp_recipient') or os.environ.get('NOTIFICATION_EMAIL', 'info@viccollege.com')
+
+    settings_dict = {
         'openai_api_key_masked': masked_key,
         'has_api_key': bool(raw_key.strip()),
         'openai_model': settings.get('openai_model', 'gpt-4o-mini'),
         'temperature': settings.get('temperature', '0.7'),
         'max_tokens': settings.get('max_tokens', '800'),
         'require_login': settings.get('require_login', 'false'),
-        'system_prompt': settings.get('system_prompt', '')
-    })
+        'system_prompt': settings.get('system_prompt', ''),
+        # SMTP Email Notification Settings
+        'smtp_host': settings.get('smtp_host', os.environ.get('SMTP_HOST', '')),
+        'smtp_port': settings.get('smtp_port', os.environ.get('SMTP_PORT', '587')),
+        'smtp_user': settings.get('smtp_user', os.environ.get('SMTP_USER', '')),
+        'smtp_pass': masked_smtp_pass,
+        'smtp_pass_masked': masked_smtp_pass,
+        'has_smtp_pass': bool(raw_smtp_pass.strip()),
+        'smtp_from': settings.get('smtp_from', os.environ.get('SMTP_FROM', 'Victoria International College <info@viccollege.com>')),
+        'smtp_recipient': recip,
+        'notification_email': recip,
+        'smtp_tls': settings.get('smtp_tls', os.environ.get('SMTP_TLS', 'true')),
+        'smtp_ssl': settings.get('smtp_ssl', os.environ.get('SMTP_SSL', 'false')),
+        'send_student_confirmation': settings.get('send_student_confirmation', 'true'),
+        # Editable Email Templates
+        'student_email_subject': settings.get('student_email_subject', 'Thank you for contacting Victoria International College! ({program})'),
+        'student_email_body': settings.get('student_email_body', DEFAULT_STUDENT_EMAIL_BODY),
+        'admin_email_subject': settings.get('admin_email_subject', '🎓 New Student Lead: {name} - {program}')
+    }
+
+    resp_dict = dict(settings_dict)
+    resp_dict['settings'] = settings_dict
+    return jsonify(resp_dict)
 
 @app.route('/api/admin/settings', methods=['POST'])
 def admin_save_settings():
@@ -3635,15 +4149,26 @@ def admin_save_settings():
     db = get_db()
     now_str = datetime.utcnow().isoformat()
 
-    allowed_keys = ['openai_api_key', 'openai_model', 'temperature', 'max_tokens', 'require_login', 'system_prompt']
+    # Map aliases
+    if 'smtp_recipient' in data and 'notification_email' not in data:
+        data['notification_email'] = data['smtp_recipient']
+
+    allowed_keys = [
+        'openai_api_key', 'openai_model', 'temperature', 'max_tokens', 'require_login', 'system_prompt',
+        'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_from', 'notification_email',
+        'smtp_recipient', 'smtp_tls', 'smtp_ssl', 'send_student_confirmation',
+        'student_email_subject', 'student_email_body', 'admin_email_subject'
+    ]
 
     for k in allowed_keys:
         if k in data:
             val = str(data[k])
-            # If user didn't modify masked key, skip saving
+            # If user didn't modify masked key/password, skip saving
             if k == 'openai_api_key' and ('••••' in val or not val.strip()):
                 if not val.strip():
                     db.execute("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, '', ?)", (k, now_str))
+                continue
+            if k == 'smtp_pass' and ('••••' in val):
                 continue
 
             db.execute("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, ?)", (k, val, now_str))
@@ -3686,6 +4211,84 @@ def admin_test_openai_key():
             return jsonify({'valid': False, 'message': f'❌ Invalid Key ({res.status_code}): {err_msg}'}), 400
     except Exception as e:
         return jsonify({'valid': False, 'message': f'❌ Connection failed: {str(e)}'}), 500
+
+@app.route('/api/admin/settings/test-email', methods=['POST'])
+def admin_test_smtp_email():
+    err = require_admin()
+    if err: return err
+
+    data = request.get_json() or {}
+    custom_recipient = (data.get('test_recipient') or data.get('target_email') or '').strip()
+
+    # Load baseline DB config, then allow realtime overrides from client payload
+    config = get_smtp_config()
+
+    if data.get('smtp_host') is not None:
+        config['host'] = data['smtp_host'].strip()
+    if data.get('smtp_port') is not None and str(data['smtp_port']).strip():
+        try:
+            config['port'] = int(data['smtp_port'])
+        except (ValueError, TypeError):
+            pass
+    if data.get('smtp_user') is not None:
+        config['user'] = data['smtp_user'].strip()
+    if data.get('smtp_pass') is not None and '••••' not in data['smtp_pass']:
+        config['pass'] = data['smtp_pass'].strip()
+    if data.get('smtp_from') is not None and data['smtp_from'].strip():
+        config['from'] = data['smtp_from'].strip()
+    if 'smtp_tls' in data:
+        config['use_tls'] = str(data['smtp_tls']).lower() in ('true', '1', 'yes', 'tls', 'starttls')
+    if 'smtp_ssl' in data:
+        config['use_ssl'] = str(data['smtp_ssl']).lower() in ('true', '1', 'yes', 'ssl')
+    if data.get('notification_email') is not None and data['notification_email'].strip():
+        config['recipient'] = data['notification_email'].strip()
+
+    target_recipient = custom_recipient or config.get('recipient') or config.get('user') or 'info@viccollege.com'
+
+    if not config.get('host'):
+        return jsonify({
+            'success': True,
+            'simulated': True,
+            'message': f'ℹ️ Simulation Mode Active: No SMTP Host is configured. The system is operating in safe local mode — all student leads from the website are stored directly in your SQLite database, and email notifications are simulated without requiring third-party credentials.'
+        })
+
+    test_html = f"""<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; background: #f8fafc; padding: 20px;">
+  <div style="max-width: 550px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0;">
+    <h2 style="color: #8B0000; margin-top: 0;">✅ Victoria International College SMTP Test Successful</h2>
+    <p style="color: #334155; font-size: 14.5px;">This is a test notification verifying that your Victoria College email notification service is properly configured.</p>
+    <div style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 13.5px; color: #475569; margin: 15px 0;">
+      <strong>SMTP Server:</strong> {config.get('host')}:{config.get('port')}<br>
+      <strong>Sender:</strong> {config.get('from')}<br>
+      <strong>Recipient:</strong> {target_recipient}<br>
+      <strong>TLS Enabled:</strong> {config.get('use_tls')} | <strong>SSL:</strong> {config.get('use_ssl')}<br>
+      <strong>Timestamp:</strong> {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}
+    </div>
+    <p style="font-size: 13px; color: #64748b; margin-bottom: 0;">Victoria International College of Business & Technology</p>
+  </div>
+</body>
+</html>"""
+
+    success, msg = send_smtp_email(
+        to_email=target_recipient,
+        subject="[Test Email] Victoria International College SMTP Notification Service",
+        body_html=test_html,
+        body_text=f"Victoria International College SMTP Test Successful.\nServer: {config.get('host')}:{config.get('port')}\nRecipient: {target_recipient}",
+        config=config
+    )
+
+    if success:
+        return jsonify({
+            'success': True,
+            'message': f'✅ Test email successfully dispatched to {target_recipient}!'
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': f'❌ Failed to send test email: {msg}'
+        }), 500
 
 @app.route('/api/admin/logs', methods=['GET'])
 def admin_get_logs():
@@ -4021,18 +4624,48 @@ def generate_seo_article_local(keywords: str, geo_target: str = 'Toronto & GTA, 
 def build_sitemap_xml() -> str:
     """
     Generate dynamic XML sitemap conforming to Sitemaps 0.9 & Google Geo extension.
-    CRITICAL RULE: Only ACTIVE articles (status='active' and is_active=1) are included!
-    Hidden / draft articles are strictly excluded.
+    Includes:
+      - Core institutional pages
+      - Academic program pages
+      - Policy & regulatory compliance pages
+      - Job Fair & Career events
+      - College Knowledge Base database items
+      - SEO & GEO Articles (Comprehensive Indexing with Geo Tags)
     """
     db = get_db()
     cursor = db.cursor()
+
+    # 1. SEO & GEO Articles
     cursor.execute('''
-    SELECT slug, title, geo_target, geo_lat, geo_lng, updated_at, published_at, created_at 
+    SELECT id, slug, title, geo_target, geo_lat, geo_lng, updated_at, published_at, created_at, COALESCE(is_active, 1) as is_active, status 
     FROM articles 
-    WHERE is_active = 1 AND status = 'active'
-    ORDER BY id DESC
+    ORDER BY is_active DESC, id DESC
     ''')
-    active_articles = cursor.fetchall()
+    all_articles = cursor.fetchall()
+
+    # 2. Job Fair & Events
+    cursor.execute('''
+    SELECT id, title_en, title_zh, location_en, date_en, is_active, updated_at, created_at
+    FROM job_fairs
+    ORDER BY is_active DESC, id DESC
+    ''')
+    job_fair_events = cursor.fetchall()
+
+    # 3. Knowledge Base Articles
+    cursor.execute('''
+    SELECT id, category, title, keywords, updated_at, created_at, COALESCE(is_active, 1) as is_active
+    FROM knowledge_base
+    ORDER BY priority DESC, id DESC
+    ''')
+    kb_articles = cursor.fetchall()
+
+    # 4. Academic Programs
+    cursor.execute('''
+    SELECT id, slug, title_en, title_zh, updated_at, created_at, COALESCE(is_active, 1) as is_active
+    FROM programs
+    ORDER BY display_order ASC, id ASC
+    ''')
+    academic_programs = cursor.fetchall()
 
     today_str = datetime.utcnow().strftime('%Y-%m-%d')
     base_url = "https://viccollege.ca"
@@ -4072,26 +4705,150 @@ def build_sitemap_xml() -> str:
         '    <changefreq>weekly</changefreq>',
         '    <priority>0.85</priority>',
         '  </url>',
-        '  <!-- Active SEO & GEO Articles (Hidden articles are excluded) -->'
+        '  <!-- Academic Program Pages -->'
     ]
 
-    for row in active_articles:
+    STATIC_PROGRAM_HTML_MAP = {
+        'psw': 'personal-support-worker-online-psw-course.html',
+        'tech': 'software-development.html',
+        'software-development': 'software-development.html',
+        'accounting': 'computerized-accounting.html',
+        'computerized-accounting': 'computerized-accounting.html',
+        'eca': 'early-childcare-assistant-eca.html',
+        'early-childcare-assistant': 'early-childcare-assistant-eca.html',
+        'electrician': 'electrician.html',
+        'acupuncture': 'acupuncture-program.html',
+        'acupuncture-program': 'acupuncture-program.html',
+    }
+
+    seen_prog_urls = set()
+    for prog in academic_programs:
+        slug = prog['slug']
+        mod_date = (prog['updated_at'] or prog['created_at'] or today_str)[:10]
+        clean_title = (prog['title_en'] or f"Program-{prog['id']}").replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        html_file = STATIC_PROGRAM_HTML_MAP.get(slug)
+        if html_file:
+            prog_url = f"{base_url}/{html_file}"
+        else:
+            prog_url = f"{base_url}/#programs-{slug}"
+
+        if prog_url not in seen_prog_urls:
+            seen_prog_urls.add(prog_url)
+            xml_lines.append('  <url>')
+            xml_lines.append(f'    <loc>{prog_url}</loc>')
+            xml_lines.append(f'    <lastmod>{mod_date}</lastmod>')
+            xml_lines.append('    <changefreq>weekly</changefreq>')
+            xml_lines.append('    <priority>0.90</priority>')
+            xml_lines.append(f'    <!-- Academic Program: {clean_title} -->')
+            xml_lines.append('  </url>')
+
+    xml_lines.extend([
+        '  <!-- Policy & Regulatory Compliance Pages -->',
+        '  <url>',
+        f'    <loc>{base_url}/academic-accommodation-policy-and-procedure-for-students-with-disabilities.html</loc>',
+        f'    <lastmod>{today_str}</lastmod>',
+        '    <changefreq>monthly</changefreq>',
+        '    <priority>0.70</priority>',
+        '  </url>',
+        '  <url>',
+        f'    <loc>{base_url}/kpi-audit-requirements.html</loc>',
+        f'    <lastmod>{today_str}</lastmod>',
+        '    <changefreq>monthly</changefreq>',
+        '    <priority>0.70</priority>',
+        '  </url>',
+        '  <url>',
+        f'    <loc>{base_url}/privacy-policy.html</loc>',
+        f'    <lastmod>{today_str}</lastmod>',
+        '    <changefreq>monthly</changefreq>',
+        '    <priority>0.70</priority>',
+        '  </url>',
+        '  <url>',
+        f'    <loc>{base_url}/sexual-violence-policy.html</loc>',
+        f'    <lastmod>{today_str}</lastmod>',
+        '    <changefreq>monthly</changefreq>',
+        '    <priority>0.70</priority>',
+        '  </url>',
+        '  <url>',
+        f'    <loc>{base_url}/students-complaint-procedure.html</loc>',
+        f'    <lastmod>{today_str}</lastmod>',
+        '    <changefreq>monthly</changefreq>',
+        '    <priority>0.70</priority>',
+        '  </url>',
+        '  <!-- Job Fair & Career Events -->',
+        '  <url>',
+        f'    <loc>{base_url}/#job-fair</loc>',
+        f'    <lastmod>{today_str}</lastmod>',
+        '    <changefreq>weekly</changefreq>',
+        '    <priority>0.88</priority>',
+        '  </url>'
+    ])
+
+    # Add Job Fair Events
+    for jf in job_fair_events:
+        mod_date = (jf['updated_at'] or jf['created_at'] or today_str)[:10]
+        xml_lines.append('  <url>')
+        xml_lines.append(f'    <loc>{base_url}/#job-fair-event-{jf["id"]}</loc>')
+        xml_lines.append(f'    <lastmod>{mod_date}</lastmod>')
+        xml_lines.append('    <changefreq>weekly</changefreq>')
+        xml_lines.append('    <priority>0.82</priority>')
+        xml_lines.append('    <geo:geo>')
+        xml_lines.append('      <geo:lat>43.8561</geo:lat>')
+        xml_lines.append('      <geo:long>-79.3370</geo:long>')
+        xml_lines.append('    </geo:geo>')
+        clean_jf_title = (jf['title_en'] or f"Event-{jf['id']}").replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        xml_lines.append(f'    <!-- Job Fair Event: {clean_jf_title} -->')
+        xml_lines.append('  </url>')
+
+    # Add Knowledge Base Articles
+    xml_lines.append('  <!-- College Knowledge Base Articles -->')
+    xml_lines.append('  <url>')
+    xml_lines.append(f'    <loc>{base_url}/#knowledge-base</loc>')
+    xml_lines.append(f'    <lastmod>{today_str}</lastmod>')
+    xml_lines.append('    <changefreq>weekly</changefreq>')
+    xml_lines.append('    <priority>0.85</priority>')
+    xml_lines.append('  </url>')
+
+    for kb in kb_articles:
+        mod_date = (kb['updated_at'] or kb['created_at'] or today_str)[:10]
+        clean_title = (kb['title'] or f"KB-{kb['id']}").replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        xml_lines.append('  <url>')
+        xml_lines.append(f'    <loc>{base_url}/#kb-article-{kb["id"]}</loc>')
+        xml_lines.append(f'    <lastmod>{mod_date}</lastmod>')
+        xml_lines.append('    <changefreq>monthly</changefreq>')
+        xml_lines.append('    <priority>0.78</priority>')
+        xml_lines.append(f'    <!-- Knowledge Base: {clean_title} ({kb["category"]}) -->')
+        xml_lines.append('  </url>')
+
+    # Add SEO & GEO Articles
+    xml_lines.append('  <!-- SEO & GEO Articles (Comprehensive Indexing) -->')
+    xml_lines.append('  <url>')
+    xml_lines.append(f'    <loc>{base_url}/article.html</loc>')
+    xml_lines.append(f'    <lastmod>{today_str}</lastmod>')
+    xml_lines.append('    <changefreq>daily</changefreq>')
+    xml_lines.append('    <priority>0.90</priority>')
+    xml_lines.append('  </url>')
+
+    for row in all_articles:
         slug = row['slug']
-        pub_date = (row['published_at'] or row['updated_at'] or row['created_at'])[:10]
-        geo_target = row['geo_target'] or 'Toronto, Ontario'
-        lat = row['geo_lat'] or 43.7758
-        lng = row['geo_lng'] or -79.3458
+        pub_date = (row['published_at'] or row['updated_at'] or row['created_at'] or today_str)[:10]
+        geo_target = row['geo_target'] or 'Toronto & Markham, Ontario'
+        lat = row['geo_lat'] or 43.8561
+        lng = row['geo_lng'] or -79.3370
+        is_act = row['is_active']
+        priority = "0.85" if is_act == 1 else "0.80"
 
         xml_lines.append('  <url>')
         xml_lines.append(f'    <loc>{base_url}/article.html?slug={slug}</loc>')
         xml_lines.append(f'    <lastmod>{pub_date}</lastmod>')
         xml_lines.append('    <changefreq>weekly</changefreq>')
-        xml_lines.append('    <priority>0.85</priority>')
+        xml_lines.append(f'    <priority>{priority}</priority>')
         xml_lines.append('    <geo:geo>')
         xml_lines.append(f'      <geo:lat>{lat}</geo:lat>')
         xml_lines.append(f'      <geo:long>{lng}</geo:long>')
         xml_lines.append('    </geo:geo>')
-        xml_lines.append(f'    <!-- GEO Target: {geo_target} -->')
+        clean_target = (geo_target).replace('&', '&amp;')
+        clean_title = (row['title'] or slug).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        xml_lines.append(f'    <!-- Article: {clean_title} | GEO: {clean_target} -->')
         xml_lines.append('  </url>')
 
     xml_lines.append('</urlset>')
@@ -4121,20 +4878,29 @@ def serve_sitemap_xml():
 @app.route('/api/articles', methods=['GET'])
 def public_get_articles():
     """
-    Public API: Returns list of ACTIVE articles for the website.
-    Hidden/draft articles are strictly excluded from public view.
+    Public API: Returns list of articles for the website.
+    Supports category, geo filter, search query, and include_inactive parameter.
     """
     category = request.args.get('category', '').strip().lower()
     search = request.args.get('search', '').strip().lower()
     geo = request.args.get('geo', '').strip().lower()
+    include_inactive = request.args.get('include_inactive', '0') in ['1', 'true', 'True']
+
+    if search:
+        # Use fuzzy search engine for high relevance
+        articles = search_articles(search, limit=50, min_score=0.05, include_inactive=True, category=category if category != 'all' else None, geo=geo if geo != 'all' else None)
+        return jsonify({'articles': articles, 'count': len(articles)})
 
     query = """
     SELECT id, title, slug, summary, category, keywords, geo_target, cover_image, 
-           author, meta_title, meta_description, views, created_at, published_at 
+           author, meta_title, meta_description, views, created_at, published_at, is_active, status 
     FROM articles 
-    WHERE is_active = 1 AND status = 'active'
+    WHERE 1=1
     """
     params = []
+
+    if not include_inactive:
+        query += " AND is_active = 1 AND status = 'active'"
 
     if category and category != 'all':
         query += " AND category = ?"
@@ -4144,11 +4910,7 @@ def public_get_articles():
         query += " AND LOWER(geo_target) LIKE ?"
         params.append(f"%{geo}%")
 
-    if search:
-        query += " AND (LOWER(title) LIKE ? OR LOWER(keywords) LIKE ? OR LOWER(summary) LIKE ?)"
-        params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
-
-    query += " ORDER BY id DESC"
+    query += " ORDER BY is_active DESC, id DESC"
 
     db = get_db()
     cursor = db.cursor()
@@ -4398,6 +5160,8 @@ Return ONLY a valid, parseable JSON object with these EXACT keys:
     db.commit()
     new_art_id = cursor.lastrowid
 
+    build_sitemap_xml()
+
     # Fetch newly created article
     cursor.execute("SELECT * FROM articles WHERE id = ?", (new_art_id,))
     new_art = dict(cursor.fetchone())
@@ -4466,8 +5230,7 @@ def admin_create_article():
     db.commit()
     new_id = cursor.lastrowid
 
-    if is_active:
-        build_sitemap_xml()
+    build_sitemap_xml()
 
     return jsonify({
         'success': True,
@@ -4666,6 +5429,7 @@ def admin_generate_sitemap():
     if err: return err
 
     xml_content = build_sitemap_xml()
+    total_urls = xml_content.count('<url>')
 
     db = get_db()
     cursor = db.cursor()
@@ -4674,12 +5438,12 @@ def admin_generate_sitemap():
 
     return jsonify({
         'success': True,
-        'total_urls': 5 + active_cnt,
+        'total_urls': total_urls,
         'active_articles': active_cnt,
         'timestamp': datetime.utcnow().isoformat(),
         'sitemap_url': 'http://localhost:5055/sitemap.xml',
         'xml_preview': xml_content[:1500] + ('\n... (truncated)' if len(xml_content) > 1500 else ''),
-        'message': f'Sitemap regenerated successfully with {5 + active_cnt} URLs ({active_cnt} active GEO articles indexed).'
+        'message': f'Sitemap regenerated successfully with {total_urls} URLs ({active_cnt} active GEO articles indexed).'
     })
 
 @app.route('/api/admin/sitemap/status', methods=['GET'])
@@ -4687,6 +5451,9 @@ def admin_sitemap_status():
     """Admin API: Return current sitemap metrics."""
     err = require_admin()
     if err: return err
+
+    xml_content = build_sitemap_xml()
+    total_urls = xml_content.count('<url>')
 
     db = get_db()
     cursor = db.cursor()
@@ -4696,7 +5463,7 @@ def admin_sitemap_status():
     hidden_cnt = cursor.fetchone()['hidden_cnt']
 
     return jsonify({
-        'total_urls': 5 + active_cnt,
+        'total_urls': total_urls,
         'active_articles': active_cnt,
         'hidden_articles': hidden_cnt,
         'sitemap_path': '/sitemap.xml',
@@ -4902,6 +5669,8 @@ def admin_create_program():
     db.commit()
     new_id = cursor.lastrowid
 
+    build_sitemap_xml()
+
     cursor.execute("SELECT * FROM programs WHERE id = ?", (new_id,))
     created_row = cursor.fetchone()
 
@@ -5022,6 +5791,8 @@ def admin_update_program(prog_id):
     db.execute(query, params)
     db.commit()
 
+    build_sitemap_xml()
+
     cursor.execute("SELECT * FROM programs WHERE id = ?", (prog_id,))
     updated_row = cursor.fetchone()
 
@@ -5049,6 +5820,8 @@ def admin_toggle_program_status(prog_id):
     db.execute("UPDATE programs SET is_active = ?, updated_at = ? WHERE id = ?", (new_active, now_str, prog_id))
     db.commit()
 
+    build_sitemap_xml()
+
     status_str = "ACTIVE (Visible on website)" if new_active == 1 else "INACTIVE (Hidden from website)"
     return jsonify({
         'success': True,
@@ -5071,6 +5844,8 @@ def admin_delete_program(prog_id):
 
     db.execute("DELETE FROM programs WHERE id = ?", (prog_id,))
     db.commit()
+
+    build_sitemap_xml()
 
     return jsonify({
         'success': True,
@@ -5104,6 +5879,9 @@ def admin_reorder_programs():
         db.execute("UPDATE programs SET display_order = ?, updated_at = ? WHERE id = ?", (order_num, now_str, p_id))
 
     db.commit()
+
+    build_sitemap_xml()
+
     return jsonify({'success': True, 'message': 'Programs order updated successfully.'})
 
 
@@ -5136,13 +5914,36 @@ def get_active_job_fair():
 
 @app.route('/api/admin/job-fairs', methods=['GET'])
 def admin_get_job_fairs():
-    """Admin API: List all job fairs / event banners."""
+    """Admin API: List all job fairs / event banners with search and status filtering."""
     err = require_admin()
     if err: return err
 
+    search = request.args.get('search', '').strip().lower()
+    status = request.args.get('status', '').strip().lower()
+
+    query = "SELECT * FROM job_fairs WHERE 1=1"
+    params = []
+
+    if status == 'active':
+        query += " AND is_active = 1"
+    elif status == 'inactive':
+        query += " AND is_active = 0"
+
+    if search:
+        query += """ AND (
+            LOWER(title_en) LIKE ? OR LOWER(title_zh) LIKE ? OR
+            LOWER(subtitle_en) LIKE ? OR LOWER(subtitle_zh) LIKE ? OR
+            LOWER(location_en) LIKE ? OR LOWER(location_zh) LIKE ? OR
+            LOWER(tag_en) LIKE ? OR LOWER(tag_zh) LIKE ? OR
+            LOWER(date_en) LIKE ? OR LOWER(date_zh) LIKE ?
+        )"""
+        params.extend([f"%{search}%"] * 10)
+
+    query += " ORDER BY is_active DESC, id DESC"
+
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM job_fairs ORDER BY id DESC")
+    cursor.execute(query, params)
     rows = cursor.fetchall()
 
     return jsonify({
@@ -5217,6 +6018,8 @@ def admin_create_job_fair():
     db.commit()
     new_id = cursor.lastrowid
 
+    build_sitemap_xml()
+
     cursor.execute("SELECT * FROM job_fairs WHERE id = ?", (new_id,))
     new_row = cursor.fetchone()
 
@@ -5269,6 +6072,8 @@ def admin_update_job_fair(event_id):
     db.execute(query, params)
     db.commit()
 
+    build_sitemap_xml()
+
     cursor.execute("SELECT * FROM job_fairs WHERE id = ?", (event_id,))
     updated_row = cursor.fetchone()
 
@@ -5299,6 +6104,8 @@ def admin_toggle_job_fair_status(event_id):
     db.execute("UPDATE job_fairs SET is_active = ?, updated_at = ? WHERE id = ?", (new_active, now_str, event_id))
     db.commit()
 
+    build_sitemap_xml()
+
     status_str = "ACTIVE (Visible on website)" if new_active == 1 else "INACTIVE (Hidden from website)"
     return jsonify({
         'success': True,
@@ -5322,10 +6129,334 @@ def admin_delete_job_fair(event_id):
     db.execute("DELETE FROM job_fairs WHERE id = ?", (event_id,))
     db.commit()
 
+    build_sitemap_xml()
+
     return jsonify({
         'success': True,
         'message': f'Job Fair "{row["title_en"]}" deleted successfully.'
     })
+
+
+# ==============================================================================
+# SMTP Email Notification Service & Student Inquiries
+# ==============================================================================
+
+def get_smtp_config():
+    """Retrieve SMTP configuration from SQLite database or fallback to environment variables."""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT key, value FROM settings WHERE key LIKE 'smtp_%' OR key = 'notification_email' OR key = 'send_student_confirmation'")
+        rows = cursor.fetchall()
+        conn.close()
+        db_settings = {r['key']: r['value'] for r in rows}
+    except Exception:
+        db_settings = {}
+
+    return {
+        'host': (db_settings.get('smtp_host') or os.environ.get('SMTP_HOST', '')).strip(),
+        'port': int(db_settings.get('smtp_port') or os.environ.get('SMTP_PORT', 587)),
+        'user': (db_settings.get('smtp_user') or os.environ.get('SMTP_USER', '')).strip(),
+        'pass': (db_settings.get('smtp_pass') or os.environ.get('SMTP_PASS', '')).strip(),
+        'from': (db_settings.get('smtp_from') or os.environ.get('SMTP_FROM', 'Victoria International College <info@viccollege.com>')).strip(),
+        'recipient': (db_settings.get('notification_email') or os.environ.get('NOTIFICATION_EMAIL', 'info@viccollege.com')).strip(),
+        'use_tls': str(db_settings.get('smtp_tls', os.environ.get('SMTP_TLS', 'true'))).lower() in ('true', '1', 'yes', 'tls', 'starttls'),
+        'use_ssl': str(db_settings.get('smtp_ssl', os.environ.get('SMTP_SSL', 'false'))).lower() in ('true', '1', 'yes', 'ssl'),
+        'send_confirmation': str(db_settings.get('send_student_confirmation', 'true')).lower() in ('true', '1', 'yes')
+    }
+
+def send_smtp_email(to_email, subject, body_html, body_text=None, config=None):
+    """Send an HTML / Plain-text email via standard SMTP."""
+    if not config:
+        config = get_smtp_config()
+
+    host = config.get('host', '').strip()
+    if not host:
+        try:
+            print(f"[EMAIL SIMULATION] No SMTP host configured. To: {to_email} | Subject: {subject}")
+        except Exception:
+            print(f"[EMAIL SIMULATION] No SMTP host configured. To: {to_email}")
+        return True, "SMTP host not configured (simulated mode)."
+
+    port = config.get('port', 587)
+    user = config.get('user', '').strip()
+    password = config.get('pass', '').strip()
+    from_addr = config.get('from', 'Victoria International College <info@viccollege.com>')
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = from_addr
+    msg['To'] = to_email
+
+    if body_text:
+        msg.attach(MIMEText(body_text, 'plain', 'utf-8'))
+    msg.attach(MIMEText(body_html, 'html', 'utf-8'))
+
+    try:
+        if config.get('use_ssl'):
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL(host, port, context=context, timeout=12) as server:
+                if user and password:
+                    server.login(user, password)
+                server.sendmail(from_addr, [to_email], msg.as_string())
+        else:
+            with smtplib.SMTP(host, port, timeout=12) as server:
+                if config.get('use_tls'):
+                    context = ssl.create_default_context()
+                    server.starttls(context=context)
+                if user and password:
+                    server.login(user, password)
+                server.sendmail(from_addr, [to_email], msg.as_string())
+        try:
+            print(f"[EMAIL SUCCESS] Notification dispatched to {to_email} ({subject})")
+        except Exception:
+            print(f"[EMAIL SUCCESS] Notification dispatched to {to_email}")
+        return True, "Email sent successfully."
+    except smtplib.SMTPAuthenticationError as auth_err:
+        raw_err = str(auth_err)
+        if '5.7.8' in raw_err or 'BadCredentials' in raw_err or 'Username and Password not accepted' in raw_err:
+            err_msg = (
+                "Google SMTP Authentication Failed (535 BadCredentials). "
+                "Google strictly requires a 16-character 'App Password' instead of your personal Gmail account password. "
+                "Please visit https://myaccount.google.com/apppasswords with 2-Step Verification enabled, generate an App Password, and paste the 16-character code into the SMTP Password field."
+            )
+        else:
+            err_msg = f"SMTP Authentication Failed: {raw_err}"
+        try:
+            print(f"[EMAIL ERROR] {err_msg}")
+        except Exception:
+            pass
+        return False, err_msg
+    except Exception as e:
+        err_msg = f"Failed to send email to {to_email}: {str(e)}"
+        try:
+            print(f"[EMAIL ERROR] {err_msg}")
+        except Exception:
+            print(f"[EMAIL ERROR] Failed to send email to {to_email}")
+        return False, err_msg
+
+def build_admin_lead_email(lead_data):
+    name = lead_data.get('name', 'N/A')
+    email = lead_data.get('email', 'N/A')
+    phone = lead_data.get('phone', 'N/A')
+    program = lead_data.get('program', 'General Inquiry / Free Class')
+    grant_int = lead_data.get('interested_in_grant', 0)
+    grant_str = "✅ YES (Requested Better Jobs Ontario / $28,000+ Grant Evaluation)" if grant_int else "No"
+    source = lead_data.get('source_page', 'direct')
+    notes = lead_data.get('notes', '')
+    now_formatted = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
+
+    notes_html = f'<tr><td style="padding:12px 10px; border-bottom:1px solid #f1f5f9; color:#64748b; font-weight:600;">📝 Notes / Inquiries:</td><td style="padding:12px 10px; border-bottom:1px solid #f1f5f9; color:#0f172a;">{notes}</td></tr>' if notes else ''
+
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #1e293b; }}
+    .card {{ max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }}
+    .header {{ background: linear-gradient(135deg, #8B0000 0%, #B22222 100%); color: #ffffff; padding: 26px 30px; text-align: center; }}
+    .header h1 {{ margin: 0 0 6px; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }}
+    .header p {{ margin: 0; font-size: 14px; opacity: 0.92; }}
+    .body {{ padding: 30px; }}
+    .lead-badge {{ display: inline-block; background: #FEF2F2; color: #8B0000; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; margin-bottom: 16px; border: 1px solid #FECACA; }}
+    .info-table {{ width: 100%; border-collapse: collapse; margin: 15px 0 25px; }}
+    .info-table td {{ padding: 12px 10px; border-bottom: 1px solid #f1f5f9; font-size: 14.5px; }}
+    .info-table td.label {{ width: 35%; color: #64748b; font-weight: 600; }}
+    .info-table td.value {{ color: #0f172a; font-weight: 500; }}
+    .cta-btn {{ display: inline-block; background: #8B0000; color: #ffffff !important; text-decoration: none; padding: 12px 22px; border-radius: 6px; font-weight: 600; font-size: 14px; margin-right: 10px; margin-bottom: 8px; }}
+    .phone-btn {{ display: inline-block; background: #0284c7; color: #ffffff !important; text-decoration: none; padding: 12px 22px; border-radius: 6px; font-weight: 600; font-size: 14px; margin-bottom: 8px; }}
+    .footer {{ background: #f8fafc; padding: 18px 30px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; }}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h1>🎓 Victoria International College</h1>
+      <p>New Student Lead &amp; Free Class Registration</p>
+    </div>
+    <div class="body">
+      <span class="lead-badge">⚡ New Inscription</span>
+      <h2 style="font-size: 19px; margin: 0 0 10px; color: #0f172a;">A new student has registered on the website!</h2>
+      <p style="font-size: 14px; color: #475569; margin: 0 0 18px;">Please review the student details below and reach out within 24 business hours:</p>
+      
+      <table class="info-table">
+        <tr>
+          <td class="label">👤 Full Name:</td>
+          <td class="value"><strong>{name}</strong></td>
+        </tr>
+        <tr>
+          <td class="label">✉️ Email Address:</td>
+          <td class="value"><a href="mailto:{email}" style="color: #8B0000; text-decoration: none; font-weight: 600;">{email}</a></td>
+        </tr>
+        <tr>
+          <td class="label">📞 Phone Number:</td>
+          <td class="value"><a href="tel:{phone}" style="color: #0284c7; text-decoration: none; font-weight: 600;">{phone}</a></td>
+        </tr>
+        <tr>
+          <td class="label">📚 Program / Interest:</td>
+          <td class="value"><strong style="color: #8B0000;">{program}</strong></td>
+        </tr>
+        <tr>
+          <td class="label">💰 Grant Assessment:</td>
+          <td class="value">{grant_str}</td>
+        </tr>
+        <tr>
+          <td class="label">🌐 Source Page:</td>
+          <td class="value"><code>{source}</code></td>
+        </tr>
+        <tr>
+          <td class="label">📅 Submission Time:</td>
+          <td class="value">{now_formatted}</td>
+        </tr>
+        {notes_html}
+      </table>
+
+      <div style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #cbd5e1;">
+        <a href="mailto:{email}?subject=Victoria%20College%20-%20Admissions%20Information%20%26%20Demo%20Class" class="cta-btn">✉️ Email Student</a>
+        <a href="tel:{phone}" class="phone-btn">📞 Call Student</a>
+      </div>
+    </div>
+    <div class="footer">
+      Victoria International College of Business &amp; Technology<br>
+      7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8 • Tel: 416-665-6668
+    </div>
+  </div>
+</body>
+</html>"""
+    return html
+
+def build_student_welcome_email(lead_data, custom_body=None):
+    name = lead_data.get('name', 'Student')
+    program = lead_data.get('program', 'your selected program')
+
+    if custom_body:
+        content_body = custom_body
+    else:
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT value FROM settings WHERE key = 'student_email_body'")
+            row = cursor.fetchone()
+            conn.close()
+            tpl = row[0] if (row and row[0] and row[0].strip()) else DEFAULT_STUDENT_EMAIL_BODY
+        except Exception:
+            tpl = DEFAULT_STUDENT_EMAIL_BODY
+        content_body = format_template_string(tpl, lead_data)
+
+    paragraphs = [p.strip() for p in content_body.split('\n\n') if p.strip()]
+    paragraphs_html = ""
+    for p in paragraphs:
+        lines = p.split('\n')
+        p_html = "<br>".join(lines)
+        if p.startswith('•') or p.startswith('-') or p.startswith('*'):
+            paragraphs_html += '<ul style="font-size: 14px; color: #334155; padding-left: 20px; margin: 10px 0;">'
+            for l in lines:
+                clean_l = l.lstrip('•-* ').strip()
+                paragraphs_html += f'<li>{clean_l}</li>'
+            paragraphs_html += '</ul>'
+        elif 'What Happens Next' in p:
+            clean_box = p_html.replace("What Happens Next:", "").replace("What Happens Next", "").strip()
+            paragraphs_html += f'<div class="highlight-box"><h3 style="margin: 0 0 8px; font-size: 15px; color: #8B0000;">What Happens Next</h3><p style="margin: 0; font-size: 14px; color: #334155;">{clean_box}</p></div>'
+        else:
+            paragraphs_html += f'<p style="font-size: 14.5px; color: #334155; margin: 0 0 14px; line-height: 1.6;">{p_html}</p>'
+
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #1e293b; }}
+    .card {{ max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }}
+    .header {{ background: linear-gradient(135deg, #8B0000 0%, #B22222 100%); color: #ffffff; padding: 28px 30px; text-align: center; }}
+    .header h1 {{ margin: 0 0 6px; font-size: 21px; font-weight: 700; letter-spacing: 0.5px; }}
+    .header p {{ margin: 0; font-size: 13.5px; opacity: 0.92; }}
+    .body {{ padding: 30px; line-height: 1.65; }}
+    .body h2 {{ font-size: 18px; color: #0f172a; margin-top: 0; }}
+    .highlight-box {{ background: #f8fafc; border-left: 4px solid #8B0000; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }}
+    .footer {{ background: #f8fafc; padding: 20px 30px; text-align: center; font-size: 12.5px; color: #64748b; border-top: 1px solid #e2e8f0; }}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h1>VICTORIA INTERNATIONAL COLLEGE</h1>
+      <p>Of Business &amp; Technology</p>
+    </div>
+    <div class="body">
+      <h2>Hello {name},</h2>
+      {paragraphs_html}
+      <p style="font-size: 14px; margin-top: 25px; margin-bottom: 0;">Warm regards,<br><strong>Admissions &amp; Career Services</strong><br>Victoria International College</p>
+    </div>
+    <div class="footer">
+      Registered as a career college under the <i>Ontario Career Colleges Act, 2005</i>.<br>
+      © 2026 Victoria International College of Business &amp; Technology. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>"""
+    return html
+
+def send_lead_notifications(lead_data):
+    """Worker function to send admin notification and student confirmation emails."""
+    try:
+        config = get_smtp_config()
+        recipient = config.get('recipient') or 'info@viccollege.com'
+
+        # Retrieve admin subject template if configured
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT value FROM settings WHERE key = 'admin_email_subject'")
+            row = cursor.fetchone()
+            conn.close()
+            admin_subj_tpl = row[0] if (row and row[0] and row[0].strip()) else DEFAULT_ADMIN_EMAIL_SUBJECT
+        except Exception:
+            admin_subj_tpl = DEFAULT_ADMIN_EMAIL_SUBJECT
+
+        admin_subject = format_template_string(admin_subj_tpl, lead_data)
+        admin_html = build_admin_lead_email(lead_data)
+        send_smtp_email(
+            to_email=recipient,
+            subject=admin_subject,
+            body_html=admin_html,
+            body_text=f"New Lead: {lead_data.get('name')}\nEmail: {lead_data.get('email')}\nPhone: {lead_data.get('phone')}\nProgram: {lead_data.get('program')}\nSource: {lead_data.get('source_page')}",
+            config=config
+        )
+
+        # 2. Optionally send welcome email to student if valid email is provided
+        student_email = lead_data.get('email', '').strip()
+        if student_email and '@' in student_email and config.get('send_confirmation'):
+            try:
+                conn = sqlite3.connect(DB_PATH)
+                cursor = conn.cursor()
+                cursor.execute("SELECT value FROM settings WHERE key = 'student_email_subject'")
+                row = cursor.fetchone()
+                conn.close()
+                student_subj_tpl = row[0] if (row and row[0] and row[0].strip()) else DEFAULT_STUDENT_EMAIL_SUBJECT
+            except Exception:
+                student_subj_tpl = DEFAULT_STUDENT_EMAIL_SUBJECT
+
+            student_subject = format_template_string(student_subj_tpl, lead_data)
+            student_html = build_student_welcome_email(lead_data)
+            send_smtp_email(
+                to_email=student_email,
+                subject=student_subject,
+                body_html=student_html,
+                body_text=format_template_string(DEFAULT_STUDENT_EMAIL_BODY, lead_data),
+                config=config
+            )
+    except Exception as e:
+        try:
+            print(f"[LEAD NOTIFICATION ERROR] {str(e)}")
+        except Exception:
+            print("[LEAD NOTIFICATION ERROR] Unknown encoding error in lead notification")
+
+def send_lead_notifications_async(lead_data):
+    """Trigger email notification asynchronously in background thread."""
+    t = threading.Thread(target=send_lead_notifications, args=(lead_data,), daemon=True)
+    t.start()
 
 
 # ==============================================================================
@@ -5340,9 +6471,19 @@ def submit_consultation():
     email = (data.get('email') or '').strip().lower()
     phone = (data.get('phone') or '').strip()
     program = (data.get('program') or '').strip()
+    campus = (data.get('campus') or '').strip()
+    interest = (data.get('interest') or '').strip()
     interested_in_grant = int(data.get('interested_in_grant', 0))
     source_page = (data.get('source_page') or 'direct').strip()
     notes = (data.get('notes') or '').strip()
+
+    if not program:
+        if interest == 'free_class':
+            program = 'Free Trial Class'
+        elif interest:
+            program = interest
+        else:
+            program = 'General Inquiry / Free Class'
 
     if not name or (not email and not phone):
         return jsonify({'error': 'Name and contact info (email or phone) are required.'}), 400
@@ -5352,11 +6493,28 @@ def submit_consultation():
     cursor = db.cursor()
 
     cursor.execute('''
-    INSERT INTO consultations (name, email, phone, program, interested_in_grant, source_page, notes, status, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 'new', ?)
-    ''', (name, email, phone, program, interested_in_grant, source_page, notes, now_str))
+    INSERT INTO consultations (name, email, phone, program, campus, interest, interested_in_grant, source_page, notes, status, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?)
+    ''', (name, email, phone, program, campus, interest, interested_in_grant, source_page, notes, now_str))
     db.commit()
     new_id = cursor.lastrowid
+
+    lead_data = {
+        'id': new_id,
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'program': program,
+        'campus': campus,
+        'interest': interest,
+        'interested_in_grant': interested_in_grant,
+        'source_page': source_page,
+        'notes': notes,
+        'created_at': now_str
+    }
+
+    # Dispatch email notification in background thread
+    send_lead_notifications_async(lead_data)
 
     return jsonify({
         'success': True,
@@ -5366,15 +6524,194 @@ def submit_consultation():
 
 @app.route('/api/admin/consultations', methods=['GET'])
 def admin_get_consultations():
-    """Admin API: View all consultation leads."""
+    """Admin API: View all consultation leads with optional status filter and search."""
+    err = require_admin()
+    if err: return err
+
+    status_filter = request.args.get('status', '').strip().lower()
+    search = request.args.get('search', '').strip().lower()
+
+    query = "SELECT * FROM consultations WHERE 1=1"
+    params = []
+
+    if status_filter and status_filter != 'all':
+        query += " AND status = ?"
+        params.append(status_filter)
+
+    if search:
+        query += " AND (LOWER(name) LIKE ? OR LOWER(email) LIKE ? OR LOWER(phone) LIKE ? OR LOWER(program) LIKE ? OR LOWER(campus) LIKE ? OR LOWER(interest) LIKE ? OR LOWER(source_page) LIKE ?)"
+        s_param = f"%{search}%"
+        params.extend([s_param, s_param, s_param, s_param, s_param, s_param, s_param])
+
+    query += " ORDER BY id DESC"
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(query, params)
+    rows = [dict(r) for r in cursor.fetchall()]
+
+    # Also compute quick summary counts
+    cursor.execute("SELECT status, COUNT(*) as cnt FROM consultations GROUP BY status")
+    count_rows = cursor.fetchall()
+    status_counts = {'all': len(rows), 'new': 0, 'contacted': 0, 'enrolled': 0, 'archived': 0}
+    for cr in count_rows:
+        status_counts[cr['status']] = cr['cnt']
+
+    return jsonify({
+        'success': True,
+        'leads': rows,
+        'consultations': rows,
+        'count': len(rows),
+        'status_counts': status_counts
+    })
+
+@app.route('/api/admin/consultations/<int:lead_id>', methods=['PATCH'])
+def admin_update_consultation(lead_id):
+    """Admin API: Update lead status or notes."""
+    err = require_admin()
+    if err: return err
+
+    data = request.get_json() or {}
+    new_status = (data.get('status') or '').strip().lower()
+    notes = data.get('notes')
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id FROM consultations WHERE id = ?", (lead_id,))
+    if not cursor.fetchone():
+        return jsonify({'error': 'Lead not found.'}), 404
+
+    valid_statuses = ['new', 'contacted', 'enrolled', 'archived']
+    if new_status and new_status not in valid_statuses:
+        return jsonify({'error': f'Invalid status. Must be one of {valid_statuses}'}), 400
+
+    if new_status and notes is not None:
+        db.execute("UPDATE consultations SET status = ?, notes = ? WHERE id = ?", (new_status, notes, lead_id))
+    elif new_status:
+        db.execute("UPDATE consultations SET status = ? WHERE id = ?", (new_status, lead_id))
+    elif notes is not None:
+        db.execute("UPDATE consultations SET notes = ? WHERE id = ?", (notes, lead_id))
+
+    db.commit()
+    return jsonify({'success': True, 'message': f'Lead #{lead_id} updated successfully.'})
+
+@app.route('/api/admin/consultations/<int:lead_id>', methods=['DELETE'])
+def admin_delete_consultation(lead_id):
+    """Admin API: Delete a consultation lead record."""
     err = require_admin()
     if err: return err
 
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM consultations ORDER BY id DESC")
-    rows = [dict(r) for r in cursor.fetchall()]
-    return jsonify({'success': True, 'consultations': rows, 'count': len(rows)})
+    cursor.execute("SELECT id, name FROM consultations WHERE id = ?", (lead_id,))
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({'error': 'Lead not found.'}), 404
+
+    db.execute("DELETE FROM consultations WHERE id = ?", (lead_id,))
+    db.commit()
+    return jsonify({'success': True, 'message': f'Lead for "{row["name"]}" deleted successfully.'})
+
+@app.route('/api/admin/consultations/<int:lead_id>/email-preview', methods=['GET'])
+def admin_preview_consultation_email(lead_id):
+    """Admin API: Return pre-filled editable email subject & body for a lead."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM consultations WHERE id = ?", (lead_id,))
+    lead = cursor.fetchone()
+    if not lead:
+        return jsonify({'error': 'Lead not found.'}), 404
+
+    lead_dict = dict(lead)
+
+    cursor.execute("SELECT key, value FROM settings WHERE key IN ('student_email_subject', 'student_email_body')")
+    settings_map = {row['key']: row['value'] for row in cursor.fetchall()}
+
+    subj_tpl = settings_map.get('student_email_subject') or DEFAULT_STUDENT_EMAIL_SUBJECT
+    body_tpl = settings_map.get('student_email_body') or DEFAULT_STUDENT_EMAIL_BODY
+
+    personalized_subject = format_template_string(subj_tpl, lead_dict)
+    personalized_body = format_template_string(body_tpl, lead_dict)
+    html_preview = build_student_welcome_email(lead_dict, custom_body=personalized_body)
+
+    return jsonify({
+        'success': True,
+        'lead_id': lead_id,
+        'to_email': lead_dict.get('email', ''),
+        'name': lead_dict.get('name', ''),
+        'program': lead_dict.get('program', ''),
+        'subject': personalized_subject,
+        'message_body': personalized_body,
+        'html_preview': html_preview
+    })
+
+@app.route('/api/admin/consultations/<int:lead_id>/send-email', methods=['POST'])
+def admin_send_consultation_email(lead_id):
+    """Admin API: Send or resend welcome/confirmation email to a student lead with editable content."""
+    err = require_admin()
+    if err: return err
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM consultations WHERE id = ?", (lead_id,))
+    lead = cursor.fetchone()
+    if not lead:
+        return jsonify({'error': 'Lead not found.'}), 404
+
+    lead_dict = dict(lead)
+    data = request.get_json() or {}
+
+    student_email = (data.get('to_email') or lead_dict.get('email') or '').strip()
+    if not student_email or '@' not in student_email:
+        return jsonify({'error': 'Lead does not have a valid email address.'}), 400
+
+    custom_subject = data.get('subject')
+    custom_message = data.get('message')
+
+    config = get_smtp_config()
+
+    if custom_subject:
+        subject = custom_subject
+    else:
+        cursor.execute("SELECT value FROM settings WHERE key = 'student_email_subject'")
+        row = cursor.fetchone()
+        subj_tpl = row[0] if (row and row[0] and row[0].strip()) else DEFAULT_STUDENT_EMAIL_SUBJECT
+        subject = format_template_string(subj_tpl, lead_dict)
+
+    if custom_message and custom_message.strip():
+        html_body = build_student_welcome_email(lead_dict, custom_body=custom_message.strip())
+        text_body = custom_message.strip()
+    else:
+        html_body = build_student_welcome_email(lead_dict)
+        text_body = format_template_string(DEFAULT_STUDENT_EMAIL_BODY, lead_dict)
+
+    success, msg = send_smtp_email(
+        to_email=student_email,
+        subject=subject,
+        body_html=html_body,
+        body_text=text_body,
+        config=config
+    )
+
+    if success:
+        # Mark status as contacted if currently new
+        if lead_dict.get('status') == 'new':
+            db.execute("UPDATE consultations SET status = 'contacted' WHERE id = ?", (lead_id,))
+            db.commit()
+
+        return jsonify({
+            'success': True,
+            'message': f'Email successfully dispatched to {student_email}!' if config.get('host') else f'Email simulated for {student_email} (no live SMTP host configured).',
+            'simulated': not bool(config.get('host'))
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': f'Failed to send email: {msg}'
+        }), 500
 
 
 # ==============================================================================

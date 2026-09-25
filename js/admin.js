@@ -12,6 +12,7 @@
   let allArticles = [];
   let allAdminPrograms = [];
   let allAdminJobFairs = [];
+  let allConsultationLeads = [];
   let currentPreviewArticle = null;
 
   const fetchApi = (url, opts) => {
@@ -77,6 +78,7 @@
           this.loadKnowledge();
           this.loadPrograms();
           this.loadSEOArticles();
+          this.loadLeads();
           this.loadAISettings();
           this.loadChatLogs();
 
@@ -117,7 +119,8 @@
       if (tabId === 'programs') this.loadPrograms();
       if (tabId === 'job-fair') this.loadJobFairs();
       if (tabId === 'seo-articles') this.loadSEOArticles();
-      if (tabId === 'ai-settings') this.loadAISettings();
+      if (tabId === 'leads') this.loadLeads();
+      if (tabId === 'ai-settings' || tabId === 'email-settings') this.loadAISettings();
       if (tabId === 'chat-logs') this.loadChatLogs();
     },
 
@@ -293,11 +296,15 @@
 
       const kbSearchInput = document.getElementById('kb-search-input');
       const kbCategoryFilter = document.getElementById('kb-category-filter');
+      const kbStatusFilter = document.getElementById('kb-status-filter');
       if (kbSearchInput) {
         kbSearchInput.addEventListener('input', () => this.loadKnowledge());
       }
       if (kbCategoryFilter) {
         kbCategoryFilter.addEventListener('change', () => this.loadKnowledge());
+      }
+      if (kbStatusFilter) {
+        kbStatusFilter.addEventListener('change', () => this.loadKnowledge());
       }
 
       // 3c. Dynamic Academic Programs Events
@@ -732,7 +739,176 @@
         });
       }
 
-      // 5b. Change Password Form
+      // 5a. Email & SMTP Notification Settings Form
+      const emailForm = document.getElementById('email-settings-form');
+      if (emailForm) {
+        emailForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const host = document.getElementById('set-smtp-host')?.value?.trim();
+          const port = document.getElementById('set-smtp-port')?.value?.trim();
+          const user = document.getElementById('set-smtp-user')?.value?.trim();
+          const pass = document.getElementById('set-smtp-pass')?.value?.trim();
+          const fromAddr = document.getElementById('set-smtp-from')?.value?.trim();
+          const notifEmail = document.getElementById('set-notification-email')?.value?.trim();
+          const security = document.getElementById('set-smtp-security')?.value;
+          const sendConf = document.getElementById('set-send-student-conf')?.value;
+          const studentEmailSubj = document.getElementById('set-student-email-subject')?.value?.trim();
+          const studentEmailBody = document.getElementById('set-student-email-body')?.value;
+          const adminEmailSubj = document.getElementById('set-admin-email-subject')?.value?.trim();
+
+          const payload = {
+            smtp_host: host,
+            smtp_port: port || '587',
+            smtp_user: user,
+            smtp_from: fromAddr,
+            notification_email: notifEmail,
+            smtp_tls: security === 'tls' ? 'true' : 'false',
+            smtp_ssl: security === 'ssl' ? 'true' : 'false',
+            send_student_confirmation: sendConf,
+            student_email_subject: studentEmailSubj,
+            student_email_body: studentEmailBody,
+            admin_email_subject: adminEmailSubj
+          };
+
+          if (pass && !pass.includes('••••')) {
+            payload.smtp_pass = pass;
+          }
+
+          try {
+            const token = window.VicAuth.getToken();
+            const res = await fetchApi('/api/admin/settings', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to save email settings');
+
+            this.showToast('SMTP email settings saved to database!', 'success');
+            this.loadAISettings();
+          } catch (err) {
+            this.showToast(err.message, 'error');
+          }
+        });
+      }
+
+      // 5b. Test SMTP Email Button & Password Visibility
+      const testEmailBtn = document.querySelector('.js-test-smtp-email');
+      const toggleSmtpPassBtn = document.querySelector('.js-toggle-smtp-pass-visibility');
+      const smtpPassInput = document.getElementById('set-smtp-pass');
+
+      if (toggleSmtpPassBtn && smtpPassInput) {
+        toggleSmtpPassBtn.onclick = () => {
+          smtpPassInput.type = smtpPassInput.type === 'password' ? 'text' : 'password';
+          toggleSmtpPassBtn.innerHTML = smtpPassInput.type === 'password' ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>';
+        };
+      }
+
+      if (testEmailBtn) {
+        testEmailBtn.addEventListener('click', async () => {
+          const testBox = document.getElementById('email-test-result');
+          const customRecip = document.getElementById('test-email-recipient')?.value?.trim();
+          const host = document.getElementById('set-smtp-host')?.value?.trim();
+          const port = document.getElementById('set-smtp-port')?.value?.trim();
+          const user = document.getElementById('set-smtp-user')?.value?.trim();
+          const pass = document.getElementById('set-smtp-pass')?.value?.trim();
+          const fromAddr = document.getElementById('set-smtp-from')?.value?.trim();
+          const notifEmail = document.getElementById('set-notification-email')?.value?.trim();
+          const security = document.getElementById('set-smtp-security')?.value;
+
+          if (testBox) {
+            testBox.style.display = 'block';
+            testBox.className = 'test-feedback-box';
+            testBox.style.background = '';
+            testBox.style.color = '';
+            testBox.style.borderColor = '';
+            if (host) {
+              testBox.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting to SMTP server (' + this.escapeHtml(host) + ':' + this.escapeHtml(port || '587') + ') and dispatching test email...';
+            } else {
+              testBox.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying local email simulation mode...';
+            }
+          }
+
+          const payload = {
+            test_recipient: customRecip,
+            smtp_host: host,
+            smtp_port: port || '587',
+            smtp_user: user,
+            smtp_from: fromAddr,
+            notification_email: notifEmail,
+            smtp_tls: security === 'tls' ? 'true' : 'false',
+            smtp_ssl: security === 'ssl' ? 'true' : 'false'
+          };
+
+          if (pass && !pass.includes('••••')) {
+            payload.smtp_pass = pass;
+          }
+
+          try {
+            const token = window.VicAuth.getToken();
+            const res = await fetchApi('/api/admin/settings/test-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (testBox) {
+              if (res.ok && data.success) {
+                if (data.simulated) {
+                  testBox.className = 'test-feedback-box info';
+                  testBox.style.background = '#f0f9ff';
+                  testBox.style.color = '#0369a1';
+                  testBox.style.borderColor = '#bae6fd';
+                  testBox.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${data.message}`;
+                  this.showToast('Local Simulation Mode verified.', 'info');
+                } else {
+                  testBox.className = 'test-feedback-box success';
+                  testBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${data.message}`;
+                  this.showToast('SMTP Test Email Sent Successfully!', 'success');
+                }
+              } else {
+                testBox.className = 'test-feedback-box error';
+                testBox.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${data.message || 'SMTP test failed.'}`;
+                this.showToast(data.message || 'SMTP test failed', 'error');
+              }
+            }
+          } catch (err) {
+            if (testBox) {
+              testBox.className = 'test-feedback-box error';
+              testBox.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Network error: ${err.message}`;
+            }
+            this.showToast('Network error: ' + err.message, 'error');
+          }
+        });
+      }
+
+      // 5c. Lead Search, Status Filter & Refresh
+      const leadSearch = document.getElementById('lead-search-input');
+      const leadStatusFilter = document.getElementById('lead-status-filter');
+      const refreshLeadsBtn = document.querySelector('.js-refresh-leads');
+
+      if (leadSearch) {
+        leadSearch.addEventListener('input', () => this.filterAndRenderLeads());
+      }
+      if (leadStatusFilter) {
+        leadStatusFilter.addEventListener('change', () => this.loadLeads());
+      }
+      if (refreshLeadsBtn) {
+        refreshLeadsBtn.addEventListener('click', () => {
+          this.loadLeads();
+          this.loadStats();
+          this.showToast('Student leads refreshed.', 'info');
+        });
+      }
+
+      // 5d. Change Password Form
       const changePwdForm = document.getElementById('form-change-password');
       if (changePwdForm) {
         changePwdForm.addEventListener('submit', async (e) => {
@@ -862,6 +1038,27 @@
         };
       });
 
+      const jfSearchInput = document.getElementById('jf-search-input');
+      const jfStatusFilter = document.getElementById('jf-status-filter');
+      if (jfSearchInput) {
+        jfSearchInput.addEventListener('input', () => this.loadJobFairs());
+      }
+      if (jfStatusFilter) {
+        jfStatusFilter.addEventListener('change', () => this.loadJobFairs());
+      }
+
+      // Email Composer Modal Close & Backdrop
+      const closeComposerBtns = document.querySelectorAll('.js-close-composer-modal');
+      const composerModal = document.getElementById('modal-lead-email-composer');
+      closeComposerBtns.forEach(btn => {
+        btn.onclick = () => this.closeLeadEmailComposer();
+      });
+      if (composerModal) {
+        composerModal.onclick = (e) => {
+          if (e.target === composerModal) this.closeLeadEmailComposer();
+        };
+      }
+
       if (jfForm) {
         jfForm.addEventListener('submit', async (e) => {
           e.preventDefault();
@@ -945,6 +1142,13 @@
           document.getElementById('stat-google-users').textContent = data.google_users || 0;
           document.getElementById('stat-linkedin-users').textContent = data.linkedin_users || 0;
           document.getElementById('stat-total-chats').textContent = data.total_chats || 0;
+          const leadsStatEl = document.getElementById('stat-total-leads');
+          if (leadsStatEl) leadsStatEl.textContent = `${data.total_leads || 0} (${data.new_leads || 0} New)`;
+          const leadsBadgeEl = document.getElementById('badge-leads-count');
+          if (leadsBadgeEl) {
+            leadsBadgeEl.textContent = data.new_leads || data.total_leads || 0;
+            leadsBadgeEl.style.display = (data.total_leads > 0) ? '' : 'none';
+          }
           document.getElementById('stat-key-status').innerHTML = data.has_api_key 
             ? '<span style="color:#059669; font-size: 16px;">Active (In DB)</span>' 
             : '<span style="color:#DC2626; font-size: 16px;">Not Set</span>';
@@ -961,12 +1165,14 @@
       const tbody = document.getElementById('kb-tbody');
       const search = document.getElementById('kb-search-input')?.value || '';
       const category = document.getElementById('kb-category-filter')?.value || 'all';
+      const status = document.getElementById('kb-status-filter')?.value || 'all';
 
       try {
         const token = window.VicAuth.getToken();
         const queryParams = new URLSearchParams();
         if (search) queryParams.set('search', search);
         if (category && category !== 'all') queryParams.set('category', category);
+        if (status && status !== 'all') queryParams.set('status', status);
 
         const res = await fetchApi(`/api/admin/knowledge?${queryParams.toString()}`, {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -976,7 +1182,7 @@
           this.renderKnowledgeTable(data.articles);
         }
       } catch (e) {
-        if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center;">Failed to load knowledge articles</td></tr>`;
+        if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="color:red; text-align:center;">Failed to load knowledge articles</td></tr>`;
       }
     },
 
@@ -985,7 +1191,7 @@
       if (!tbody) return;
 
       if (!articles || articles.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 24px; color:#888;">No knowledge articles found. Click "Add Article" to create one.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 24px; color:#888;">No knowledge articles found. Click "Add Article" to create one.</td></tr>`;
         return;
       }
 
@@ -1000,6 +1206,10 @@
       tbody.innerHTML = articles.map(art => {
         const catName = categoryLabels[art.category] || art.category;
         const shortContent = (art.content || '').slice(0, 160) + ((art.content || '').length > 160 ? '...' : '');
+        const isActive = art.is_active === 1 || art.is_active === true || art.is_active === undefined;
+        const statusBadge = isActive
+          ? `<span class="badge-status-active" style="display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:6px; font-size:11.5px; font-weight:700; background:#DCFCE7; color:#15803D;"><i class="fa-solid fa-circle-check"></i> Active</span>`
+          : `<span class="badge-status-hidden" style="display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:6px; font-size:11.5px; font-weight:700; background:#F1F5F9; color:#64748B;"><i class="fa-solid fa-eye-slash"></i> Inactive</span>`;
 
         return `
           <tr>
@@ -1010,20 +1220,28 @@
               </span>
             </td>
             <td>
-              <strong style="color: #1e293b; font-size: 14px;">${art.title}</strong><br>
+              <strong style="color: #1e293b; font-size: 14px;">${this.escapeHtml(art.title)}</strong><br>
               <small style="color: #64748b; display: inline-block; margin-top: 4px;">
-                <i class="fa-solid fa-tags" style="color: #94a3b8; font-size: 10px;"></i> ${art.keywords}
+                <i class="fa-solid fa-tags" style="color: #94a3b8; font-size: 10px;"></i> ${this.escapeHtml(art.keywords)}
               </small>
             </td>
             <td>
               <div style="font-size: 13px; color: #475569; line-height: 1.45; background: #f8fafc; padding: 8px 10px; border-radius: 6px;">
-                ${shortContent}
+                ${this.escapeHtml(shortContent)}
               </div>
             </td>
             <td style="text-align: center;">
               <span style="display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; ${art.priority > 1 ? 'background: #fef3c7; color: #b45309;' : 'background: #f1f5f9; color: #64748b;'}">
                 P${art.priority}
               </span>
+            </td>
+            <td style="text-align: center;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                ${statusBadge}
+                <button type="button" class="btn-toggle-kb-status" onclick="window.AdminApp.toggleKnowledgeStatus(${art.id})" style="border: none; background: none; color: #2563EB; font-size: 11px; text-decoration: underline; cursor: pointer; padding: 0;">
+                  ${isActive ? 'Make Inactive' : 'Set Active'}
+                </button>
+              </div>
             </td>
             <td style="text-align: right;">
               <div style="display: flex; gap: 4px; justify-content: flex-end;">
@@ -1038,6 +1256,24 @@
           </tr>
         `;
       }).join('');
+    },
+
+    async toggleKnowledgeStatus(id) {
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/knowledge/${id}/toggle-status`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to toggle knowledge article status');
+
+        this.showToast(data.message || 'Knowledge article status updated', 'success');
+        this.loadKnowledge();
+        this.loadStats();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
     },
 
     async openEditKnowledge(id) {
@@ -1229,7 +1465,7 @@
       }
     },
 
-    // Load AI Settings
+    // Load AI & Email Settings
     async loadAISettings() {
       try {
         const token = window.VicAuth.getToken();
@@ -1256,9 +1492,481 @@
 
           const promptArea = document.getElementById('set-system-prompt');
           if (promptArea) promptArea.value = data.system_prompt || '';
+
+          // SMTP Email Settings
+          const smtpHost = document.getElementById('set-smtp-host');
+          if (smtpHost) smtpHost.value = data.smtp_host || '';
+
+          const smtpPort = document.getElementById('set-smtp-port');
+          if (smtpPort) smtpPort.value = data.smtp_port || '587';
+
+          const smtpUser = document.getElementById('set-smtp-user');
+          if (smtpUser) smtpUser.value = data.smtp_user || '';
+
+          const smtpPass = document.getElementById('set-smtp-pass');
+          if (smtpPass) smtpPass.value = data.smtp_pass_masked || '';
+
+          const smtpFrom = document.getElementById('set-smtp-from');
+          if (smtpFrom) smtpFrom.value = data.smtp_from || 'Victoria International College <info@viccollege.com>';
+
+          const notifEmail = document.getElementById('set-notification-email');
+          if (notifEmail) notifEmail.value = data.notification_email || 'info@viccollege.com';
+
+          const smtpSec = document.getElementById('set-smtp-security');
+          if (smtpSec) {
+            if (data.smtp_ssl === 'true' || data.smtp_ssl === true) {
+              smtpSec.value = 'ssl';
+            } else if (data.smtp_tls === 'false' || data.smtp_tls === false) {
+              smtpSec.value = 'none';
+            } else {
+              smtpSec.value = 'tls';
+            }
+          }
+
+          const sendStudentConf = document.getElementById('set-send-student-conf');
+          if (sendStudentConf) sendStudentConf.value = String(data.send_student_confirmation !== undefined ? data.send_student_confirmation : 'true');
+
+          // Email Content & Templates
+          const studentSubj = document.getElementById('set-student-email-subject');
+          if (studentSubj) studentSubj.value = data.student_email_subject || '';
+
+          const studentBody = document.getElementById('set-student-email-body');
+          if (studentBody) studentBody.value = data.student_email_body || '';
+
+          const adminSubj = document.getElementById('set-admin-email-subject');
+          if (adminSubj) adminSubj.value = data.admin_email_subject || '';
         }
       } catch (e) {
-        console.warn('Failed to load AI settings:', e);
+        console.warn('Failed to load settings:', e);
+      }
+    },
+
+    // Load Student Leads & Inquiries
+    async loadLeads() {
+      const tbody = document.getElementById('leads-table-body');
+      const statusFilter = document.getElementById('lead-status-filter')?.value || 'all';
+
+      try {
+        const token = window.VicAuth.getToken();
+        const queryParams = new URLSearchParams();
+        if (statusFilter && statusFilter !== 'all') queryParams.set('status', statusFilter);
+
+        const res = await fetchApi(`/api/admin/consultations?${queryParams.toString()}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (res.ok && data.consultations) {
+          allConsultationLeads = data.consultations;
+          this.filterAndRenderLeads();
+
+          if (data.status_counts) {
+            const badge = document.getElementById('badge-leads-count');
+            if (badge) {
+              badge.textContent = data.status_counts.new || 0;
+            }
+          }
+        }
+      } catch (e) {
+        if (tbody) tbody.innerHTML = `<tr><td colspan="8" style="color:red; text-align:center; padding: 24px;">Failed to load student leads: ${e.message}</td></tr>`;
+      }
+    },
+
+    filterAndRenderLeads() {
+      const q = (document.getElementById('lead-search-input')?.value || '').toLowerCase().trim();
+      const status = document.getElementById('lead-status-filter')?.value || 'all';
+
+      const filtered = allConsultationLeads.filter(l => {
+        const matchQ = !q ||
+          (l.name && l.name.toLowerCase().includes(q)) ||
+          (l.email && l.email.toLowerCase().includes(q)) ||
+          (l.phone && l.phone.toLowerCase().includes(q)) ||
+          (l.program && l.program.toLowerCase().includes(q)) ||
+          (l.source_page && l.source_page.toLowerCase().includes(q));
+        const matchStatus = status === 'all' || l.status === status;
+        return matchQ && matchStatus;
+      });
+
+      this.renderLeadsTable(filtered);
+    },
+
+    renderLeadsTable(leads) {
+      const tbody = document.getElementById('leads-table-body');
+      if (!tbody) return;
+
+      if (!leads || leads.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 30px; color:#888;">No student inquiries or free class leads found matching criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = leads.map(l => {
+        const timeStr = l.created_at ? new Date(l.created_at).toLocaleString() : '--';
+        const isGrant = l.interested_in_grant === 1;
+        const statusBadge = l.status === 'new'
+          ? '<span class="badge-status active" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0;"><i class="fa-solid fa-bell"></i> NEW</span>'
+          : l.status === 'contacted'
+            ? '<span class="badge-status" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe;"><i class="fa-solid fa-phone"></i> CONTACTED</span>'
+            : l.status === 'enrolled'
+              ? '<span class="badge-status" style="background:#f5f3ff; color:#6b21a8; border:1px solid #ddd6fe;"><i class="fa-solid fa-graduation-cap"></i> ENROLLED</span>'
+              : '<span class="badge-status inactive" style="background:#f1f5f9; color:#64748b; border:1px solid #cbd5e1;">ARCHIVED</span>';
+
+        return `
+          <tr>
+            <td><small style="color: #64748b; font-size: 11.5px;">${timeStr}</small></td>
+            <td>
+              <strong style="color: #0f172a; font-size: 14px;">${this.escapeHtml(l.name)}</strong>
+              ${l.notes ? `<div style="font-size: 11.5px; color:#64748b; margin-top: 3px;"><em>Note: ${this.escapeHtml(l.notes)}</em></div>` : ''}
+            </td>
+            <td>
+              ${l.email ? `<div><a href="mailto:${this.escapeHtml(l.email)}" style="color: #8B0000; text-decoration: none; font-size: 13px;"><i class="fa-solid fa-envelope"></i> ${this.escapeHtml(l.email)}</a></div>` : ''}
+              ${l.phone ? `<div><a href="tel:${this.escapeHtml(l.phone)}" style="color: #0284c7; text-decoration: none; font-size: 13px;"><i class="fa-solid fa-phone"></i> ${this.escapeHtml(l.phone)}</a></div>` : ''}
+            </td>
+            <td>
+              <strong style="color: #8B0000; font-size: 13px;">${this.escapeHtml(l.program || 'Free Demo / Consultation')}</strong>
+            </td>
+            <td>
+              ${isGrant ? '<span style="font-size: 11.5px; background: #ecfdf5; color: #047857; padding: 2px 6px; border-radius: 4px; font-weight: 600; border: 1px solid #a7f3d0;"><i class="fa-solid fa-check"></i> $28K Grant</span>' : '<span style="color:#94a3b8; font-size: 12px;">--</span>'}
+            </td>
+            <td>
+              <span style="font-size: 11.5px; background: #f8fafc; color: #475569; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                ${this.escapeHtml(l.source_page || 'direct')}
+              </span>
+            </td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                ${statusBadge}
+                <select style="font-size: 11px; padding: 2px 4px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer;"
+                        onchange="window.AdminApp.updateLeadStatus(${l.id}, this.value)">
+                  <option value="new" ${l.status === 'new' ? 'selected' : ''}>Set New</option>
+                  <option value="contacted" ${l.status === 'contacted' ? 'selected' : ''}>Set Contacted</option>
+                  <option value="enrolled" ${l.status === 'enrolled' ? 'selected' : ''}>Set Enrolled</option>
+                  <option value="archived" ${l.status === 'archived' ? 'selected' : ''}>Set Archived</option>
+                </select>
+              </div>
+            </td>
+            <td style="text-align: center;">
+              <div style="display: flex; gap: 4px; justify-content: center;">
+                ${l.email ? `
+                  <button type="button" class="btn-action-icon" title="Compose &amp; Send Custom Email" onclick="window.AdminApp.openLeadEmailComposer(${l.id})">
+                    <i class="fa-solid fa-paper-plane" style="color: #0284c7;"></i>
+                  </button>
+                ` : ''}
+                <button type="button" class="btn-action-icon delete" title="Delete lead" onclick="window.AdminApp.deleteLead(${l.id})">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    },
+
+    applySmtpPreset(preset) {
+      const hostInput = document.getElementById('set-smtp-host');
+      const portInput = document.getElementById('set-smtp-port');
+      const secInput = document.getElementById('set-smtp-security');
+      const userInput = document.getElementById('set-smtp-user');
+      const passInput = document.getElementById('set-smtp-pass');
+
+      if (preset === 'gmail') {
+        if (hostInput) hostInput.value = 'smtp.gmail.com';
+        if (portInput) portInput.value = '587';
+        if (secInput) secInput.value = 'tls';
+        if (userInput && !userInput.value) userInput.placeholder = 'your-email@gmail.com';
+        this.showToast('Applied Gmail preset (Requires 16-char App Password).', 'info');
+      } else if (preset === 'outlook') {
+        if (hostInput) hostInput.value = 'smtp.office365.com';
+        if (portInput) portInput.value = '587';
+        if (secInput) secInput.value = 'tls';
+        if (userInput && !userInput.value) userInput.placeholder = 'your-email@outlook.com';
+        this.showToast('Applied Outlook / Office 365 preset.', 'info');
+      } else if (preset === 'brevo') {
+        if (hostInput) hostInput.value = 'smtp-relay.brevo.com';
+        if (portInput) portInput.value = '587';
+        if (secInput) secInput.value = 'tls';
+        if (userInput && !userInput.value) userInput.placeholder = 'your-brevo-login@email.com';
+        this.showToast('Applied Brevo (Sendinblue) preset.', 'info');
+      } else if (preset === 'webmail') {
+        if (hostInput) hostInput.value = 'mail.viccollege.com';
+        if (portInput) portInput.value = '587';
+        if (secInput) secInput.value = 'tls';
+        if (userInput && !userInput.value) userInput.placeholder = 'info@viccollege.com';
+        this.showToast('Applied Custom Webmail preset.', 'info');
+      } else if (preset === 'simulation') {
+        if (hostInput) hostInput.value = '';
+        if (passInput) passInput.value = '';
+        this.showToast('Switched to Local Simulation Mode (No external SMTP).', 'info');
+      }
+    },
+
+    insertSettingTag(elementId, tag) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const start = el.selectionStart || el.value.length;
+      const end = el.selectionEnd || el.value.length;
+      const text = el.value;
+      el.value = text.substring(0, start) + tag + text.substring(end);
+      el.focus();
+      el.selectionStart = el.selectionEnd = start + tag.length;
+    },
+
+    insertComposerTag(tag) {
+      this.insertSettingTag('composer-message-body', tag);
+    },
+
+    async openLeadEmailComposer(leadId) {
+      const modal = document.getElementById('modal-lead-email-composer');
+      if (!modal) return;
+
+      this._currentComposerLeadId = leadId;
+      this.switchComposerTab('edit');
+
+      // Show modal in loading state
+      modal.classList.add('active');
+      const sendBtn = document.getElementById('btn-composer-send');
+      const statusMsg = document.getElementById('composer-status-msg');
+      if (sendBtn) sendBtn.disabled = true;
+      if (statusMsg) statusMsg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading student details &amp; template preview...';
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/consultations/${leadId}/email-preview`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to load email preview');
+
+        // Store default template data for resetting
+        this._composerDefaultData = data;
+
+        // Populate lead info banner
+        const nameEl = document.getElementById('composer-student-name');
+        if (nameEl) nameEl.textContent = data.name || 'Anonymous Student';
+
+        const progEl = document.getElementById('composer-student-program');
+        if (progEl) progEl.textContent = data.program || 'Free Demo / Consultation';
+
+        const leadObj = allConsultationLeads.find(item => item.id === leadId);
+        const statusEl = document.getElementById('composer-student-status');
+        if (statusEl) statusEl.textContent = leadObj ? leadObj.status.toUpperCase() : 'ACTIVE';
+
+        // Populate editable inputs
+        const toEmailInput = document.getElementById('composer-to-email');
+        if (toEmailInput) toEmailInput.value = data.to_email || '';
+
+        const subjInput = document.getElementById('composer-subject');
+        if (subjInput) subjInput.value = data.subject || '';
+
+        const bodyInput = document.getElementById('composer-message-body');
+        if (bodyInput) bodyInput.value = data.message_body || '';
+
+        // Render preview iframe
+        const frame = document.getElementById('composer-preview-frame');
+        if (frame) frame.srcdoc = data.html_preview || '<div style="padding:20px; font-family:sans-serif;">No preview available</div>';
+
+        if (sendBtn) sendBtn.disabled = false;
+        if (statusMsg) statusMsg.textContent = 'Ready to send';
+      } catch (err) {
+        if (statusMsg) statusMsg.innerHTML = `<span style="color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i> ${this.escapeHtml(err.message)}</span>`;
+        this.showToast(err.message, 'error');
+      }
+    },
+
+    closeLeadEmailComposer() {
+      const modal = document.getElementById('modal-lead-email-composer');
+      if (modal) modal.classList.remove('active');
+      this._currentComposerLeadId = null;
+    },
+
+    switchComposerTab(tab) {
+      const editPane = document.getElementById('composer-pane-edit');
+      const prevPane = document.getElementById('composer-pane-preview');
+      const btnEdit = document.getElementById('btn-composer-tab-edit');
+      const btnPrev = document.getElementById('btn-composer-tab-preview');
+
+      if (tab === 'edit') {
+        if (editPane) editPane.style.display = 'block';
+        if (prevPane) prevPane.style.display = 'none';
+        if (btnEdit) {
+          btnEdit.style.background = '#8B0000';
+          btnEdit.style.color = '#fff';
+          btnEdit.style.borderColor = '#8B0000';
+        }
+        if (btnPrev) {
+          btnPrev.style.background = '';
+          btnPrev.style.color = '';
+          btnPrev.style.borderColor = '';
+        }
+      } else {
+        if (editPane) editPane.style.display = 'none';
+        if (prevPane) prevPane.style.display = 'block';
+        if (btnPrev) {
+          btnPrev.style.background = '#8B0000';
+          btnPrev.style.color = '#fff';
+          btnPrev.style.borderColor = '#8B0000';
+        }
+        if (btnEdit) {
+          btnEdit.style.background = '';
+          btnEdit.style.color = '';
+          btnEdit.style.borderColor = '';
+        }
+
+        // Dynamically update preview iframe with current message
+        this.updateComposerPreviewFrame();
+      }
+    },
+
+    updateComposerPreviewFrame() {
+      const frame = document.getElementById('composer-preview-frame');
+      const bodyText = document.getElementById('composer-message-body')?.value || '';
+      const subjectText = document.getElementById('composer-subject')?.value || '';
+      if (!frame) return;
+
+      const formattedBodyHtml = bodyText
+        .split('\n')
+        .map(line => line.trim() ? `<p style="margin: 0 0 16px; font-size: 15px; line-height: 1.6; color: #333333;">${this.escapeHtml(line)}</p>` : '')
+        .join('');
+
+      const previewHtml = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0; padding:15px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc;">
+  <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+    <div style="background: linear-gradient(135deg, #8B0000 0%, #5C0000 100%); padding: 24px; text-align: center; color: #ffffff;">
+      <h1 style="margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">VICTORIA INTERNATIONAL COLLEGE</h1>
+      <p style="margin: 6px 0 0; font-size: 13px; color: #fed7aa;">Admissions &amp; Consultation Notification</p>
+    </div>
+    <div style="padding: 24px;">
+      <div style="font-size: 14px; font-weight: bold; color: #0f172a; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
+        Subject: ${this.escapeHtml(subjectText)}
+      </div>
+      ${formattedBodyHtml || '<p style="color:#94a3b8; font-style:italic;">(Empty message body)</p>'}
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; text-align: center;">
+        <p style="margin: 0;"><strong>Victoria International College</strong> | Admissions Department</p>
+        <p style="margin: 4px 0 0;">Tel: (416) 665-1888 | Email: info@viccollege.com</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+      frame.srcdoc = previewHtml;
+    },
+
+    resetComposerToDefault() {
+      if (this._composerDefaultData) {
+        const subjInput = document.getElementById('composer-subject');
+        if (subjInput) subjInput.value = this._composerDefaultData.subject || '';
+
+        const bodyInput = document.getElementById('composer-message-body');
+        if (bodyInput) bodyInput.value = this._composerDefaultData.message_body || '';
+
+        this.showToast('Reset to default template.', 'info');
+      }
+    },
+
+    async sendComposedLeadEmail() {
+      if (!this._currentComposerLeadId) return;
+
+      const leadId = this._currentComposerLeadId;
+      const toEmail = document.getElementById('composer-to-email')?.value?.trim();
+      const subject = document.getElementById('composer-subject')?.value?.trim();
+      const message = document.getElementById('composer-message-body')?.value?.trim();
+
+      if (!toEmail || !toEmail.includes('@')) {
+        this.showToast('Please enter a valid recipient email address.', 'warning');
+        return;
+      }
+      if (!subject) {
+        this.showToast('Please provide an email subject line.', 'warning');
+        return;
+      }
+      if (!message) {
+        this.showToast('Please provide email message content.', 'warning');
+        return;
+      }
+
+      const sendBtn = document.getElementById('btn-composer-send');
+      const statusMsg = document.getElementById('composer-status-msg');
+      if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+      }
+      if (statusMsg) statusMsg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Dispatching email via SMTP...';
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/consultations/${leadId}/send-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            to_email: toEmail,
+            subject: subject,
+            message: message
+          })
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || data.message || 'Failed to dispatch email');
+
+        this.showToast(data.message || `Personalized email dispatched to ${toEmail}!`, 'success');
+        this.closeLeadEmailComposer();
+        this.loadLeads();
+      } catch (err) {
+        if (statusMsg) statusMsg.innerHTML = `<span style="color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i> ${this.escapeHtml(err.message)}</span>`;
+        this.showToast(err.message, 'error');
+      } finally {
+        if (sendBtn) {
+          sendBtn.disabled = false;
+          sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Email';
+        }
+      }
+    },
+
+    async sendLeadEmail(leadId, email) {
+      return this.openLeadEmailComposer(leadId);
+    },
+
+    async updateLeadStatus(leadId, newStatus) {
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/consultations/${leadId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to update lead');
+
+        this.showToast(data.message || 'Lead updated successfully', 'success');
+        this.loadLeads();
+        this.loadStats();
+      } catch (err) {
+        this.showToast(err.message, 'error');
+      }
+    },
+
+    async deleteLead(leadId) {
+      if (!confirm('Are you sure you want to delete this student inquiry record?')) return;
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/consultations/${leadId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) throw new Error(data.error || 'Failed to delete lead');
+
+        this.showToast(data.message || 'Lead deleted successfully', 'info');
+        this.loadLeads();
+        this.loadStats();
+      } catch (err) {
+        this.showToast(err.message, 'error');
       }
     },
 
@@ -2456,10 +3164,17 @@
 
     async loadJobFairs() {
       const tbody = document.getElementById('job-fairs-tbody');
+      const search = document.getElementById('jf-search-input')?.value || '';
+      const status = document.getElementById('jf-status-filter')?.value || 'all';
 
       try {
         const token = window.VicAuth.getToken();
-        const res = await fetchApi('/api/admin/job-fairs', {
+        const queryParams = new URLSearchParams();
+        if (search) queryParams.set('search', search);
+        if (status && status !== 'all') queryParams.set('status', status);
+        const queryStr = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+        const res = await fetchApi(`/api/admin/job-fairs${queryStr}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await this.safeJson(res);

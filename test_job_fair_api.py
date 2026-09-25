@@ -13,6 +13,10 @@ class TestDynamicJobFairAPI(unittest.TestCase):
         server.app.config['TESTING'] = True
         cls.client = server.app.test_client()
         server.init_database()
+        with server.app.app_context():
+            db = server.get_db()
+            db.execute("UPDATE job_fairs SET is_active = 1 WHERE id = (SELECT MIN(id) FROM job_fairs)")
+            db.commit()
 
     def get_admin_token(self, email="mack.chen@viccollege.com", password="admin123"):
         res = self.client.post('/api/auth/login', json={

@@ -63,7 +63,7 @@ const translations = {
     banner_btn: "Secure Your Free Spot",
 
     // Value Pillars (Why VIC)
-    why_title: "Why Choose Victoria College?",
+    why_title: "Why Choose Victoria International College?",
     why_subtitle: "We combine government funding assistance, industry-certified curriculum, and dedicated job placement support.",
     why_1_title: "Complimentary Grant Guidance",
     why_1_desc: "Full assistance in applying for Better Jobs Ontario (Second Career) and government training grants up to $28,000+ without spending your own money.",

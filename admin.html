@@ -18,13 +18,17 @@
         <a href="/" class="admin-brand-link">
           <img src="images/vic_logo.png" alt="VICTORIA INTERNATIONAL COLLEGE" class="admin-logo">
           <div>
-            <span class="admin-title">VICTORIA COLLEGE</span>
+            <span class="admin-title">VICTORIA INTERNATIONAL COLLEGE</span>
             <span class="admin-badge">Admin Portal</span>
           </div>
         </a>
       </div>
 
       <div class="admin-header-nav">
+        <a href="/sitemap.xml" class="admin-nav-link" target="_blank" title="View live dynamic XML Sitemap with Google Geo Schema tags">
+          <i class="fa-solid fa-sitemap" style="color: #d97706;"></i>
+          <span>Sitemap.xml</span>
+        </a>
         <a href="/" class="admin-nav-link" target="_blank">
           <i class="fa-solid fa-arrow-up-right-from-square"></i>
           <span>View Live Site</span>
@@ -106,19 +110,40 @@
           <span>SEO &amp; GEO Articles</span>
           <span style="font-size: 10px; background: #dc2626; color: #fff; padding: 2px 6px; border-radius: 8px; font-weight: 700; margin-left: 4px;">AI GEO</span>
         </button>
+        <button type="button" class="admin-tab-btn" data-tab="leads">
+          <i class="fa-solid fa-user-graduate"></i>
+          <span>Student Leads &amp; Inquiries</span>
+          <span id="badge-leads-count" style="font-size: 10px; background: #059669; color: #fff; padding: 2px 6px; border-radius: 8px; font-weight: 700; margin-left: 4px;">0</span>
+        </button>
         <button type="button" class="admin-tab-btn" data-tab="ai-settings">
-          <i class="fa-solid fa-robot"></i>
-          <span>OpenAI &amp; Chatbot Settings</span>
+          <i class="fa-solid fa-brain"></i>
+          <span>AI &amp; System Settings</span>
+        </button>
+        <button type="button" class="admin-tab-btn" data-tab="email-settings">
+          <i class="fa-solid fa-envelope-circle-check"></i>
+          <span>Email &amp; SMTP Settings</span>
         </button>
         <button type="button" class="admin-tab-btn" data-tab="chat-logs">
           <i class="fa-solid fa-comments"></i>
           <span>Conversation Logs</span>
         </button>
+        <a href="/sitemap.xml" target="_blank" class="admin-tab-btn" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;" title="View Live sitemap.xml in new tab">
+          <i class="fa-solid fa-sitemap" style="color: #d97706;"></i>
+          <span>Sitemap.xml</span>
+          <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; margin-left: auto; opacity: 0.7;"></i>
+        </a>
       </div>
 
       <!-- Tab 1: Overview -->
       <section id="tab-overview" class="admin-tab-content active">
         <div class="stats-cards-grid">
+          <div class="stat-card" style="cursor: pointer;" onclick="document.querySelector('.admin-tab-btn[data-tab=leads]').click()">
+            <div class="stat-icon green" style="background: rgba(16, 185, 129, 0.12); color: #059669;"><i class="fa-solid fa-user-graduate"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Student Leads &amp; Inquiries</span>
+              <h3 id="stat-total-leads">--</h3>
+            </div>
+          </div>
           <div class="stat-card">
             <div class="stat-icon red"><i class="fa-solid fa-users"></i></div>
             <div class="stat-info">
@@ -161,10 +186,10 @@
               <h3 id="stat-job-fair-status">--</h3>
             </div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card" style="cursor: pointer;" onclick="window.open('/sitemap.xml', '_blank')" title="Click to view live sitemap.xml in new tab">
             <div class="stat-icon gold"><i class="fa-solid fa-sitemap"></i></div>
             <div class="stat-info">
-              <span class="stat-label">Indexed Sitemap URLs</span>
+              <span class="stat-label">Indexed Sitemap URLs <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 11px; margin-left: 4px; opacity: 0.7;"></i></span>
               <h3 id="stat-sitemap-urls">--</h3>
             </div>
           </div>
@@ -202,6 +227,51 @@
               <span class="stat-label">Active Model</span>
               <h3 id="stat-active-model">--</h3>
             </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions & System Modules Box -->
+        <div class="admin-box" style="margin-top: 24px;">
+          <div class="admin-box-header">
+            <h3><i class="fa-solid fa-bolt"></i> Quick Access &amp; Management Modules</h3>
+            <p>Direct shortcuts to manage system configurations, emails, leads, and college content.</p>
+          </div>
+          <div class="admin-box-body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 10px;">
+            <button type="button" class="btn-admin-secondary" style="padding: 14px; justify-content: flex-start; text-align: left; background: #FEF2F2; border-color: #FECACA; color: #991B1B;" onclick="window.AdminApp.switchTab('email-settings')">
+              <i class="fa-solid fa-envelope-circle-check" style="font-size: 20px; color: #B72425; margin-right: 8px;"></i>
+              <div>
+                <strong>Email &amp; SMTP Settings</strong>
+                <div style="font-size: 12px; color: #64748b; font-weight: normal;">Configure live email &amp; test SMTP</div>
+              </div>
+            </button>
+            <button type="button" class="btn-admin-secondary" style="padding: 14px; justify-content: flex-start; text-align: left; background: #ECFDF5; border-color: #A7F3D0; color: #065F46;" onclick="window.AdminApp.switchTab('leads')">
+              <i class="fa-solid fa-user-graduate" style="font-size: 20px; color: #059669; margin-right: 8px;"></i>
+              <div>
+                <strong>Student Leads &amp; Inquiries</strong>
+                <div style="font-size: 12px; color: #64748b; font-weight: normal;">View &amp; email registered students</div>
+              </div>
+            </button>
+            <button type="button" class="btn-admin-secondary" style="padding: 14px; justify-content: flex-start; text-align: left; background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF;" onclick="window.AdminApp.switchTab('ai-settings')">
+              <i class="fa-solid fa-brain" style="font-size: 20px; color: #2563EB; margin-right: 8px;"></i>
+              <div>
+                <strong>AI &amp; System Settings</strong>
+                <div style="font-size: 12px; color: #64748b; font-weight: normal;">OpenAI key &amp; bot instructions</div>
+              </div>
+            </button>
+            <button type="button" class="btn-admin-secondary" style="padding: 14px; justify-content: flex-start; text-align: left; background: #F5F3FF; border-color: #DDD6FE; color: #5B21B6;" onclick="window.AdminApp.switchTab('programs')">
+              <i class="fa-solid fa-graduation-cap" style="font-size: 20px; color: #7C3AED; margin-right: 8px;"></i>
+              <div>
+                <strong>Academic Programs</strong>
+                <div style="font-size: 12px; color: #64748b; font-weight: normal;">Edit courses, grants &amp; modules</div>
+              </div>
+            </button>
+            <a href="/sitemap.xml" target="_blank" class="btn-admin-secondary" style="padding: 14px; justify-content: flex-start; text-align: left; background: #FFFBEB; border-color: #FDE68A; color: #92400E; text-decoration: none;">
+              <i class="fa-solid fa-sitemap" style="font-size: 20px; color: #D97706; margin-right: 8px;"></i>
+              <div>
+                <strong>Sitemap.xml Feed</strong>
+                <div style="font-size: 12px; color: #64748b; font-weight: normal;">Inspect live dynamic Google XML sitemap</div>
+              </div>
+            </a>
           </div>
         </div>
 
@@ -310,6 +380,13 @@
                 <option value="general">General &amp; History</option>
               </select>
             </div>
+            <div class="filter-group">
+              <select id="kb-status-filter">
+                <option value="all">All Statuses</option>
+                <option value="active">🟢 Active</option>
+                <option value="inactive">🔒 Inactive</option>
+              </select>
+            </div>
           </div>
 
           <!-- Knowledge Articles Table -->
@@ -318,16 +395,17 @@
               <thead>
                 <tr>
                   <th style="width: 50px;">ID</th>
-                  <th style="width: 140px;">Category</th>
-                  <th style="width: 250px;">Title &amp; Keywords</th>
+                  <th style="width: 130px;">Category</th>
+                  <th style="width: 240px;">Title &amp; Keywords</th>
                   <th>Knowledge Content</th>
-                  <th style="width: 90px; text-align: center;">Priority</th>
-                  <th style="width: 120px; text-align: right;">Actions</th>
+                  <th style="width: 80px; text-align: center;">Priority</th>
+                  <th style="width: 100px; text-align: center;">Status</th>
+                  <th style="width: 130px; text-align: right;">Actions</th>
                 </tr>
               </thead>
               <tbody id="kb-tbody">
                 <tr>
-                  <td colspan="6" style="text-align: center; padding: 30px;">Loading knowledge articles...</td>
+                  <td colspan="7" style="text-align: center; padding: 30px;">Loading knowledge articles...</td>
                 </tr>
               </tbody>
             </table>
@@ -437,7 +515,22 @@
           <div class="admin-box-header user-header-flex">
             <div>
               <h3><i class="fa-solid fa-calendar-check"></i> All Job Fair &amp; Event Banners</h3>
-              <p>Create and manage event banners. Only 1 active event is displayed on the live homepage banner at a time.</p>
+              <p>Create and manage event banners. Searchable across active and inactive events.</p>
+            </div>
+          </div>
+
+          <!-- Filter & Search Toolbar for Job Fairs -->
+          <div class="admin-toolbar" style="margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
+            <div class="search-wrap" style="flex: 1; min-width: 260px;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="jf-search-input" placeholder="Search job fairs by title, date, location, or tag...">
+            </div>
+            <div class="filter-group">
+              <select id="jf-status-filter">
+                <option value="all">All Events (Active &amp; Inactive)</option>
+                <option value="active">🟢 Active Banner</option>
+                <option value="inactive">🔒 Inactive Events</option>
+              </select>
             </div>
           </div>
 
@@ -636,7 +729,65 @@
         </div>
       </section>
 
-      <!-- Tab 4: OpenAI & AI Chatbot Settings -->
+      <!-- Tab: Student Leads & Free Class Inquiries -->
+      <section id="tab-leads" class="admin-tab-content">
+        <div class="admin-box">
+          <div class="admin-box-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h3><i class="fa-solid fa-user-graduate"></i> Prospective Student Inquiries &amp; Free Class Leads</h3>
+              <p>Real-time lead capture from "Join Our Free Class", consultation forms, and program landing pages.</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <button type="button" class="btn-admin-secondary js-refresh-leads">
+                <i class="fa-solid fa-arrows-rotate"></i> Refresh Leads
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Bar -->
+          <div class="search-filter-bar" style="display: flex; gap: 12px; margin: 15px 0 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 240px; position: relative;">
+              <input type="text" id="lead-search-input" placeholder="Search by student name, email, phone, or program..." style="width: 100%; padding: 9px 12px 9px 36px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; box-sizing: border-box;">
+              <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px;"></i>
+            </div>
+            <select id="lead-status-filter" style="padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; background: #fff; color: #334155; min-width: 160px;">
+              <option value="all">All Statuses</option>
+              <option value="new">🟢 New Leads</option>
+              <option value="contacted">🔵 Contacted</option>
+              <option value="enrolled">🟣 Enrolled</option>
+              <option value="archived">⚪ Archived</option>
+            </select>
+          </div>
+
+          <!-- Leads Table -->
+          <div class="table-responsive">
+            <table class="admin-table" id="leads-table">
+              <thead>
+                <tr>
+                  <th style="width: 130px;">Date &amp; Time</th>
+                  <th>Student Info</th>
+                  <th>Contact Details</th>
+                  <th>Program of Interest</th>
+                  <th style="width: 120px;">Grant Req.</th>
+                  <th style="width: 110px;">Source</th>
+                  <th style="width: 140px;">Status</th>
+                  <th style="width: 80px; text-align: center;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="leads-table-body">
+                <tr>
+                  <td colspan="8" style="text-align: center; padding: 30px; color: #888;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 20px; margin-bottom: 8px;"></i>
+                    <p>Loading student inquiries...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 4: Settings & Email Notifications -->
       <section id="tab-ai-settings" class="admin-tab-content">
         <div class="admin-box">
           <div class="admin-box-header">
@@ -734,6 +885,147 @@
                 <i class="fa-solid fa-shield-halved"></i> Update Password in Database
               </button>
             </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Tab: Email & SMTP Notification Settings -->
+      <section id="tab-email-settings" class="admin-tab-content">
+        <div class="admin-box">
+          <div class="admin-box-header">
+            <h3><i class="fa-solid fa-envelope-circle-check"></i> Automated Email &amp; SMTP Notification Settings</h3>
+            <p>Configure SMTP email dispatch to receive instant alerts at <code>info@viccollege.com</code> whenever students register for free classes or consultations.</p>
+          </div>
+
+          <form id="email-settings-form" class="ai-settings-grid">
+            <!-- 1-Click Provider Quick-Fill Presets -->
+            <div class="settings-field-full" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
+              <span style="font-size: 12px; font-weight: 700; color: #475569;"><i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Quick-Fill Presets:</span>
+              <button type="button" class="tag-chip-btn" style="background:#fff;" onclick="window.AdminApp.applySmtpPreset('outlook')"><i class="fa-brands fa-microsoft" style="color:#0284c7;"></i> Outlook / Office 365</button>
+              <button type="button" class="tag-chip-btn" style="background:#fff;" onclick="window.AdminApp.applySmtpPreset('webmail')"><i class="fa-solid fa-server" style="color:#4f46e5;"></i> Custom Domain Webmail</button>
+              <button type="button" class="tag-chip-btn" style="background:#fff;" onclick="window.AdminApp.applySmtpPreset('brevo')"><i class="fa-solid fa-paper-plane" style="color:#059669;"></i> Brevo / SendGrid</button>
+              <button type="button" class="tag-chip-btn" style="background:#fff;" onclick="window.AdminApp.applySmtpPreset('gmail')"><i class="fa-brands fa-google" style="color:#dc2626;"></i> Gmail (App Password)</button>
+              <button type="button" class="tag-chip-btn" style="background:#fef2f2; color:#991b1b; border-color:#fecaca;" onclick="window.AdminApp.applySmtpPreset('simulation')"><i class="fa-solid fa-ban"></i> Local Simulation Mode</button>
+            </div>
+
+            <div class="settings-field">
+              <label for="set-smtp-host">SMTP Server Host</label>
+              <input type="text" id="set-smtp-host" placeholder="e.g. smtp.office365.com or mail.viccollege.com">
+            </div>
+
+            <div class="settings-field">
+              <label for="set-smtp-port">SMTP Port</label>
+              <input type="number" id="set-smtp-port" placeholder="587" value="587">
+            </div>
+
+            <div class="settings-field">
+              <label for="set-smtp-user">SMTP Username / Email</label>
+              <input type="text" id="set-smtp-user" placeholder="e.g. admissions@viccollege.com">
+            </div>
+
+            <div class="settings-field">
+              <label for="set-smtp-pass">SMTP Password / App Password</label>
+              <div class="input-with-action">
+                <input type="password" id="set-smtp-pass" placeholder="••••••••••••" autocomplete="off">
+                <button type="button" class="btn-input-action js-toggle-smtp-pass-visibility" title="Toggle visibility">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-field">
+              <label for="set-smtp-from">Sender Display Name &amp; Address</label>
+              <input type="text" id="set-smtp-from" placeholder="Victoria International College <info@viccollege.com>">
+            </div>
+
+            <div class="settings-field">
+              <label for="set-notification-email">Admissions Notification Recipient Email</label>
+              <input type="email" id="set-notification-email" placeholder="info@viccollege.com">
+            </div>
+
+            <div class="settings-field">
+              <label for="set-smtp-security">Security / Encryption</label>
+              <select id="set-smtp-security">
+                <option value="tls">STARTTLS (Port 587 - Recommended)</option>
+                <option value="ssl">SSL / TLS (Port 465)</option>
+                <option value="none">None / Plain (Port 25)</option>
+              </select>
+            </div>
+
+            <div class="settings-field">
+              <label for="set-send-student-conf">Send Student Confirmation Email?</label>
+              <select id="set-send-student-conf">
+                <option value="true">Yes (Send welcome &amp; next steps to student)</option>
+                <option value="false">No (Only notify admissions team)</option>
+              </select>
+            </div>
+
+            <!-- SMTP Provider Setup Guide -->
+            <div class="settings-field-full" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #0284c7; border-radius: 6px; padding: 12px 16px; margin: 8px 0 12px; font-size: 12.5px; line-height: 1.5; color: #334155;">
+              <strong style="color: #0369a1; display: block; margin-bottom: 6px;"><i class="fa-solid fa-circle-info"></i> Quick Setup Tips for Common Providers:</strong>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px;">
+                <div>
+                  <strong style="color: #8B0000;">🔴 Gmail / Google Workspace:</strong><br>
+                  • Host: <code>smtp.gmail.com</code> &nbsp;|&nbsp; Port: <code>587</code> (STARTTLS)<br>
+                  • Username: <code>your-email@gmail.com</code><br>
+                  • Password: <strong>Google App Password</strong> (16 characters from <a href="https://myaccount.google.com/apppasswords" target="_blank" style="color: #0284c7; text-decoration: underline;">Google Security &rarr; App passwords</a>). <em>Your standard Google password will not work if 2-Step Verification is on.</em>
+                </div>
+                <div>
+                  <strong style="color: #0284c7;">🔵 Outlook / Office 365:</strong><br>
+                  • Host: <code>smtp.office365.com</code> &nbsp;|&nbsp; Port: <code>587</code> (STARTTLS)<br>
+                  • Username: <code>your-email@viccollege.com</code>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email Content & Default Templates -->
+            <div class="settings-field-full" style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 18px;">
+              <h4 style="margin: 0 0 6px; font-size: 15px; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-file-pen" style="color: #8B0000;"></i>
+                Default Student &amp; Admissions Email Templates
+              </h4>
+              <p style="margin: 0 0 16px; font-size: 12.5px; color: #64748b;">
+                Customize the default subject line and message body sent to prospective students upon registration, as well as the internal alert subject. You can use dynamic merge tags such as <code>{name}</code>, <code>{program}</code>, <code>{campus}</code>, <code>{phone}</code>, <code>{email}</code>, <code>{admissions_phone}</code>, and <code>{admissions_email}</code>.
+              </p>
+            </div>
+
+            <div class="settings-field-full">
+              <label for="set-student-email-subject">Student Welcome Email - Subject Line</label>
+              <input type="text" id="set-student-email-subject" placeholder="Thank you for contacting Victoria International College! ({program})">
+            </div>
+
+            <div class="settings-field-full">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label for="set-student-email-body" style="margin-bottom: 0;">Student Welcome Email - Default Body Content</label>
+                <div style="display: flex; gap: 4px; align-items: center;">
+                  <span style="font-size: 11px; color: #64748b; font-weight: 600;">Click to insert tag:</span>
+                  <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertSettingTag('set-student-email-body', '{name}')">{name}</button>
+                  <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertSettingTag('set-student-email-body', '{program}')">{program}</button>
+                  <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertSettingTag('set-student-email-body', '{campus}')">{campus}</button>
+                  <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertSettingTag('set-student-email-body', '{admissions_phone}')">{admissions_phone}</button>
+                  <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertSettingTag('set-student-email-body', '{admissions_email}')">{admissions_email}</button>
+                </div>
+              </div>
+              <textarea id="set-student-email-body" rows="7" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-family: inherit; line-height: 1.5; resize: vertical; box-sizing: border-box;" placeholder="Type the default message content sent to students..."></textarea>
+            </div>
+
+            <div class="settings-field-full">
+              <label for="set-admin-email-subject">Internal Admissions Alert - Subject Line</label>
+              <input type="text" id="set-admin-email-subject" placeholder="[New Lead Alert] {name} - {program}">
+            </div>
+
+            <div class="settings-field-full" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 15px; border-top: 1px solid #f1f5f9; padding-top: 15px;">
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="email" id="test-email-recipient" placeholder="Optional custom test email" style="font-size: 13px; padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 6px; width: 220px;">
+                <button type="button" class="btn-admin-secondary js-test-smtp-email">
+                  <i class="fa-solid fa-paper-plane"></i> Send Test Email
+                </button>
+              </div>
+              <button type="submit" class="btn-admin-primary">
+                <i class="fa-solid fa-floppy-disk"></i> Save Email Settings &amp; Templates
+              </button>
+            </div>
+            <div id="email-test-result" class="test-feedback-box" style="display: none; grid-column: 1 / -1; margin-top: 10px;"></div>
           </form>
         </div>
       </section>
@@ -1800,6 +2092,96 @@
         <div style="display: flex; gap: 10px;">
           <button type="button" class="btn-admin-secondary js-copy-xml-btn"><i class="fa-solid fa-copy"></i> Copy XML</button>
           <a href="/sitemap.xml" target="_blank" class="btn-admin-primary"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Raw /sitemap.xml</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Email Composer Modal for Student Leads -->
+  <div id="modal-lead-email-composer" class="vic-auth-modal-backdrop">
+    <div class="vic-auth-modal-box" style="max-width: 780px; max-height: 90vh; display: flex; flex-direction: column;">
+      <button type="button" class="vic-auth-close js-close-composer-modal"><i class="fa-solid fa-xmark"></i></button>
+      <div class="vic-auth-modal-header" style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 40px; height: 40px; border-radius: 8px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0;">
+            <i class="fa-solid fa-envelope-open-text"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 17px; font-weight: 700; color: #0f172a;">Compose &amp; Edit Email to Student</h3>
+            <p style="margin: 2px 0 0; font-size: 12.5px; color: #64748b;" id="composer-subtitle">Customize message content or preview before dispatching to student lead.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lead Summary Banner -->
+      <div id="composer-lead-banner" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+        <div><strong>Student:</strong> <span id="composer-student-name">--</span></div>
+        <div><strong>Program:</strong> <span id="composer-student-program" style="color: #8B0000; font-weight: 600;">--</span></div>
+        <div><strong>Status:</strong> <span id="composer-student-status">--</span></div>
+      </div>
+
+      <!-- Tabs: Edit Message / HTML Preview -->
+      <div style="display: flex; gap: 8px; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+        <button type="button" id="btn-composer-tab-edit" class="btn-admin-secondary" style="padding: 6px 14px; font-size: 12.5px; font-weight: 600; background: #8B0000; color: #fff; border-color: #8B0000;" onclick="window.AdminApp.switchComposerTab('edit')">
+          <i class="fa-solid fa-pen-to-square"></i> Edit Content
+        </button>
+        <button type="button" id="btn-composer-tab-preview" class="btn-admin-secondary" style="padding: 6px 14px; font-size: 12.5px; font-weight: 600;" onclick="window.AdminApp.switchComposerTab('preview')">
+          <i class="fa-solid fa-eye"></i> Branded Email Preview
+        </button>
+      </div>
+
+      <!-- Composer Body (Scrollable) -->
+      <div style="flex: 1; overflow-y: auto; padding-right: 4px;">
+        <!-- Edit Tab Pane -->
+        <div id="composer-pane-edit">
+          <div class="auth-input-group" style="margin-bottom: 12px;">
+            <label for="composer-to-email" style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 4px; display: block;">Recipient Email Address</label>
+            <input type="email" id="composer-to-email" required placeholder="student@example.com" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; box-sizing: border-box;">
+          </div>
+
+          <div class="auth-input-group" style="margin-bottom: 12px;">
+            <label for="composer-subject" style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 4px; display: block;">Email Subject Line</label>
+            <input type="text" id="composer-subject" required placeholder="Subject line" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; box-sizing: border-box;">
+          </div>
+
+          <div class="auth-input-group" style="margin-bottom: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 6px;">
+              <label for="composer-message-body" style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 0;">Message Content / Body</label>
+              <button type="button" class="btn-admin-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="window.AdminApp.resetComposerToDefault()">
+                <i class="fa-solid fa-rotate-left"></i> Reload Default Template
+              </button>
+            </div>
+            <!-- Merge Tag Chips -->
+            <div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
+              <span style="font-size: 11px; color: #64748b; font-weight: 600;">Insert Tag:</span>
+              <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertComposerTag('{name}')">{name}</button>
+              <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertComposerTag('{program}')">{program}</button>
+              <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertComposerTag('{campus}')">{campus}</button>
+              <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertComposerTag('{phone}')">{phone}</button>
+              <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertComposerTag('{admissions_phone}')">{admissions_phone}</button>
+              <button type="button" class="tag-chip-btn" onclick="window.AdminApp.insertComposerTag('{admissions_email}')">{admissions_email}</button>
+            </div>
+            <textarea id="composer-message-body" rows="9" placeholder="Type your custom email message to the student..." style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-family: inherit; line-height: 1.5; resize: vertical; box-sizing: border-box;"></textarea>
+          </div>
+        </div>
+
+        <!-- Preview Tab Pane -->
+        <div id="composer-pane-preview" style="display: none;">
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">
+            <i class="fa-solid fa-circle-info"></i> This is the exact responsive branded HTML email that will be delivered:
+          </div>
+          <iframe id="composer-preview-frame" style="width: 100%; height: 380px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;"></iframe>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+        <div id="composer-status-msg" style="font-size: 12px; color: #64748b;"></div>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn-admin-secondary js-close-composer-modal">Cancel</button>
+          <button type="button" class="btn-admin-primary" id="btn-composer-send" onclick="window.AdminApp.sendComposedLeadEmail()">
+            <i class="fa-solid fa-paper-plane"></i> Send Email
+          </button>
         </div>
       </div>
     </div>

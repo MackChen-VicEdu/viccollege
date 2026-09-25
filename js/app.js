@@ -294,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDynamicJobFair();
   initPublicArticles();
   initConsultationForm();
+  initFreeClassForm();
   initMobileMenu();
   initSmoothScroll();
   
@@ -508,15 +509,148 @@ window.closeProgramModal = closeProgramModal;
 function initConsultationForm() {
   const form = document.getElementById('consultation-form');
   const successBox = document.getElementById('consultation-success');
-
   if (!form) return;
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    form.style.display = 'none';
-    if (successBox) successBox.style.display = 'block';
+    const name = document.getElementById('consult-name')?.value?.trim();
+    const email = document.getElementById('consult-email')?.value?.trim();
+    const phone = document.getElementById('consult-phone')?.value?.trim();
+    const programSelect = document.getElementById('consult-program');
+    const program = programSelect?.options[programSelect.selectedIndex]?.text || programSelect?.value || 'General Consultation';
+    const grantCheck = document.getElementById('consult-grant-check')?.checked;
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + (currentLanguage === 'zh' ? '正在提交...' : 'Submitting...');
+    }
+
+    try {
+      const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/consultations') : '/api/consultations';
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: phone,
+          program: program,
+          interested_in_grant: grantCheck ? 1 : 0,
+          source_page: 'home-consultation'
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        form.style.display = 'none';
+        if (successBox) successBox.style.display = 'block';
+      } else {
+        alert(data.error || (currentLanguage === 'zh' ? '提交失败，请重试或致电 416-665-6668' : 'Failed to submit consultation request. Please call 416-665-6668.'));
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage].form_submit_btn) || 'BOOK NOW';
+        }
+      }
+    } catch (err) {
+      console.error('Error submitting consultation:', err);
+      alert(currentLanguage === 'zh' ? '网络连接异常，请稍后重试或致电 416-665-6668' : 'Network error. Please call 416-665-6668.');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage].form_submit_btn) || 'BOOK NOW';
+      }
+    }
   });
 }
+
+// 4b. Join Free Class Form Handling
+function initFreeClassForm() {
+  const form = document.getElementById('free-class-form');
+  const feedback = document.getElementById('free-class-feedback');
+  const submitBtn = document.getElementById('free-class-submit-btn');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('free-class-name')?.value?.trim();
+    const email = document.getElementById('free-class-email')?.value?.trim();
+    const phone = document.getElementById('free-class-phone')?.value?.trim();
+
+    if (!name || (!email && !phone)) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fee2e2';
+        feedback.style.color = '#dc2626';
+        feedback.textContent = currentLanguage === 'zh' ? '请填写姓名和至少一种联系方式（电话或邮箱）' : 'Please provide your name and contact information.';
+      }
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + (currentLanguage === 'zh' ? '正在提交...' : 'Submitting...');
+    }
+
+    try {
+      const apiUrl = typeof window.getVicApiUrl === 'function' ? window.getVicApiUrl('/api/consultations') : '/api/consultations';
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: phone,
+          program: 'Free Demo Class & Career Consultation',
+          interested_in_grant: 0,
+          source_page: 'home-free-class'
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        form.reset();
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#ecfdf5';
+          feedback.style.color = '#065f46';
+          feedback.style.border = '1px solid #a7f3d0';
+          feedback.innerHTML = currentLanguage === 'zh'
+            ? '<strong>🎉 报名成功！</strong> 我们的专业课程顾问将在 24 小时内与您联系，为您安排免费试听名额。'
+            : '<strong>🎉 Sign Up Successful!</strong> Our admissions advisor will contact you within 24 hours with your free class details.';
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>${(window.translations && window.translations[currentLanguage] && window.translations[currentLanguage].form_signup_btn) || 'Sign up'}</span>`;
+        }
+      } else {
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#fee2e2';
+          feedback.style.color = '#dc2626';
+          feedback.style.border = '1px solid #fca5a5';
+          feedback.textContent = data.error || (currentLanguage === 'zh' ? '提交失败，请重试或致电 416-665-6668' : 'Failed to submit. Please call 416-665-6668.');
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>${(window.translations && window.translations[currentLanguage] && window.translations[currentLanguage].form_signup_btn) || 'Sign up'}</span>`;
+        }
+      }
+    } catch (err) {
+      console.error('Free class submission failed:', err);
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fee2e2';
+        feedback.style.color = '#dc2626';
+        feedback.textContent = currentLanguage === 'zh' ? '网络错误，请稍后重试或致电 416-665-6668' : 'Network error. Please call 416-665-6668.';
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<span>${(window.translations && window.translations[currentLanguage] && window.translations[currentLanguage].form_signup_btn) || 'Sign up'}</span>`;
+      }
+    }
+  });
+}
+
 
 // 5. Mobile Menu
 function initMobileMenu() {

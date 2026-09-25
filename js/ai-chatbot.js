@@ -230,7 +230,7 @@
                 <span class="vic-ai-chip">24/7 Live</span>
               </div>
               <div class="vic-chat-subtitle" id="vic-chat-status">
-                ${lang === 'zh' ? '维多利亚职业学院 • 智能问答系统' : 'Victoria College • Career & Grant Assistant'}
+                ${lang === 'zh' ? '维多利亚职业学院 • 智能问答系统' : 'Victoria International College • Career & Grant Assistant'}
               </div>
             </div>
           </div>
@@ -537,7 +537,7 @@
         updateAuthUIState();
         appendMessage({
           role: 'bot',
-          text: `🔒 **Sign In Required**\n\nPlease sign in with your Google, LinkedIn, or Email account to continue chatting with the Victoria College AI Advisor.`,
+          text: `🔒 **Sign In Required**\n\nPlease sign in with your Google, LinkedIn, or Email account to continue chatting with the Victoria International College AI Advisor.`,
           actions: [
             { label: '🔑 Sign In / Register', action: 'auth', param: 'login' },
             { label: '🌐 Continue with Google', action: 'auth_google', param: '' },
@@ -877,6 +877,22 @@
       };
     }
 
+    // 8b. Job Fair & Events
+    if (
+      q.includes('job fair') || q.includes('event') || q.includes('hiring') || q.includes('career fair') || q.includes('recruit') ||
+      q.includes('招聘会') || q.includes('招聘') || q.includes('活动') || q.includes('就业博览会') || q.includes('见面会')
+    ) {
+      return {
+        text: lang === 'zh'
+          ? `### 🤝 维多利亚大型招聘会与雇主见面会 (Job Fair & Hiring Events)\n\n维多利亚职业学院定期举办专场雇主招聘会与职业交流会，直接对接大多伦多地区（GTA）各大长期护理院（LTC）、科技企业、会计师事务所及工程单位：\n\n• **PSW 专场招聘会**：众多优质养老院与医疗护理机构现场面试，优秀毕业生可获现场 Offer。\n• **IT & 会计行业招聘会**：企业 HR 与技术主管亲临现场，交流岗位需求。\n• **活动地点**：7050 Woodbine Ave., Markham (或线上 Zoom 直播)。`
+          : `### 🤝 Victoria International College Job Fairs & Hiring Events\n\nVictoria International College regularly hosts on-campus and virtual hiring fairs connecting students and job seekers directly with hiring managers across GTA healthcare networks, tech firms, accounting practices, and engineering agencies:\n\n• **PSW Healthcare Hiring Fair**: Direct interviews with accredited Long-Term Care (LTC) homes and hospitals.\n• **Tech & Accounting Career Expos**: Network with industry recruiters and HR leaders.\n• **Location**: 7050 Woodbine Ave., Markham (or virtual via Zoom).`,
+        actions: [
+          { label: lang === 'zh' ? '🎟 立即预约抢占活动席位' : '🎟 Secure Spot for Next Fair', action: 'consult', param: 'job_fair' },
+          { label: lang === 'zh' ? '📞 咨询招聘会详情' : '📞 Inquire Event Details', action: 'call', param: '4166656668' }
+        ]
+      };
+    }
+
     // 9. Booking Consultation / Admission / How to Apply
     if (
       q.includes('book') || q.includes('consult') || q.includes('apply') || q.includes('admission') || q.includes('register') || q.includes('enroll') ||
@@ -928,7 +944,7 @@
     return {
       text: lang === 'zh'
         ? `您好！我是维多利亚职业学院的智能升学顾问。我可以为您提供：\n\n• 💰 **政府补助评估**（最高可获 $28,000+ 免费学费与生活补贴）\n• 🩺 **热门专业文凭**（PSW 护工、全栈开发、会计税务、幼教、电工）\n• 🏫 **校区与联系方式**（万锦主校区）\n• 📅 **1对1 职业规划预约**\n\n请问您对哪个专业或政府补助感兴趣？`
-        : `Hello! I am your Victoria College AI Advisor. I can assist you with:\n\n• 💰 **Government Grants** (Up to $28,000+ for tuition & living allowances)\n• 🩺 **Career Programs** (PSW, Full Stack Web, Accounting & Tax, Early Childcare, Electrician)\n• 🏫 **Campus & Contact Info** (Markham Main Campus)\n• 📅 **1-on-1 Career Consultation Booking**\n\nWhich program or funding topic would you like to explore?`,
+        : `Hello! I am your Victoria International College AI Advisor. I can assist you with:\n\n• 💰 **Government Grants** (Up to $28,000+ for tuition & living allowances)\n• 🩺 **Career Programs** (PSW, Full Stack Web, Accounting & Tax, Early Childcare, Electrician)\n• 🏫 **Campus & Contact Info** (Markham Main Campus)\n• 📅 **1-on-1 Career Consultation Booking**\n\nWhich program or funding topic would you like to explore?`,
       actions: [
         { label: lang === 'zh' ? '💰 评估 $28,000 政府补助' : '💰 Check $28,000 Grant', action: 'consult', param: 'aid' },
         { label: lang === 'zh' ? '🩺 查看 PSW 护工专业' : '🩺 View PSW Program', action: 'open_modal', param: 'psw' },
@@ -1229,7 +1245,7 @@
       elements.tooltipText.textContent = lang === 'zh' ? '有疑问？问问 AI 智能升学助手' : 'Have questions? Ask AI Advisor';
     }
     if (elements.statusText) {
-      elements.statusText.textContent = lang === 'zh' ? '维多利亚职业学院 • 智能问答系统' : 'Victoria College • Career & Grant Assistant';
+      elements.statusText.textContent = lang === 'zh' ? '维多利亚职业学院 • 智能问答系统' : 'Victoria International College • Career & Grant Assistant';
     }
     if (elements.bannerText) {
       elements.bannerText.textContent = lang === 'zh' ? '💡 Better Jobs Ontario 政府资助最高可达 $28,000+' : '💡 Qualify for up to $28,000+ Government Training Grants';

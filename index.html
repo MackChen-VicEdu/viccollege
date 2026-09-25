@@ -78,7 +78,7 @@
   <div class="mobile-nav-drawer">
     <div class="mobile-drawer-header">
       <div class="logo-text">
-        <h1 style="font-size: 1rem; font-family: var(--font-serif);">VICTORIA COLLEGE</h1>
+        <h1 style="font-size: 1rem; font-family: var(--font-serif);">VICTORIA INTERNATIONAL COLLEGE</h1>
       </div>
       <button type="button" class="mobile-drawer-close" aria-label="Close navigation menu">
         <i class="fa-solid fa-xmark"></i>
@@ -352,15 +352,17 @@
 
       <!-- MetForm -->
       <div class="metform-box">
-        <form id="free-class-form"
-          onsubmit="event.preventDefault(); alert(currentLanguage === 'zh' ? '预约成功！顾问将尽快与您联系。' : 'Sign up successful! Our advisor will contact you soon.');">
+        <form id="free-class-form">
           <div class="metform-grid">
-            <input type="text" class="metform-input" placeholder="Name*" required>
-            <input type="email" class="metform-input" placeholder="Email*" required>
-            <input type="tel" class="metform-input" placeholder="Phone" required>
+            <input type="text" id="free-class-name" class="metform-input" placeholder="Name*" data-i18n-ph="form_name_placeholder" required>
+            <input type="email" id="free-class-email" class="metform-input" placeholder="Email*" data-i18n-ph="form_email_placeholder" required>
+            <input type="tel" id="free-class-phone" class="metform-input" placeholder="Phone" data-i18n-ph="form_phone_placeholder" required>
           </div>
-          <button type="submit" class="metform-submit-btn">Sign up</button>
-          <p class="metform-privacy-note">* Your information will be kept private and confidential.</p>
+          <button type="submit" id="free-class-submit-btn" class="metform-submit-btn">
+            <span data-i18n="form_signup_btn">Sign up</span>
+          </button>
+          <div id="free-class-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 14px; text-align: center;"></div>
+          <p class="metform-privacy-note" data-i18n="form_privacy_note">* Your information will be kept private and confidential.</p>
         </form>
       </div>
     </div>
