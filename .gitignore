@@ -20,3 +20,10 @@ Thumbs.db
 # Scratch & Temporary
 scratch/
 check_bjo.py
+
+# Database Backups & Temporary WAL
+data/backups/
+*.db-wal
+*.db-shm
+*.db-journal
+

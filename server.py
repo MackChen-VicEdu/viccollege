@@ -19,7 +19,7 @@ from flask import Flask, request, jsonify, send_from_directory, g, Response
 # App configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
-DB_PATH = os.path.join(DATA_DIR, 'victoria.db')
+DB_PATH = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH') or os.path.join(DATA_DIR, 'victoria.db')
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
@@ -5717,6 +5717,47 @@ def admin_sitemap_status():
         'sitemap_path': '/sitemap.xml',
         'last_updated': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
     })
+
+@app.route('/api/admin/db/sync-seeds', methods=['POST'])
+def admin_sync_seeds():
+    """Super Admin API: One-click sync from committed dev seeds into active production DB."""
+    err = require_admin()
+    if err: return err
+
+    try:
+        import manage_db
+        seed_path = os.path.join(DATA_DIR, 'seeds', 'victoria_golden_master.db')
+        if not os.path.exists(seed_path):
+            return jsonify({'error': f'Golden master seed not found at {seed_path}'}), 404
+
+        success = manage_db.sync_dev_to_prod(seed_path, DB_PATH)
+        if success:
+            return jsonify({
+                'success': True,
+                'message': 'Database schema and master catalog synced successfully into production. Live user data preserved.'
+            })
+        else:
+            return jsonify({'error': 'Database sync encountered an error.'}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/db/backup', methods=['POST'])
+def admin_trigger_backup():
+    """Super Admin API: Trigger manual hot backup."""
+    err = require_admin()
+    if err: return err
+
+    try:
+        import manage_db
+        backup_file = manage_db.create_timestamped_backup()
+        return jsonify({
+            'success': True,
+            'backup_file': os.path.basename(backup_file) if backup_file else None,
+            'message': 'Hot database backup created successfully.'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 
 # ==============================================================================

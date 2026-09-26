@@ -3,7 +3,14 @@ services:
     name: viccollege-platform
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn server:app --bind 0.0.0.0:$PORT
+    startCommand: python manage_db.py sync data/seeds/victoria_golden_master.db $VIC_DB_PATH && gunicorn server:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.8
+      - key: VIC_DB_PATH
+        value: /var/data/victoria.db
+    disk:
+      name: viccollege-data
+      mountPath: /var/data
+      sizeGB: 1
+
