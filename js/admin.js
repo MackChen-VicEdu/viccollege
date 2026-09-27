@@ -13,6 +13,9 @@
   let allAdminPrograms = [];
   let allAdminJobFairs = [];
   let allConsultationLeads = [];
+  let allImages = [];
+  let selectedPickerImage = null;
+  let imagePickerCallback = null;
   let currentPreviewArticle = null;
 
   const fetchApi = (url, opts) => {
@@ -77,6 +80,7 @@
           this.loadUsers();
           this.loadKnowledge();
           this.loadPrograms();
+          this.loadImages();
           this.loadSEOArticles();
           this.loadLeads();
           this.loadAISettings();
@@ -117,6 +121,7 @@
       if (tabId === 'users') this.loadUsers();
       if (tabId === 'knowledge') this.loadKnowledge();
       if (tabId === 'programs') this.loadPrograms();
+      if (tabId === 'media') this.loadImages();
       if (tabId === 'job-fair') this.loadJobFairs();
       if (tabId === 'seo-articles') this.loadSEOArticles();
       if (tabId === 'leads') this.loadLeads();
@@ -369,6 +374,209 @@
       if (progStatusFilter) {
         progStatusFilter.addEventListener('change', () => this.loadPrograms());
       }
+
+      // 3d. Program Editor Image Upload & Picker
+      const btnUploadProgImg = document.getElementById('btn-upload-prog-image');
+      const progImgFileInput = document.getElementById('prog-image-file-input');
+      const btnBrowseProgImg = document.getElementById('btn-browse-prog-image');
+      const progImgUrlInput = document.getElementById('prog-image-url');
+      const progImgPreviewImg = document.getElementById('prog-image-preview-img');
+
+      if (btnUploadProgImg && progImgFileInput) {
+        btnUploadProgImg.onclick = () => progImgFileInput.click();
+      }
+
+      if (progImgFileInput) {
+        progImgFileInput.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const slug = document.getElementById('prog-slug')?.value || '';
+          const uploadRes = await this.uploadImageFile(file, { customName: slug });
+          if (uploadRes && uploadRes.success) {
+            if (progImgUrlInput) progImgUrlInput.value = uploadRes.url;
+            if (progImgPreviewImg) progImgPreviewImg.src = uploadRes.url;
+          }
+          progImgFileInput.value = '';
+        });
+      }
+
+      if (progImgUrlInput && progImgPreviewImg) {
+        progImgUrlInput.addEventListener('input', () => {
+          const val = progImgUrlInput.value.trim();
+          progImgPreviewImg.src = val || 'images/fullstack.jpg';
+        });
+      }
+
+      if (btnBrowseProgImg) {
+        btnBrowseProgImg.onclick = () => {
+          this.openImagePicker((selectedUrl) => {
+            if (progImgUrlInput) progImgUrlInput.value = selectedUrl;
+            if (progImgPreviewImg) progImgPreviewImg.src = selectedUrl;
+          });
+        };
+      }
+
+      // 3e. Job Fair Editor Image Upload & Picker
+      const btnUploadJfImg = document.getElementById('btn-upload-jf-image');
+      const jfImgFileInput = document.getElementById('jf-image-file-input');
+      const btnBrowseJfImg = document.getElementById('btn-browse-jf-image');
+      const jfBgImgInput = document.getElementById('jf-bg-image');
+      const jfImgPreviewImg = document.getElementById('jf-image-preview-img');
+
+      if (btnUploadJfImg && jfImgFileInput) {
+        btnUploadJfImg.onclick = () => jfImgFileInput.click();
+      }
+
+      if (jfImgFileInput) {
+        jfImgFileInput.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const uploadRes = await this.uploadImageFile(file, { customName: 'job_fair_event' });
+          if (uploadRes && uploadRes.success) {
+            if (jfBgImgInput) jfBgImgInput.value = uploadRes.url;
+            if (jfImgPreviewImg) jfImgPreviewImg.src = uploadRes.url;
+            const previewContainer = document.getElementById('job-fair-admin-preview');
+            if (previewContainer) previewContainer.style.background = `url('${uploadRes.url}') center/cover no-repeat`;
+          }
+          jfImgFileInput.value = '';
+        });
+      }
+
+      if (jfBgImgInput && jfImgPreviewImg) {
+        jfBgImgInput.addEventListener('input', () => {
+          const val = jfBgImgInput.value.trim();
+          jfImgPreviewImg.src = val || 'images/job-fair.png';
+        });
+      }
+
+      if (btnBrowseJfImg) {
+        btnBrowseJfImg.onclick = () => {
+          this.openImagePicker((selectedUrl) => {
+            if (jfBgImgInput) jfBgImgInput.value = selectedUrl;
+            if (jfImgPreviewImg) jfImgPreviewImg.src = selectedUrl;
+            const previewContainer = document.getElementById('job-fair-admin-preview');
+            if (previewContainer) previewContainer.style.background = `url('${selectedUrl}') center/cover no-repeat`;
+          });
+        };
+      }
+
+      // 3f. Media Tab Upload & Drag-and-Drop Dropzone
+      const btnTriggerMediaUpload = document.getElementById('btn-trigger-media-upload');
+      const mediaGlobalFileInput = document.getElementById('media-global-file-input');
+      const mediaDropzone = document.getElementById('media-dropzone');
+      const mediaSearchInput = document.getElementById('media-search-input');
+
+      if (btnTriggerMediaUpload && mediaGlobalFileInput) {
+        btnTriggerMediaUpload.onclick = () => mediaGlobalFileInput.click();
+      }
+
+      if (mediaDropzone && mediaGlobalFileInput) {
+        mediaDropzone.onclick = (e) => {
+          if (e.target.closest('#media-upload-progress')) return;
+          mediaGlobalFileInput.click();
+        };
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+          mediaDropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            mediaDropzone.classList.add('dragover');
+          });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+          mediaDropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            mediaDropzone.classList.remove('dragover');
+          });
+        });
+
+        mediaDropzone.addEventListener('drop', async (e) => {
+          const files = e.dataTransfer.files;
+          if (files && files.length > 0) {
+            await this.handleBatchImageUpload(files);
+          }
+        });
+      }
+
+      if (mediaGlobalFileInput) {
+        mediaGlobalFileInput.addEventListener('change', async (e) => {
+          const files = e.target.files;
+          if (files && files.length > 0) {
+            await this.handleBatchImageUpload(files);
+          }
+          mediaGlobalFileInput.value = '';
+        });
+      }
+
+      if (mediaSearchInput) {
+        mediaSearchInput.addEventListener('input', () => {
+          const q = mediaSearchInput.value.toLowerCase().trim();
+          const filtered = allImages.filter(img => img.filename.toLowerCase().includes(q));
+          this.renderMediaGallery(filtered);
+        });
+      }
+
+      // 3g. Universal Image Picker Modal Events
+      const pickerModal = document.getElementById('modal-image-picker');
+      const closePickerBtns = document.querySelectorAll('.js-close-image-picker-modal');
+      const btnPickerUpload = document.getElementById('btn-picker-upload');
+      const pickerInlineFileInput = document.getElementById('picker-inline-file-input');
+      const btnPickerConfirm = document.getElementById('btn-picker-confirm');
+      const pickerSearchInput = document.getElementById('picker-search-input');
+
+      closePickerBtns.forEach(b => {
+        b.onclick = (e) => {
+          e.preventDefault();
+          if (pickerModal) pickerModal.classList.remove('active');
+        };
+      });
+
+      if (btnPickerUpload && pickerInlineFileInput) {
+        btnPickerUpload.onclick = () => pickerInlineFileInput.click();
+      }
+
+      if (pickerInlineFileInput) {
+        pickerInlineFileInput.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const uploadRes = await this.uploadImageFile(file);
+          if (uploadRes && uploadRes.success) {
+            await this.loadImages();
+            this.selectPickerImage(uploadRes.url);
+          }
+          pickerInlineFileInput.value = '';
+        });
+      }
+
+      if (pickerSearchInput) {
+        pickerSearchInput.addEventListener('input', () => {
+          const q = pickerSearchInput.value.toLowerCase().trim();
+          const filtered = allImages.filter(img => img.filename.toLowerCase().includes(q));
+          this.renderPickerGrid(filtered);
+        });
+      }
+
+      if (btnPickerConfirm) {
+        btnPickerConfirm.onclick = () => {
+          if (selectedPickerImage && typeof this.imagePickerCallback === 'function') {
+            this.imagePickerCallback(selectedPickerImage);
+            if (pickerModal) pickerModal.classList.remove('active');
+            this.showToast(`Selected image: ${selectedPickerImage}`, 'success');
+          }
+        };
+      }
+
+      // 3h. Lightbox Modal Events
+      const lightboxModal = document.getElementById('modal-image-lightbox');
+      const closeLightboxBtns = document.querySelectorAll('.js-close-image-lightbox');
+      closeLightboxBtns.forEach(b => {
+        b.onclick = (e) => {
+          e.preventDefault();
+          if (lightboxModal) lightboxModal.classList.remove('active');
+        };
+      });
 
       // Universal Backdrop click to close modals
       document.querySelectorAll('.vic-auth-modal-backdrop').forEach(modalBackdrop => {
@@ -2268,7 +2476,10 @@
           document.getElementById('prog-modal-title').innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: var(--vic-red);"></i> Edit Program #${p.id} (${this.escapeHtml(p.slug)})`;
           document.getElementById('prog-slug').value = p.slug || '';
           document.getElementById('prog-category').value = p.category || 'healthcare';
-          document.getElementById('prog-image-url').value = p.image_url || '';
+          const progImgVal = p.image_url || '';
+          document.getElementById('prog-image-url').value = progImgVal;
+          const progImgPreview = document.getElementById('prog-image-preview-img');
+          if (progImgPreview) progImgPreview.src = progImgVal || 'images/fullstack.jpg';
           document.getElementById('prog-order').value = p.display_order || 1;
           document.getElementById('prog-is-active').checked = p.is_active === 1;
 
@@ -2490,6 +2701,9 @@
         form.reset();
         document.getElementById('prog-id').value = '';
         document.getElementById('prog-modal-title').innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: var(--vic-red);"></i> Add New Academic Program`;
+        document.getElementById('prog-image-url').value = '';
+        const progImgPreview = document.getElementById('prog-image-preview-img');
+        if (progImgPreview) progImgPreview.src = 'images/fullstack.jpg';
         document.getElementById('prog-order').value = allAdminPrograms.length + 1;
         document.getElementById('prog-is-active').checked = true;
         document.getElementById('btn-save-program').textContent = 'Create Program';
@@ -3323,7 +3537,10 @@
           const jf = data.job_fair;
           document.getElementById('jf-edit-id').value = jf.id;
           document.getElementById('modal-jf-title').innerHTML = `<i class="fa-solid fa-calendar-check" style="color: #ea580c;"></i> Edit Job Fair Event #${jf.id}`;
-          document.getElementById('jf-bg-image').value = jf.bg_image_url || 'images/job-fair.png';
+          const jfBgVal = jf.bg_image_url || 'images/job-fair.png';
+          document.getElementById('jf-bg-image').value = jfBgVal;
+          const jfImgPreview = document.getElementById('jf-image-preview-img');
+          if (jfImgPreview) jfImgPreview.src = jfBgVal;
           document.getElementById('jf-btn-link').value = jf.btn_link || '#consultation';
           document.getElementById('jf-is-active').checked = jf.is_active === 1;
 
@@ -3349,6 +3566,8 @@
         document.getElementById('modal-jf-title').innerHTML = `<i class="fa-solid fa-calendar-check" style="color: #ea580c;"></i> Create New Job Fair Event`;
         form.reset();
         document.getElementById('jf-bg-image').value = 'images/job-fair.png';
+        const jfImgPreview = document.getElementById('jf-image-preview-img');
+        if (jfImgPreview) jfImgPreview.src = 'images/job-fair.png';
         document.getElementById('jf-btn-link').value = '#consultation';
         document.getElementById('jf-is-active').checked = true;
         document.getElementById('jf-tag-en').value = 'Upcoming Event';
@@ -3416,6 +3635,300 @@
         if (stats) stats.textContent = `Total Indexed URLs: ${countMatches}`;
       } catch (err) {
         pre.textContent = 'Error loading sitemap.xml: ' + err.message;
+      }
+    },
+
+    // =========================================================================
+    // Media Library & Image Upload Methods
+    // =========================================================================
+
+    async loadImages() {
+      const container = document.getElementById('media-gallery-container');
+      const badgeCount = document.getElementById('badge-media-count');
+      const indicator = document.getElementById('media-count-indicator');
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi('/api/admin/images', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (res.ok && data.images) {
+          allImages = data.images;
+          if (badgeCount) badgeCount.textContent = allImages.length;
+          if (indicator) indicator.textContent = `${allImages.length} images available in images/`;
+
+          const searchQ = document.getElementById('media-search-input')?.value.toLowerCase().trim() || '';
+          const filtered = searchQ ? allImages.filter(img => img.filename.toLowerCase().includes(searchQ)) : allImages;
+
+          this.renderMediaGallery(filtered);
+          this.renderPickerGrid(allImages);
+        }
+      } catch (err) {
+        if (container) {
+          container.innerHTML = `<div style="grid-column: 1 / -1; padding: 20px; color: red; text-align: center;">Failed to load media images: ${err.message}</div>`;
+        }
+      }
+    },
+
+    renderMediaGallery(images) {
+      const container = document.getElementById('media-gallery-container');
+      if (!container) return;
+
+      if (!images || images.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: #64748B;">
+            <i class="fa-solid fa-photo-film" style="font-size: 32px; color: #CBD5E1; margin-bottom: 10px; display: block;"></i>
+            <h4 style="margin: 0 0 6px; font-size: 15px; color: #334155;">No images matched your search</h4>
+            <p style="margin: 0; font-size: 13px;">Upload an image above or clear your search filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = images.map(img => {
+        const isCore = img.is_core;
+        const coreBadge = isCore ? `<span class="media-badge-core"><i class="fa-solid fa-shield"></i> Core Asset</span>` : '';
+        const deleteBtn = !isCore ? `
+          <button type="button" class="btn-media-action danger js-delete-media-btn" data-filename="${this.escapeHtml(img.filename)}" title="Delete Image">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        ` : '';
+
+        return `
+          <div class="media-card" data-filename="${this.escapeHtml(img.filename)}">
+            <div class="media-thumb-wrap js-lightbox-trigger" data-url="${img.path}" data-filename="${this.escapeHtml(img.filename)}" data-size="${img.size_kb} KB">
+              <img src="${img.path}" alt="${this.escapeHtml(img.filename)}" class="media-thumb-img" loading="lazy" onerror="this.src='images/favicon.gif'">
+              ${coreBadge}
+            </div>
+            <div class="media-info-body">
+              <div>
+                <div class="media-filename" title="${this.escapeHtml(img.filename)}">${this.escapeHtml(img.filename)}</div>
+                <div class="media-meta-sub">
+                  <span>${img.size_kb} KB</span>
+                  <span style="font-family: monospace; font-size: 10.5px; color: #94A3B8;">${img.path}</span>
+                </div>
+              </div>
+              <div class="media-card-actions">
+                <button type="button" class="btn-media-action js-copy-media-path" data-path="${img.path}" title="Copy path to clipboard">
+                  <i class="fa-solid fa-copy"></i> Copy Path
+                </button>
+                <button type="button" class="btn-media-action primary js-use-in-program" data-path="${img.path}" title="Create new program with this image">
+                  <i class="fa-solid fa-plus"></i> Use
+                </button>
+                ${deleteBtn}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Bind card events
+      container.querySelectorAll('.js-copy-media-path').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const path = btn.dataset.path;
+          navigator.clipboard.writeText(path).then(() => {
+            this.showToast(`Copied "${path}" to clipboard!`, 'success');
+          }).catch(() => {
+            prompt('Copy path:', path);
+          });
+        };
+      });
+
+      container.querySelectorAll('.js-use-in-program').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const path = btn.dataset.path;
+          this.switchTab('programs');
+          this.openProgramEditor();
+          const progImgInput = document.getElementById('prog-image-url');
+          const progImgPreview = document.getElementById('prog-image-preview-img');
+          if (progImgInput) progImgInput.value = path;
+          if (progImgPreview) progImgPreview.src = path;
+          this.showToast(`Applied "${path}" to new academic program!`, 'success');
+        };
+      });
+
+      container.querySelectorAll('.js-lightbox-trigger').forEach(wrap => {
+        wrap.onclick = () => {
+          this.openImageLightbox(wrap.dataset.url, wrap.dataset.filename, wrap.dataset.size);
+        };
+      });
+
+      container.querySelectorAll('.js-delete-media-btn').forEach(btn => {
+        btn.onclick = async (e) => {
+          e.stopPropagation();
+          const filename = btn.dataset.filename;
+          await this.deleteImage(filename);
+        };
+      });
+    },
+
+    renderPickerGrid(images) {
+      const grid = document.getElementById('picker-images-grid');
+      if (!grid) return;
+
+      if (!images || images.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1 / -1; padding: 24px; text-align: center; color: #888;">No images available. Click "Upload New" to add one.</div>`;
+        return;
+      }
+
+      grid.innerHTML = images.map(img => {
+        const isSelected = selectedPickerImage === img.path;
+        return `
+          <div class="image-picker-item ${isSelected ? 'selected' : ''}" data-url="${img.path}" data-filename="${this.escapeHtml(img.filename)}">
+            <img src="${img.path}" alt="${this.escapeHtml(img.filename)}" loading="lazy">
+            <div class="image-picker-item-label" title="${this.escapeHtml(img.filename)}">${this.escapeHtml(img.filename)}</div>
+          </div>
+        `;
+      }).join('');
+
+      grid.querySelectorAll('.image-picker-item').forEach(item => {
+        item.onclick = () => {
+          this.selectPickerImage(item.dataset.url);
+        };
+        item.ondblclick = () => {
+          this.selectPickerImage(item.dataset.url);
+          const confirmBtn = document.getElementById('btn-picker-confirm');
+          if (confirmBtn) confirmBtn.click();
+        };
+      });
+    },
+
+    selectPickerImage(url) {
+      selectedPickerImage = url;
+      const grid = document.getElementById('picker-images-grid');
+      if (grid) {
+        grid.querySelectorAll('.image-picker-item').forEach(item => {
+          item.classList.toggle('selected', item.dataset.url === url);
+        });
+      }
+      const indicator = document.getElementById('picker-selected-indicator');
+      const confirmBtn = document.getElementById('btn-picker-confirm');
+      if (indicator) indicator.innerHTML = `<span style="color:#059669; font-weight:600;"><i class="fa-solid fa-check-circle"></i> Selected: <code>${this.escapeHtml(url)}</code></span>`;
+      if (confirmBtn) confirmBtn.disabled = false;
+    },
+
+    openImagePicker(callback = null) {
+      this.imagePickerCallback = callback;
+      selectedPickerImage = null;
+      const modal = document.getElementById('modal-image-picker');
+      const confirmBtn = document.getElementById('btn-picker-confirm');
+      const indicator = document.getElementById('picker-selected-indicator');
+      const searchInput = document.getElementById('picker-search-input');
+
+      if (searchInput) searchInput.value = '';
+      if (confirmBtn) confirmBtn.disabled = true;
+      if (indicator) indicator.textContent = 'Click an image to select it';
+
+      this.renderPickerGrid(allImages);
+
+      if (modal) modal.classList.add('active');
+    },
+
+    openImageLightbox(src, filename, meta = '') {
+      const modal = document.getElementById('modal-image-lightbox');
+      const img = document.getElementById('lightbox-image-img');
+      const title = document.getElementById('lightbox-image-title');
+      const metaSpan = document.getElementById('lightbox-image-meta');
+
+      if (!modal || !img) return;
+
+      img.src = src;
+      if (title) title.textContent = filename || 'Image Preview';
+      if (metaSpan) metaSpan.textContent = `${src} • ${meta}`;
+
+      modal.classList.add('active');
+    },
+
+    async uploadImageFile(file, options = {}) {
+      if (!file) return null;
+
+      // Validate file size (15MB)
+      const MAX_SIZE = 15 * 1024 * 1024;
+      if (file.size > MAX_SIZE) {
+        this.showToast('Image exceeds maximum allowed size of 15 MB.', 'error');
+        return null;
+      }
+
+      const formData = new FormData();
+      formData.append('image', file);
+      if (options.customName) {
+        formData.append('custom_name', options.customName);
+      }
+      if (options.overwrite) {
+        formData.append('overwrite', 'true');
+      }
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi('/api/admin/upload-image', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to upload image');
+        }
+
+        this.showToast(data.message || `Uploaded ${data.filename} successfully!`, 'success');
+        await this.loadImages();
+        return data;
+      } catch (err) {
+        this.showToast(err.message, 'error');
+        return null;
+      }
+    },
+
+    async handleBatchImageUpload(files) {
+      if (!files || files.length === 0) return;
+
+      const progressBox = document.getElementById('media-upload-progress');
+      const progressBar = document.getElementById('media-upload-bar');
+      const statusText = document.getElementById('media-upload-status');
+
+      if (progressBox) progressBox.style.display = 'block';
+
+      let successCount = 0;
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        const pct = Math.round(((i + 1) / files.length) * 100);
+        if (statusText) statusText.textContent = `Uploading ${i + 1} of ${files.length}: ${f.name}...`;
+        if (progressBar) progressBar.style.width = `${pct}%`;
+
+        const res = await this.uploadImageFile(f);
+        if (res && res.success) successCount++;
+      }
+
+      if (statusText) statusText.textContent = `Upload complete! ${successCount} image(s) processed.`;
+      setTimeout(() => {
+        if (progressBox) progressBox.style.display = 'none';
+        if (progressBar) progressBar.style.width = '0%';
+      }, 1800);
+    },
+
+    async deleteImage(filename) {
+      if (!confirm(`Are you sure you want to delete "${filename}" from the images folder? Any pages referencing this path will need to be updated.`)) {
+        return;
+      }
+
+      try {
+        const token = window.VicAuth.getToken();
+        const res = await fetchApi(`/api/admin/images/${encodeURIComponent(filename)}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to delete image');
+        }
+
+        this.showToast(data.message || `Deleted "${filename}" successfully.`, 'success');
+        await this.loadImages();
+      } catch (err) {
+        this.showToast(err.message, 'error');
       }
     },
 

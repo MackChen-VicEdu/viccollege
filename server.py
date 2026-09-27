@@ -7115,6 +7115,143 @@ def admin_sync_translations():
 
 
 # ==============================================================================
+# Admin Media & Image Upload Management APIs
+# ==============================================================================
+
+ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.ico', '.avif'}
+CORE_PROTECTED_IMAGES = {'vic_logo.png', 'favicon.gif', 'president_maria_sun.jpg', 'president_maria_sun 1.jpg', 'home_banner.jpg'}
+
+def sanitize_image_filename(name: str) -> str:
+    """Sanitize filename to prevent directory traversal and invalid characters."""
+    name = os.path.basename(name).strip()
+    name = re.sub(r'[^a-zA-Z0-9_\-\.]', '_', name)
+    name = re.sub(r'_+', '_', name)
+    return name.lower()
+
+@app.route('/api/admin/images', methods=['GET'])
+def admin_get_images():
+    """Admin API: List all image files available in the images/ directory."""
+    err = require_admin()
+    if err: return err
+
+    images_dir = os.path.join(BASE_DIR, 'images')
+    os.makedirs(images_dir, exist_ok=True)
+
+    files_list = []
+    for f in os.listdir(images_dir):
+        ext = os.path.splitext(f)[1].lower()
+        if ext in ALLOWED_IMAGE_EXTENSIONS:
+            full_p = os.path.join(images_dir, f)
+            if os.path.isfile(full_p):
+                stat = os.stat(full_p)
+                files_list.append({
+                    'filename': f,
+                    'path': f'images/{f}',
+                    'full_url': f'/images/{f}',
+                    'size_bytes': stat.st_size,
+                    'size_kb': round(stat.st_size / 1024, 1),
+                    'modified_at': datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                    'is_core': f in CORE_PROTECTED_IMAGES
+                })
+
+    # Sort by newest modified first
+    files_list.sort(key=lambda x: x['modified_at'], reverse=True)
+
+    return jsonify({
+        'success': True,
+        'images': files_list,
+        'count': len(files_list)
+    })
+
+@app.route('/api/admin/upload-image', methods=['POST'])
+@app.route('/api/admin/images/upload', methods=['POST'])
+def admin_upload_image():
+    """Admin API: Upload an image directly into the images/ directory."""
+    err = require_admin()
+    if err: return err
+
+    if 'image' not in request.files and 'file' not in request.files:
+        return jsonify({'error': 'No image file provided in request.'}), 400
+
+    uploaded_file = request.files.get('image') or request.files.get('file')
+    if not uploaded_file or not uploaded_file.filename:
+        return jsonify({'error': 'No file selected.'}), 400
+
+    raw_filename = uploaded_file.filename
+    ext = os.path.splitext(raw_filename)[1].lower()
+    if ext not in ALLOWED_IMAGE_EXTENSIONS:
+        return jsonify({
+            'error': f'Invalid file type "{ext}". Allowed extensions: {", ".join(sorted(ALLOWED_IMAGE_EXTENSIONS))}'
+        }), 400
+
+    # Custom name option (e.g. from slug or form field)
+    custom_name = request.form.get('custom_name') or request.form.get('slug') or ''
+    if custom_name:
+        custom_base = sanitize_image_filename(custom_name)
+        if not custom_base.endswith(ext):
+            base_name = f"{custom_base}{ext}"
+        else:
+            base_name = custom_base
+    else:
+        base_name = sanitize_image_filename(raw_filename)
+
+    images_dir = os.path.join(BASE_DIR, 'images')
+    os.makedirs(images_dir, exist_ok=True)
+
+    # Collision resolution
+    overwrite = request.form.get('overwrite', 'false').lower() == 'true'
+    target_path = os.path.join(images_dir, base_name)
+
+    if os.path.exists(target_path) and not overwrite:
+        root, ext_part = os.path.splitext(base_name)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        base_name = f"{root}_{timestamp}{ext_part}"
+        target_path = os.path.join(images_dir, base_name)
+
+    try:
+        uploaded_file.save(target_path)
+        size_bytes = os.path.getsize(target_path)
+        size_kb = round(size_bytes / 1024, 1)
+
+        return jsonify({
+            'success': True,
+            'filename': base_name,
+            'url': f'images/{base_name}',
+            'full_url': f'/images/{base_name}',
+            'size_bytes': size_bytes,
+            'size_kb': size_kb,
+            'message': f'Image "{base_name}" uploaded successfully to images/ folder.'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to save image: {str(e)}'}), 500
+
+@app.route('/api/admin/images/<path:filename>', methods=['DELETE'])
+def admin_delete_image(filename):
+    """Admin API: Delete an uploaded image from images/ folder."""
+    err = require_admin()
+    if err: return err
+
+    safe_name = sanitize_image_filename(filename)
+    if safe_name in CORE_PROTECTED_IMAGES:
+        return jsonify({'error': f'"{safe_name}" is a protected core system asset and cannot be deleted.'}), 403
+
+    images_dir = os.path.join(BASE_DIR, 'images')
+    target_path = os.path.join(images_dir, safe_name)
+
+    if not os.path.exists(target_path):
+        return jsonify({'error': f'Image "{safe_name}" not found.'}), 404
+
+    try:
+        os.remove(target_path)
+        return jsonify({
+            'success': True,
+            'message': f'Image "{safe_name}" deleted successfully.'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to delete image: {str(e)}'}), 500
+
+
+# ==============================================================================
 # Static File & Single-Page Application Serving
 # ==============================================================================
 
