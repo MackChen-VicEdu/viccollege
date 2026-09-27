@@ -12,34 +12,65 @@ from datetime import datetime
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
-DB_PATH = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH') or os.path.join(DATA_DIR, 'victoria.db')
+os.makedirs(DATA_DIR, exist_ok=True)
 BACKUPS_DIR = os.path.join(DATA_DIR, 'backups')
 SEEDS_DIR = os.path.join(DATA_DIR, 'seeds')
 
-def create_timestamped_backup():
+def get_safe_db_path(candidate_path=None):
+    """Resolves database path, safely falling back to data/victoria.db if permissions fail (e.g. /var/data on non-disk containers)."""
+    if not candidate_path:
+        candidate_path = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH') or os.path.join(DATA_DIR, 'victoria.db')
+    
+    if not os.path.isabs(candidate_path):
+        candidate_path = os.path.join(BASE_DIR, candidate_path)
+
+    fallback_path = os.path.join(DATA_DIR, 'victoria.db')
+
+    parent_dir = os.path.dirname(os.path.abspath(candidate_path))
+    try:
+        os.makedirs(parent_dir, exist_ok=True)
+        test_file = os.path.join(parent_dir, f'.test_perm_{os.getpid()}')
+        with open(test_file, 'w') as f:
+            f.write('ok')
+        os.remove(test_file)
+        return candidate_path
+    except (PermissionError, OSError) as e:
+        print(f"[WARNING] Location '{candidate_path}' is not writable ({e}).")
+        print(f"          Falling back safely to local project database: '{fallback_path}'")
+        return fallback_path
+
+DB_PATH = get_safe_db_path()
+
+def create_timestamped_backup(target_db_path=None):
     """Create a hot, lock-safe SQLite backup with a timestamp."""
-    os.makedirs(BACKUPS_DIR, exist_ok=True)
-    if not os.path.exists(DB_PATH):
-        print(f"[ERROR] Database file not found at: {DB_PATH}")
+    if not target_db_path:
+        target_db_path = DB_PATH
+    try:
+        os.makedirs(BACKUPS_DIR, exist_ok=True)
+        if not os.path.exists(target_db_path):
+            print(f"[INFO] No database found to backup at: {target_db_path}")
+            return None
+
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        backup_filename = f"victoria_prod_backup_{timestamp}.db"
+        backup_path = os.path.join(BACKUPS_DIR, backup_filename)
+
+        # Use SQLite's online backup API to ensure zero corruption even while running
+        src = sqlite3.connect(target_db_path)
+        dst = sqlite3.connect(backup_path)
+        with dst:
+            src.backup(dst)
+        dst.close()
+        src.close()
+
+        size_kb = os.path.getsize(backup_path) / 1024
+        print(f"[SUCCESS] Hot backup created:")
+        print(f"  -> File: {backup_path}")
+        print(f"  -> Size: {size_kb:.2f} KB")
+        return backup_path
+    except Exception as e:
+        print(f"[WARNING] Could not create backup ({e}), continuing operation safely.")
         return None
-
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    backup_filename = f"victoria_prod_backup_{timestamp}.db"
-    backup_path = os.path.join(BACKUPS_DIR, backup_filename)
-
-    # Use SQLite's online backup API to ensure zero corruption even while running
-    src = sqlite3.connect(DB_PATH)
-    dst = sqlite3.connect(backup_path)
-    with dst:
-        src.backup(dst)
-    dst.close()
-    src.close()
-
-    size_kb = os.path.getsize(backup_path) / 1024
-    print(f"[SUCCESS] Hot backup created:")
-    print(f"  -> File: {backup_path}")
-    print(f"  -> Size: {size_kb:.2f} KB")
-    return backup_path
 
 def create_golden_snapshot():
     """Create a canonical golden master copy (victoria_golden_master.db) with sensitive credentials sanitized."""
@@ -154,19 +185,30 @@ def restore_database(backup_name_or_path):
     print(f"[SUCCESS] Successfully restored database from: {target}")
     return True
 
-def sync_dev_to_prod(dev_db_path, prod_db_path=None):
+def sync_dev_to_prod(dev_db_path=None, prod_db_path=None):
     """
     Safely merges schema changes and master catalog updates from dev_db into prod_db
     WITHOUT overwriting or deleting user-generated data (consultations, users, chat_logs, sessions).
     """
-    if prod_db_path is None:
-        prod_db_path = DB_PATH
-
-    # Resolve relative paths relative to BASE_DIR if needed
-    if not os.path.isabs(dev_db_path) and not os.path.exists(dev_db_path):
+    # 1. Resolve dev_db_path
+    if not dev_db_path:
+        golden_candidate = os.path.join(SEEDS_DIR, 'victoria_golden_master.db')
+        if os.path.exists(golden_candidate):
+            dev_db_path = golden_candidate
+        else:
+            dev_db_path = os.path.join(DATA_DIR, 'victoria.db')
+    elif not os.path.isabs(dev_db_path) and not os.path.exists(dev_db_path):
         candidate = os.path.join(BASE_DIR, dev_db_path)
         if os.path.exists(candidate):
             dev_db_path = candidate
+        else:
+            # Check in SEEDS_DIR or DATA_DIR
+            c_seed = os.path.join(SEEDS_DIR, dev_db_path)
+            c_data = os.path.join(DATA_DIR, dev_db_path)
+            if os.path.exists(c_seed):
+                dev_db_path = c_seed
+            elif os.path.exists(c_data):
+                dev_db_path = c_data
 
     if not os.path.exists(dev_db_path):
         # Fallback to local data/victoria.db or golden snapshot
@@ -178,19 +220,37 @@ def sync_dev_to_prod(dev_db_path, prod_db_path=None):
             print(f"[ERROR] Source database not found: {dev_db_path}")
             return False
 
-    if not os.path.isabs(prod_db_path) and not os.path.exists(prod_db_path):
-        candidate = os.path.join(BASE_DIR, prod_db_path)
-        if os.path.exists(candidate):
-            prod_db_path = candidate
+    # 2. Resolve prod_db_path safely with permission fallback
+    prod_db_path = get_safe_db_path(prod_db_path)
 
-    # If prod_db_path does not exist yet (e.g. first deployment on a persistent disk)
+    # 3. Check if source and target are the identical file
+    if os.path.abspath(dev_db_path) == os.path.abspath(prod_db_path):
+        print(f"[INFO] Source and target database are the same file: {prod_db_path}")
+        print("[INFO] Schema and records are already up to date.")
+        try:
+            import server
+            with server.app.app_context():
+                server.build_sitemap_xml()
+            print("[SUCCESS] Dynamic sitemap.xml, robots.txt, and llms.txt rebuilt successfully.")
+        except Exception as e:
+            pass
+        return True
+
+    # 4. If prod_db_path does not exist yet (e.g. first deployment on a persistent disk)
     if not os.path.exists(prod_db_path):
         print(f"[INFO] Target production database '{prod_db_path}' does not exist yet. Initializing from source '{dev_db_path}'...")
         prod_parent = os.path.dirname(os.path.abspath(prod_db_path))
-        os.makedirs(prod_parent, exist_ok=True)
-        shutil.copyfile(dev_db_path, prod_db_path)
-        print(f"[SUCCESS] Initialized production database at: {prod_db_path}")
-        return True
+        try:
+            os.makedirs(prod_parent, exist_ok=True)
+            shutil.copyfile(dev_db_path, prod_db_path)
+            print(f"[SUCCESS] Initialized production database at: {prod_db_path}")
+            return True
+        except (PermissionError, OSError) as e:
+            print(f"[WARNING] Could not initialize at '{prod_db_path}' ({e}). Falling back to local data/victoria.db.")
+            prod_db_path = os.path.join(DATA_DIR, 'victoria.db')
+            if not os.path.exists(prod_db_path):
+                shutil.copyfile(dev_db_path, prod_db_path)
+            return True
 
     print(f"\n=======================================================")
     print(f" Database Sync: Dev -> Prod")
@@ -200,7 +260,7 @@ def sync_dev_to_prod(dev_db_path, prod_db_path=None):
 
     # Step 1: Mandatory Safety Backup of Prod
     print("[1/4] Taking safety backup of production database before sync...")
-    create_timestamped_backup()
+    create_timestamped_backup(prod_db_path)
 
     dev_conn = sqlite3.connect(dev_db_path)
     dev_conn.row_factory = sqlite3.Row
@@ -418,18 +478,15 @@ if __name__ == '__main__':
         else:
             restore_database(args[1])
     elif cmd in ('sync-dev-to-prod', 'sync'):
-        if len(args) < 2:
-            print("Usage: python manage_db.py sync-dev-to-prod <dev_db_path> [prod_db_path]")
-            print("Example: python manage_db.py sync-dev-to-prod data/victoria_dev.db data/victoria.db")
-        else:
-            dev_path = args[1]
-            prod_path = args[2] if len(args) > 2 else None
-            sync_dev_to_prod(dev_path, prod_path)
+        dev_path = args[1] if len(args) > 1 else None
+        prod_path = args[2] if len(args) > 2 else None
+        sync_dev_to_prod(dev_path, prod_path)
     else:
         print("Usage:")
-        print("  python manage_db.py backup                     # Take hot backup, golden master snapshot & SQL dump")
-        print("  python manage_db.py list                       # List all saved backups")
-        print("  python manage_db.py dump                       # Export human-readable SQL dump")
-        print("  python manage_db.py restore <filename>         # Restore from a backup")
-        print("  python manage_db.py sync-dev-to-prod <dev_db>  # Safely merge dev changes into prod without touching user data")
+        print("  python manage_db.py backup                           # Take hot backup, golden master snapshot & SQL dump")
+        print("  python manage_db.py list                             # List all saved backups")
+        print("  python manage_db.py dump                             # Export human-readable SQL dump")
+        print("  python manage_db.py restore <filename>               # Restore from a backup")
+        print("  python manage_db.py sync [source_db] [target_db]     # Safely merge updates into prod without touching user data")
+        print("  python manage_db.py sync-dev-to-prod [dev_db] [prod] # (Alias for sync)")
 

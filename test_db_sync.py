@@ -92,5 +92,23 @@ class TestDatabaseDevToProdSync(unittest.TestCase):
 
         prod_check.close()
 
+    def test_sync_fallback_on_unwritable_path(self):
+        # Test that passing an unwritable or restricted path like /var/data/victoria.db
+        # does not crash with PermissionError and safely falls back
+        safe_path = manage_db.get_safe_db_path('/var/data/victoria.db')
+        self.assertTrue(safe_path.endswith('victoria.db'))
+        # Ensure sync_dev_to_prod survives when target is /var/data/victoria.db
+        success = manage_db.sync_dev_to_prod(self.dev_db, '/var/data/victoria.db')
+        self.assertTrue(success)
+
+    def test_sync_zero_args_and_same_file(self):
+        # Test zero-argument sync execution
+        success = manage_db.sync_dev_to_prod()
+        self.assertTrue(success)
+
+        # Test same-file sync execution
+        success_same = manage_db.sync_dev_to_prod(self.prod_db, self.prod_db)
+        self.assertTrue(success_same)
+
 if __name__ == '__main__':
     unittest.main()

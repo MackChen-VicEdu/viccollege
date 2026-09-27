@@ -3,7 +3,7 @@ services:
     name: viccollege-platform
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python manage_db.py sync data/seeds/victoria_golden_master.db $VIC_DB_PATH && gunicorn server:app --bind 0.0.0.0:$PORT
+    startCommand: python manage_db.py sync && gunicorn server:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.8

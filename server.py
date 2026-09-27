@@ -19,9 +19,32 @@ from flask import Flask, request, jsonify, send_from_directory, g, Response
 # App configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
-DB_PATH = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH') or os.path.join(DATA_DIR, 'victoria.db')
-
 os.makedirs(DATA_DIR, exist_ok=True)
+
+def get_safe_db_path(candidate_path=None):
+    """Resolves database path, safely falling back to data/victoria.db if permissions fail (e.g. /var/data on non-disk containers)."""
+    if not candidate_path:
+        candidate_path = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH') or os.path.join(DATA_DIR, 'victoria.db')
+    
+    if not os.path.isabs(candidate_path):
+        candidate_path = os.path.join(BASE_DIR, candidate_path)
+
+    fallback_path = os.path.join(DATA_DIR, 'victoria.db')
+
+    parent_dir = os.path.dirname(os.path.abspath(candidate_path))
+    try:
+        os.makedirs(parent_dir, exist_ok=True)
+        test_file = os.path.join(parent_dir, f'.test_perm_{os.getpid()}')
+        with open(test_file, 'w') as f:
+            f.write('ok')
+        os.remove(test_file)
+        return candidate_path
+    except (PermissionError, OSError) as e:
+        print(f"[WARNING] Database path '{candidate_path}' is not writable ({e}).")
+        print(f"          Falling back safely to local project database: '{fallback_path}'")
+        return fallback_path
+
+DB_PATH = get_safe_db_path()
 
 app = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
 
