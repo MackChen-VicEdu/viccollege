@@ -17,15 +17,19 @@ This guide explains how to develop locally, manage database backups, and safely 
 
 ## 1. Core Principles & Data Architecture
 
-The Victoria College database (`victoria.db`) contains two distinct categories of data:
+The Victoria College database (`victoria.db`) is protected by a strict **Production-First Data Reservation Guarantee**:
 
-| Category | Tables | Handled By | Sync Behavior |
-| :--- | :--- | :--- | :--- |
-| **Master Content & Schema** | `programs`, `articles`, `job_fairs`, `knowledge_base`, `site_translations`, `settings` | Developer / Admin | **Merged & Updated** from Dev to Prod |
-| **Live User Submissions** | `consultations`, `users`, `chat_logs`, `sessions` | Real Website Visitors | **100% Protected & Preserved** (Never Overwritten) |
+| Category | Tables | Sync Behavior on Every Deployment |
+| :--- | :--- | :--- |
+| **Existing Production Data** | `job_fairs`, `programs`, `articles`, `knowledge_base`, `site_translations`, `settings`, `consultations`, `users`, `chat_logs`, `sessions` | **100% RESERVED & IMMUTABLE** (Never updated, overwritten, or modified by deployments) |
+| **New Database Schema** | Missing tables & newly added columns | **Auto-Migrated** (`CREATE TABLE IF NOT EXISTS`, `ALTER TABLE ADD COLUMN`) |
+| **Brand New Seed Items** | Newly created catalog items, programs, or setting keys not yet in Prod | **Inserted Only** (Only if key/slug does not exist in Prod) |
 
 > [!IMPORTANT]
-> Live student leads submitted on the live website will **never** be deleted or overwritten when you deploy updates from your local dev environment.
+> **Production is the single source of truth for all content and user data.**
+> - If you toggle an event inactive in production (`is_active = 0`), it stays inactive forever across all future deployments.
+> - If you edit program tuition, article content, translations, or settings in production, deployments will **never** overwrite your edits.
+> - Deployments only add new schema capabilities and missing records, while creating an automated lock-safe backup of your production database.
 
 ---
 
@@ -73,10 +77,10 @@ python manage_db.py deploy && gunicorn server:app --bind 0.0.0.0:$PORT
 On every deployment boot:
 1. **Automated Hot Backup**: A full, lock-safe SQLite backup of the live production database is saved to `data/backups/victoria_prod_backup_YYYYMMDD_HHMMSS.db`.
 2. **Automated Pruning**: Backups are automatically rotated, retaining the 30 most recent copies to prevent disk saturation.
-3. **Automated Schema Evolution**: Any newly added tables or columns (`ALTER TABLE ADD COLUMN`) from your seed are added to production.
-4. **Master Content Sync**: New and updated programs, articles, job fairs, translations, and non-sensitive settings are merged into production.
-5. **Zero Data Loss Guarantee**: Live consultation leads, registered users, sessions, and chat logs are **never** touched or modified.
-6. **SEO & LLM Sync**: Dynamic `sitemap.xml`, `robots.txt`, and `llms.txt` are refreshed.
+3. **Automated Schema Evolution**: Any newly added tables or columns (`ALTER TABLE ADD COLUMN`) from your code are added to production.
+4. **Strict Data Reservation**: All existing production records across all tables are **100% reserved and untouched**.
+5. **Missing Items Seeding**: Only completely new items (keys or slugs not yet in prod) are inserted.
+6. **SEO & LLM Sync**: Dynamic `sitemap.xml`, `robots.txt`, and `llms.txt` are refreshed from live production data.
 7. **Redundant Startup Protection**: Even if the server is started without the CLI wrapper, `server.py` invokes `manage_db.auto_deploy_on_startup()`.
 
 ---
@@ -85,11 +89,11 @@ On every deployment boot:
 
 | Command | Description | Example |
 | :--- | :--- | :--- |
-| `python manage_db.py deploy` | Automated deployment pipeline: hot backup, pruning, schema evolution & CMS sync | `python manage_db.py deploy` |
+| `python manage_db.py deploy` | Automated deployment pipeline: hot backup, pruning, schema evolution & data reservation | `python manage_db.py deploy` |
 | `python manage_db.py prepare-deploy` | Developer pre-commit helper: updates golden master snapshot, SQL dump & sitemaps | `python manage_db.py prepare-deploy` |
 | `python manage_db.py prune [N]` | Safely prunes older backups, keeping latest N copies (default: 30) | `python manage_db.py prune 30` |
 | `python manage_db.py backup` | Takes a hot timestamped backup, updates golden master snapshot & SQL seed | `python manage_db.py backup` |
-| `python manage_db.py sync` | Merges dev golden master into the production database (alias for deploy) | `python manage_db.py sync` |
+| `python manage_db.py sync` | Runs deployment sync (alias for deploy) | `python manage_db.py sync` |
 | `python manage_db.py sync <src> <dst>` | Merges a specific source database into a target database | `python manage_db.py sync data/dev.db data/prod.db` |
 | `python manage_db.py list` | Displays all available database backups with timestamps and file sizes | `python manage_db.py list` |
 | `python manage_db.py restore <file>` | Safely restores database from a backup (takes a safety backup first) | `python manage_db.py restore victoria_prod_backup_20261010_202953.db` |
@@ -99,7 +103,7 @@ On every deployment boot:
 
 ## 4. How Database Sync Works
 
-When `deploy` or `sync` executes, it performs a 5-phase safe merge:
+When `deploy` or `sync` executes, it performs a 5-phase safe operation:
 
 ```
 [Phase 1] Pre-Deployment Safety Backup & Auto-Pruning
@@ -109,15 +113,15 @@ When `deploy` or `sync` executes, it performs a 5-phase safe merge:
 [Phase 2] Schema Synchronization
           Inspects SQLite schema. Auto-adds any new tables or ALTER TABLE columns.
           ↓
-[Phase 3] Master Content Merge (Selective Upsert)
-          Updates programs (keyed by slug), articles, translations, Q&As, and job fairs.
-          Synchronizes general settings while preserving live production API keys & secrets.
+[Phase 3] Seed New Items (Insert-Only, Never Overwrite)
+          Inserts brand new programs, articles, settings, or translations if they don't exist in Prod.
+          ALL existing production records are 100% reserved untouched (zero UPDATE statements).
           ↓
-[Phase 4] Live User Data Protection & Verification
-          Verifies consultations, users, sessions, and chat logs are completely intact.
+[Phase 4] Live Production Data Verification
+          Verifies all tables (user leads, accounts, events, content) remain intact.
           ↓
 [Phase 5] Dynamic SEO & Search Rebuild
-          Re-indexes sitemap.xml, robots.txt, and llms.txt with fresh URLs.
+          Re-indexes sitemap.xml, robots.txt, and llms.txt with fresh production data.
 ```
 
 ---

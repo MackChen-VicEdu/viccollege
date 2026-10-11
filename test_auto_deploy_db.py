@@ -104,8 +104,19 @@ class TestAutoDeployDB(unittest.TestCase):
         cur_prod.execute("INSERT INTO sessions (token, user_id, created_at) VALUES ('live_token_123', 1, '2026-10-10')")
         cur_prod.execute("INSERT INTO chat_logs (session_id, message) VALUES ('live_token_123', 'Hello, tell me about grants')")
 
-        # Insert existing program and live production secret key
+        cur_prod.execute("""
+            CREATE TABLE job_fairs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title_en TEXT,
+                title_zh TEXT,
+                location_en TEXT,
+                is_active INTEGER DEFAULT 1
+            )
+        """)
+
+        # Insert existing program, inactive job fair, and live production secret key
         cur_prod.execute("INSERT INTO programs (slug, name_en, tuition_fee) VALUES ('psw', 'PSW Old Title', 5000)")
+        cur_prod.execute("INSERT INTO job_fairs (id, title_en, title_zh, location_en, is_active) VALUES (1, 'PSW Job Fair', 'PSW招聘会', 'Old Campus', 0)")
         cur_prod.execute("INSERT INTO settings (key, value, updated_at) VALUES ('openai_api_key', 'sk-live-prod-secret-key-12345', '2026-10-10')")
         cur_prod.execute("INSERT INTO settings (key, value, updated_at) VALUES ('openai_model', 'gpt-4o-mini', '2026-10-10')")
 
@@ -183,10 +194,21 @@ class TestAutoDeployDB(unittest.TestCase):
             )
         """)
 
+        cur_dev.execute("""
+            CREATE TABLE job_fairs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title_en TEXT,
+                title_zh TEXT,
+                location_en TEXT,
+                is_active INTEGER DEFAULT 1
+            )
+        """)
+
         # Dev CMS records
         cur_dev.execute("INSERT INTO programs (slug, name_en, tuition_fee, job_placement_rate) VALUES ('psw', 'Personal Support Worker (PSW)', 5500, '95%')")
         cur_dev.execute("INSERT INTO programs (slug, name_en, tuition_fee, job_placement_rate) VALUES ('full-stack', 'Full Stack Developer', 8000, '92%')")
         cur_dev.execute("INSERT INTO campus_announcements (title, content) VALUES ('Fall Open House', 'Join us on Saturday')")
+        cur_dev.execute("INSERT INTO job_fairs (id, title_en, title_zh, location_en, is_active) VALUES (1, 'PSW Job Fair', 'PSW招聘会', 'Markham Main Campus', 1)")
         cur_dev.execute("INSERT INTO site_translations (key, category, text_en, text_zh, updated_at) VALUES ('header.tagline', 'nav', 'Excellence in Education', '卓越教育', '2026-10-10')")
 
         # Dev settings: Sanitized empty openai_api_key, and an updated model + new setting
@@ -253,11 +275,10 @@ class TestAutoDeployDB(unittest.TestCase):
             cols = [col['name'] for col in c.fetchall()]
             self.assertIn("job_placement_rate", cols, "New column job_placement_rate should be added to programs")
 
-            # 4. Verify programs data was updated and new program inserted
-            c.execute("SELECT name_en, job_placement_rate FROM programs WHERE slug='psw'")
+            # 4. Verify existing production program is RESERVED and new program is inserted
+            c.execute("SELECT name_en FROM programs WHERE slug='psw'")
             psw_row = c.fetchone()
-            self.assertEqual(psw_row['name_en'], 'Personal Support Worker (PSW)')
-            self.assertEqual(psw_row['job_placement_rate'], '95%')
+            self.assertEqual(psw_row['name_en'], 'PSW Old Title', "Existing production program must be strictly reserved (never overwritten)")
 
             c.execute("SELECT name_en FROM programs WHERE slug='full-stack'")
             self.assertIsNotNone(c.fetchone(), "New program 'full-stack' should be inserted into prod")
@@ -281,22 +302,28 @@ class TestAutoDeployDB(unittest.TestCase):
             c.execute("SELECT COUNT(*) FROM chat_logs")
             self.assertEqual(c.fetchone()[0], 1)
 
-            # 6. Verify production secret key is PROTECTED and non-secret settings are merged
+            # 6. Verify production settings are RESERVED (never overwritten) and new setting keys are added
             c.execute("SELECT value FROM settings WHERE key='openai_api_key'")
             key_val = c.fetchone()[0]
-            self.assertEqual(key_val, 'sk-live-prod-secret-key-12345', "Production OpenAI API key must NEVER be overwritten with blank dev seed")
+            self.assertEqual(key_val, 'sk-live-prod-secret-key-12345', "Production OpenAI API key must NEVER be overwritten")
 
             c.execute("SELECT value FROM settings WHERE key='openai_model'")
-            self.assertEqual(c.fetchone()[0], 'gpt-4o', "Non-sensitive model setting should be updated")
+            self.assertEqual(c.fetchone()[0], 'gpt-4o-mini', "Existing production setting must be reserved untouched")
 
             c.execute("SELECT value FROM settings WHERE key='enable_voice_chat'")
             self.assertEqual(c.fetchone()[0], 'true', "New setting key should be inserted")
 
-            # 7. Verify site_translations were synced
+            # 7. Verify new site_translations were inserted
             c.execute("SELECT text_en, text_zh FROM site_translations WHERE key='header.tagline'")
             trans = c.fetchone()
             self.assertIsNotNone(trans)
             self.assertEqual(trans['text_en'], 'Excellence in Education')
+
+            # 8. Verify job_fairs in production is 100% RESERVED (both content and active/inactive status)
+            c.execute("SELECT location_en, is_active FROM job_fairs WHERE id=1")
+            jf_row = c.fetchone()
+            self.assertEqual(jf_row['location_en'], 'Old Campus', "Production job fair location must be reserved untouched")
+            self.assertEqual(jf_row['is_active'], 0, "Production inactive job fair status must be strictly reserved across deployments")
 
             conn.close()
 

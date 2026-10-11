@@ -50,8 +50,7 @@ class TestDatabaseDevToProdSync(unittest.TestCase):
         """)
         dev_c.execute("INSERT INTO scholarships (name, amount) VALUES ('President Entrance Scholarship', 3000)")
 
-        dev_c.execute("ALTER TABLE programs ADD COLUMN career_outcomes_en TEXT DEFAULT ''")
-        dev_c.execute("UPDATE programs SET career_outcomes_en = 'High-Demand Hospital Roles' WHERE slug = 'psw'")
+        dev_c.execute("ALTER TABLE programs ADD COLUMN career_outcomes_en TEXT DEFAULT 'High-Demand Hospital Roles'")
 
         dev_c.execute("""
             INSERT INTO site_translations (key, category, text_en, text_zh, updated_at)

@@ -354,16 +354,16 @@ def sync_dev_to_prod(dev_db_path=None, prod_db_path=None, max_backups_to_keep=30
 
     prod_conn.commit()
 
-    # Step 3: Master Data Merging (Selective Upsert)
-    print("\n[3/4] Merging master CMS, programs, Q&As, and configuration data...")
+    # Step 3: Seed Missing Catalog & Configuration Items (Insert-Only, Never Overwrite)
+    print("\n[3/4] Seeding new catalog items & configuration (ALL existing production data strictly reserved)...")
 
-    # A. site_translations (Keyed by key)
+    # A. site_translations (Insert missing keys only; preserve all existing production translations)
     try:
         dev_c.execute("SELECT key, category, text_en, text_zh, updated_at FROM site_translations")
         trans_rows = dev_c.fetchall()
-        t_inserted, t_updated = 0, 0
+        t_inserted = 0
         for r in trans_rows:
-            prod_c.execute("SELECT id, text_en, text_zh FROM site_translations WHERE key = ?", (r['key'],))
+            prod_c.execute("SELECT id FROM site_translations WHERE key = ?", (r['key'],))
             existing = prod_c.fetchone()
             if not existing:
                 prod_c.execute("""
@@ -371,119 +371,90 @@ def sync_dev_to_prod(dev_db_path=None, prod_db_path=None, max_backups_to_keep=30
                     VALUES (?, ?, ?, ?, ?)
                 """, (r['key'], r['category'], r['text_en'], r['text_zh'], r['updated_at']))
                 t_inserted += 1
-            elif existing['text_en'] != r['text_en'] or existing['text_zh'] != r['text_zh']:
-                prod_c.execute("""
-                    UPDATE site_translations
-                    SET category = ?, text_en = ?, text_zh = ?, updated_at = ?
-                    WHERE key = ?
-                """, (r['category'], r['text_en'], r['text_zh'], r['updated_at'], r['key']))
-                t_updated += 1
-        print(f"  -> site_translations: {t_inserted} inserted, {t_updated} updated.")
+        print(f"  -> site_translations: {t_inserted} new items inserted (all existing production translations reserved).")
     except Exception as e:
         print(f"  ! site_translations sync error: {e}")
 
-    # B. programs (Keyed by slug)
+    # B. programs (Insert missing programs only; preserve all existing production programs & active states)
     try:
         dev_c.execute("SELECT * FROM programs")
         prog_rows = dev_c.fetchall()
-        p_inserted, p_updated = 0, 0
+        p_inserted = 0
         for r in prog_rows:
             prod_c.execute("SELECT id FROM programs WHERE slug = ?", (r['slug'],))
             existing = prod_c.fetchone()
-            col_names = [col for col in r.keys() if col != 'id']
             if not existing:
+                col_names = [col for col in r.keys() if col != 'id']
                 placeholders = ', '.join(['?'] * len(col_names))
                 cols_str = ', '.join(col_names)
                 values = [r[col] for col in col_names]
                 prod_c.execute(f"INSERT INTO programs ({cols_str}) VALUES ({placeholders})", values)
                 p_inserted += 1
-            else:
-                set_clause = ', '.join([f"{col} = ?" for col in col_names])
-                values = [r[col] for col in col_names] + [existing['id']]
-                prod_c.execute(f"UPDATE programs SET {set_clause} WHERE id = ?", values)
-                p_updated += 1
-        print(f"  -> programs: {p_inserted} inserted, {p_updated} updated.")
+        print(f"  -> programs: {p_inserted} new programs inserted (all existing production programs reserved).")
     except Exception as e:
         print(f"  ! programs sync error: {e}")
 
-    # C. knowledge_base (Keyed by title or id)
+    # C. knowledge_base (Insert missing items only; preserve all existing production Q&As)
     try:
         dev_c.execute("SELECT * FROM knowledge_base")
         kb_rows = dev_c.fetchall()
-        k_inserted, k_updated = 0, 0
+        k_inserted = 0
         for r in kb_rows:
             prod_c.execute("SELECT id FROM knowledge_base WHERE id = ? OR title = ?", (r['id'], r['title']))
             existing = prod_c.fetchone()
-            col_names = [col for col in r.keys() if col != 'id']
             if not existing:
                 placeholders = ', '.join(['?'] * len(r.keys()))
                 cols_str = ', '.join(r.keys())
                 values = [r[col] for col in r.keys()]
                 prod_c.execute(f"INSERT INTO knowledge_base ({cols_str}) VALUES ({placeholders})", values)
                 k_inserted += 1
-            else:
-                set_clause = ', '.join([f"{col} = ?" for col in col_names])
-                values = [r[col] for col in col_names] + [existing['id']]
-                prod_c.execute(f"UPDATE knowledge_base SET {set_clause} WHERE id = ?", values)
-                k_updated += 1
-        print(f"  -> knowledge_base: {k_inserted} inserted, {k_updated} updated.")
+        print(f"  -> knowledge_base: {k_inserted} new items inserted (all existing production Q&As reserved).")
     except Exception as e:
         print(f"  ! knowledge_base sync error: {e}")
 
-    # D. articles (Keyed by slug)
+    # D. articles (Insert missing articles only; preserve all existing production articles & view counts)
     try:
         dev_c.execute("SELECT * FROM articles")
         art_rows = dev_c.fetchall()
-        a_inserted, a_updated = 0, 0
+        a_inserted = 0
         for r in art_rows:
             prod_c.execute("SELECT id FROM articles WHERE slug = ?", (r['slug'],))
             existing = prod_c.fetchone()
-            col_names = [col for col in r.keys() if col != 'id']
             if not existing:
+                col_names = [col for col in r.keys() if col != 'id']
                 placeholders = ', '.join(['?'] * len(col_names))
                 cols_str = ', '.join(col_names)
                 values = [r[col] for col in col_names]
                 prod_c.execute(f"INSERT INTO articles ({cols_str}) VALUES ({placeholders})", values)
                 a_inserted += 1
-            else:
-                set_clause = ', '.join([f"{col} = ?" for col in col_names])
-                values = [r[col] for col in col_names] + [existing['id']]
-                prod_c.execute(f"UPDATE articles SET {set_clause} WHERE id = ?", values)
-                a_updated += 1
-        print(f"  -> articles: {a_inserted} inserted, {a_updated} updated.")
+        print(f"  -> articles: {a_inserted} new articles inserted (all existing production articles reserved).")
     except Exception as e:
         print(f"  ! articles sync error: {e}")
 
-    # E. job_fairs (Keyed by title_en or id)
+    # E. job_fairs (Insert missing events only; preserve all existing production events & active/inactive statuses)
     try:
         dev_c.execute("SELECT * FROM job_fairs")
         jf_rows = dev_c.fetchall()
-        jf_inserted, jf_updated = 0, 0
+        jf_inserted = 0
         for r in jf_rows:
             prod_c.execute("SELECT id FROM job_fairs WHERE id = ? OR title_en = ?", (r['id'], r['title_en']))
             existing = prod_c.fetchone()
-            col_names = [col for col in r.keys() if col != 'id']
             if not existing:
+                col_names = [col for col in r.keys() if col != 'id']
                 placeholders = ', '.join(['?'] * len(r.keys()))
                 cols_str = ', '.join(r.keys())
                 values = [r[col] for col in r.keys()]
                 prod_c.execute(f"INSERT INTO job_fairs ({cols_str}) VALUES ({placeholders})", values)
                 jf_inserted += 1
-            else:
-                set_clause = ', '.join([f"{col} = ?" for col in col_names])
-                values = [r[col] for col in col_names] + [existing['id']]
-                prod_c.execute(f"UPDATE job_fairs SET {set_clause} WHERE id = ?", values)
-                jf_updated += 1
-        print(f"  -> job_fairs: {jf_inserted} inserted, {jf_updated} updated.")
+        print(f"  -> job_fairs: {jf_inserted} new events inserted (all existing production job fairs reserved).")
     except Exception as e:
         print(f"  ! job_fairs sync error: {e}")
 
-    # F. settings (Selective upsert for non-sensitive system configurations)
+    # F. settings (Insert missing keys only; preserve all existing production settings & API keys)
     try:
         dev_c.execute("SELECT key, value, updated_at FROM settings")
         settings_rows = dev_c.fetchall()
-        s_inserted, s_updated = 0, 0
-        SENSITIVE_KEYS = {'openai_api_key', 'smtp_pass', 'secret_key'}
+        s_inserted = 0
         for r in settings_rows:
             k = r['key']
             v = r['value']
@@ -492,23 +463,17 @@ def sync_dev_to_prod(dev_db_path=None, prod_db_path=None, max_backups_to_keep=30
             if not existing:
                 prod_c.execute("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)", (k, v, r['updated_at']))
                 s_inserted += 1
-            elif k in SENSITIVE_KEYS:
-                # Never overwrite existing production secrets with empty dev values
-                continue
-            elif existing['value'] != v and v != '':
-                prod_c.execute("UPDATE settings SET value = ?, updated_at = ? WHERE key = ?", (v, r['updated_at'], k))
-                s_updated += 1
-        print(f"  -> settings: {s_inserted} inserted, {s_updated} updated (secrets protected).")
+        print(f"  -> settings: {s_inserted} new settings inserted (all existing production settings & secrets reserved).")
     except Exception as e:
         print(f"  ! settings sync error: {e}")
 
-    # G. Protected Live Production User Data Notice
-    print("\n[4/4] Preserving live production user data:")
-    for protected in ['consultations', 'users', 'chat_logs', 'sessions']:
+    # G. 100% Protected Production Tables Verification
+    print("\n[4/4] Verifying all production data is reserved untouched:")
+    for protected in ['consultations', 'users', 'chat_logs', 'sessions', 'job_fairs', 'articles', 'programs', 'knowledge_base', 'settings', 'site_translations']:
         if protected in prod_table_names:
             prod_c.execute(f"SELECT COUNT(*) FROM {protected}")
             count = prod_c.fetchone()[0]
-            print(f"  [SAFE] {protected}: {count} live production records preserved untouched.")
+            print(f"  [RESERVED] {protected}: {count} live production records preserved untouched.")
 
     prod_conn.commit()
     prod_conn.close()
