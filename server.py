@@ -2538,6 +2538,13 @@ Key College Knowledge:
     conn.close()
     print(">> SQLite Database initialized at:", DB_PATH)
 
+    # Automatic deployment backup & migration check on server startup
+    try:
+        import manage_db
+        manage_db.auto_deploy_on_startup()
+    except Exception as e:
+        print(f">> [NOTE] Startup auto-deployment hook: {e}")
+
 
 # ==============================================================================
 # Authentication Helper Functions

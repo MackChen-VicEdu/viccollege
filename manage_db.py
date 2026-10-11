@@ -7,6 +7,7 @@ and golden snapshot management for safe future development.
 import os
 import sys
 import shutil
+import time
 import sqlite3
 from datetime import datetime
 
@@ -15,6 +16,7 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 os.makedirs(DATA_DIR, exist_ok=True)
 BACKUPS_DIR = os.path.join(DATA_DIR, 'backups')
 SEEDS_DIR = os.path.join(DATA_DIR, 'seeds')
+DEPLOY_MARK_FILE = os.path.join(DATA_DIR, '.last_deploy_completed')
 
 def get_safe_db_path(candidate_path=None):
     """Resolves database path, safely falling back to data/victoria.db if permissions fail (e.g. /var/data on non-disk containers)."""
@@ -41,8 +43,47 @@ def get_safe_db_path(candidate_path=None):
 
 DB_PATH = get_safe_db_path()
 
-def create_timestamped_backup(target_db_path=None):
-    """Create a hot, lock-safe SQLite backup with a timestamp."""
+def prune_backups(max_keep=30, backups_dir=None):
+    """
+    Safely prunes old database backups to prevent filling up server disk space.
+    Retains the most recent `max_keep` backups and removes older ones.
+    """
+    if not backups_dir:
+        backups_dir = BACKUPS_DIR
+    if not os.path.exists(backups_dir):
+        return 0
+
+    try:
+        files = [
+            f for f in os.listdir(backups_dir)
+            if (f.endswith('.db') or f.endswith('.sql')) and not f.startswith('.')
+        ]
+        files_with_mtime = []
+        for f in files:
+            f_path = os.path.join(backups_dir, f)
+            files_with_mtime.append((f_path, os.path.getmtime(f_path)))
+
+        files_with_mtime.sort(key=lambda x: x[1])
+
+        deleted_count = 0
+        if len(files_with_mtime) > max_keep:
+            to_delete = files_with_mtime[:len(files_with_mtime) - max_keep]
+            for file_path, _ in to_delete:
+                try:
+                    os.remove(file_path)
+                    deleted_count += 1
+                except Exception as e:
+                    print(f"[WARNING] Could not delete old backup {file_path}: {e}")
+
+        if deleted_count > 0:
+            print(f"[INFO] Pruned {deleted_count} older backup file(s) (retaining latest {max_keep}).")
+        return deleted_count
+    except Exception as e:
+        print(f"[WARNING] Error during backup pruning: {e}")
+        return 0
+
+def create_timestamped_backup(target_db_path=None, max_keep=30):
+    """Create a hot, lock-safe SQLite backup with a timestamp, then auto-prunes older backups."""
     if not target_db_path:
         target_db_path = DB_PATH
     try:
@@ -67,6 +108,10 @@ def create_timestamped_backup(target_db_path=None):
         print(f"[SUCCESS] Hot backup created:")
         print(f"  -> File: {backup_path}")
         print(f"  -> Size: {size_kb:.2f} KB")
+
+        # Auto-prune older backups to prevent disk full errors
+        prune_backups(max_keep=max_keep)
+
         return backup_path
     except Exception as e:
         print(f"[WARNING] Could not create backup ({e}), continuing operation safely.")
@@ -185,7 +230,7 @@ def restore_database(backup_name_or_path):
     print(f"[SUCCESS] Successfully restored database from: {target}")
     return True
 
-def sync_dev_to_prod(dev_db_path=None, prod_db_path=None):
+def sync_dev_to_prod(dev_db_path=None, prod_db_path=None, max_backups_to_keep=30):
     """
     Safely merges schema changes and master catalog updates from dev_db into prod_db
     WITHOUT overwriting or deleting user-generated data (consultations, users, chat_logs, sessions).
@@ -193,10 +238,11 @@ def sync_dev_to_prod(dev_db_path=None, prod_db_path=None):
     # 1. Resolve dev_db_path
     if not dev_db_path:
         golden_candidate = os.path.join(SEEDS_DIR, 'victoria_golden_master.db')
+        local_candidate = os.path.join(DATA_DIR, 'victoria.db')
         if os.path.exists(golden_candidate):
             dev_db_path = golden_candidate
-        else:
-            dev_db_path = os.path.join(DATA_DIR, 'victoria.db')
+        elif os.path.exists(local_candidate):
+            dev_db_path = local_candidate
     elif not os.path.isabs(dev_db_path) and not os.path.exists(dev_db_path):
         candidate = os.path.join(BASE_DIR, dev_db_path)
         if os.path.exists(candidate):
@@ -244,6 +290,8 @@ def sync_dev_to_prod(dev_db_path=None, prod_db_path=None):
             os.makedirs(prod_parent, exist_ok=True)
             shutil.copyfile(dev_db_path, prod_db_path)
             print(f"[SUCCESS] Initialized production database at: {prod_db_path}")
+            # Baseline backup
+            create_timestamped_backup(prod_db_path, max_keep=max_backups_to_keep)
             return True
         except (PermissionError, OSError) as e:
             print(f"[WARNING] Could not initialize at '{prod_db_path}' ({e}). Falling back to local data/victoria.db.")
@@ -258,9 +306,9 @@ def sync_dev_to_prod(dev_db_path=None, prod_db_path=None):
     print(f" Target (Prod): {prod_db_path}")
     print(f"=======================================================\n")
 
-    # Step 1: Mandatory Safety Backup of Prod
+    # Step 1: Mandatory Safety Backup of Prod with rotation
     print("[1/4] Taking safety backup of production database before sync...")
-    create_timestamped_backup(prod_db_path)
+    create_timestamped_backup(prod_db_path, max_keep=max_backups_to_keep)
 
     dev_conn = sqlite3.connect(dev_db_path)
     dev_conn.row_factory = sqlite3.Row
@@ -430,7 +478,31 @@ def sync_dev_to_prod(dev_db_path=None, prod_db_path=None):
     except Exception as e:
         print(f"  ! job_fairs sync error: {e}")
 
-    # F. Protected Tables Notice
+    # F. settings (Selective upsert for non-sensitive system configurations)
+    try:
+        dev_c.execute("SELECT key, value, updated_at FROM settings")
+        settings_rows = dev_c.fetchall()
+        s_inserted, s_updated = 0, 0
+        SENSITIVE_KEYS = {'openai_api_key', 'smtp_pass', 'secret_key'}
+        for r in settings_rows:
+            k = r['key']
+            v = r['value']
+            prod_c.execute("SELECT value FROM settings WHERE key = ?", (k,))
+            existing = prod_c.fetchone()
+            if not existing:
+                prod_c.execute("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)", (k, v, r['updated_at']))
+                s_inserted += 1
+            elif k in SENSITIVE_KEYS:
+                # Never overwrite existing production secrets with empty dev values
+                continue
+            elif existing['value'] != v and v != '':
+                prod_c.execute("UPDATE settings SET value = ?, updated_at = ? WHERE key = ?", (v, r['updated_at'], k))
+                s_updated += 1
+        print(f"  -> settings: {s_inserted} inserted, {s_updated} updated (secrets protected).")
+    except Exception as e:
+        print(f"  ! settings sync error: {e}")
+
+    # G. Protected Live Production User Data Notice
     print("\n[4/4] Preserving live production user data:")
     for protected in ['consultations', 'users', 'chat_logs', 'sessions']:
         if protected in prod_table_names:
@@ -457,11 +529,148 @@ def sync_dev_to_prod(dev_db_path=None, prod_db_path=None):
     return True
 
 
+def auto_snapshot_if_needed():
+    """
+    If local data/victoria.db is newer than seeds/victoria_golden_master.db,
+    automatically regenerate the golden master and SQL dump before sync/deployment.
+    """
+    local_db = os.path.join(DATA_DIR, 'victoria.db')
+    golden_db = os.path.join(SEEDS_DIR, 'victoria_golden_master.db')
+    if os.path.exists(local_db):
+        if not os.path.exists(golden_db) or (os.path.getmtime(local_db) > os.path.getmtime(golden_db) + 2):
+            print("[AUTO] Local dev database has newer changes. Refreshing golden seed snapshot & SQL dump...")
+            create_golden_snapshot()
+            export_sql_dump()
+            return True
+    return False
+
+
+def prepare_deploy():
+    """
+    Developer pre-deployment workflow prior to git commit & push:
+    1. Creates safety backup of local database.
+    2. Generates sanitized golden master snapshot (victoria_golden_master.db).
+    3. Exports clean SQL dump (victoria_schema_and_data_latest.sql).
+    4. Rebuilds dynamic sitemaps and llms.txt.
+    5. Prints ready-to-push git status.
+    """
+    print("\n=======================================================")
+    print(" Preparing Database For Production Deployment")
+    print(f" Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("=======================================================\n")
+
+    print("[1/4] Creating local timestamped safety backup...")
+    create_timestamped_backup()
+
+    print("\n[2/4] Generating sanitized Golden Master snapshot...")
+    create_golden_snapshot()
+
+    print("\n[3/4] Exporting clean version-controlled SQL dump...")
+    export_sql_dump()
+
+    print("\n[4/4] Updating dynamic sitemaps and LLM search files...")
+    try:
+        import server
+        with server.app.app_context():
+            server.build_sitemap_xml()
+        print("[SUCCESS] sitemap.xml, robots.txt, and llms.txt refreshed.")
+    except Exception as e:
+        print(f"[NOTE] Sitemap generation: {e}")
+
+    print("\n=======================================================")
+    print(" Production Seed Ready!")
+    print(" Next Step: Commit and push seeds to GitHub to deploy on Render:")
+    print("   git add data/seeds/ manage_db.py")
+    print("   git commit -m 'Deploy DB updates: schema and CMS master content'")
+    print("   git push origin main")
+    print("=======================================================\n")
+    return True
+
+
+def deploy(source_db=None, target_db=None, max_backups_to_keep=30):
+    """
+    Full automated deployment routine called by Render or server boot on each deployment:
+    1. Synchronizes seeds if local edits were detected.
+    2. Takes a lock-safe, timestamped backup of the production database.
+    3. Automatically prunes older backups to retain the latest `max_backups_to_keep` (default 30).
+    4. Runs non-destructive schema migrations and master CMS content synchronization.
+    5. Preserves all student inquiries, registrations, consultations, and chat logs.
+    6. Rebuilds dynamic SEO and LLM metadata.
+    """
+    print(f"\n=======================================================")
+    print(f" Victoria International College - Deployment Pipeline")
+    print(f" Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"=======================================================\n")
+
+    # Refresh golden master snapshot if dev environment has newer changes
+    auto_snapshot_if_needed()
+
+    # Execute safe migration & sync with backup rotation
+    success = sync_dev_to_prod(source_db, target_db, max_backups_to_keep=max_backups_to_keep)
+    if success:
+        print("[SUCCESS] Automated deployment database migration finished successfully.")
+        try:
+            with open(DEPLOY_MARK_FILE, 'w') as f:
+                f.write(datetime.now().isoformat())
+        except Exception:
+            pass
+    else:
+        print("[WARNING] Deployment database sync encountered an error.")
+    return success
+
+
+_DEPLOY_COMPLETED = False
+
+def auto_deploy_on_startup():
+    """
+    Thread-safe startup hook for server.py / Gunicorn WSGI.
+    Ensures database migration and backup rotation execute upon every server boot.
+    Can be skipped by setting environment variable VIC_SKIP_AUTO_DEPLOY=1.
+    """
+    global _DEPLOY_COMPLETED
+    if _DEPLOY_COMPLETED:
+        return True
+
+    if os.environ.get('VIC_SKIP_AUTO_DEPLOY') == '1':
+        print("[INFO] Startup database auto-deploy skipped via VIC_SKIP_AUTO_DEPLOY=1")
+        _DEPLOY_COMPLETED = True
+        return True
+
+    # Check if a deployment command already executed within the past 120 seconds
+    try:
+        if os.path.exists(DEPLOY_MARK_FILE):
+            age_sec = time.time() - os.path.getmtime(DEPLOY_MARK_FILE)
+            if age_sec < 120:
+                print(f"[BOOT] Database deployment already synchronized by pre-start command ({int(age_sec)}s ago).")
+                _DEPLOY_COMPLETED = True
+                return True
+    except Exception:
+        pass
+
+    try:
+        print("[BOOT] Running automated database backup & deployment sync...")
+        res = deploy()
+        _DEPLOY_COMPLETED = True
+        return res
+    except Exception as e:
+        print(f"[WARNING] Startup database auto-deploy error: {e}")
+        _DEPLOY_COMPLETED = True
+        return False
+
+
 if __name__ == '__main__':
     args = sys.argv[1:]
-    cmd = args[0] if args else 'backup'
+    cmd = args[0] if args else 'deploy'
 
-    if cmd == 'backup':
+    if cmd in ('deploy', 'auto-deploy'):
+        source_arg = args[1] if len(args) > 1 else None
+        target_arg = args[2] if len(args) > 2 else None
+        deploy(source_arg, target_arg)
+    elif cmd in ('prepare-deploy', 'prepare'):
+        prepare_deploy()
+    elif cmd == 'auto-snapshot':
+        auto_snapshot_if_needed()
+    elif cmd == 'backup':
         create_timestamped_backup()
         create_golden_snapshot()
         export_sql_dump()
@@ -471,6 +680,9 @@ if __name__ == '__main__':
         export_sql_dump()
     elif cmd == 'list':
         list_backups()
+    elif cmd == 'prune':
+        max_k = int(args[1]) if len(args) > 1 else 30
+        prune_backups(max_keep=max_k)
     elif cmd == 'restore':
         if len(args) < 2:
             print("Usage: python manage_db.py restore <backup_filename_or_path>")
@@ -483,10 +695,13 @@ if __name__ == '__main__':
         sync_dev_to_prod(dev_path, prod_path)
     else:
         print("Usage:")
-        print("  python manage_db.py backup                           # Take hot backup, golden master snapshot & SQL dump")
-        print("  python manage_db.py list                             # List all saved backups")
-        print("  python manage_db.py dump                             # Export human-readable SQL dump")
-        print("  python manage_db.py restore <filename>               # Restore from a backup")
-        print("  python manage_db.py sync [source_db] [target_db]     # Safely merge updates into prod without touching user data")
-        print("  python manage_db.py sync-dev-to-prod [dev_db] [prod] # (Alias for sync)")
+        print("  python manage_db.py deploy [source_db] [prod_db]   # Automated backup, pruning & migration for deployment")
+        print("  python manage_db.py prepare-deploy                 # Developer prep: updates golden master snapshot & SQL dump")
+        print("  python manage_db.py backup                         # Take hot backup, golden master snapshot & SQL dump")
+        print("  python manage_db.py prune [max_keep]               # Prune backups keeping latest N files (default: 30)")
+        print("  python manage_db.py list                           # List all saved backups")
+        print("  python manage_db.py dump                           # Export human-readable SQL dump")
+        print("  python manage_db.py restore <filename>             # Restore from a backup")
+        print("  python manage_db.py sync [source_db] [prod_db]     # Safely merge updates into prod without touching user data")
+        print("  python manage_db.py sync-dev-to-prod               # (Alias for sync)")
 

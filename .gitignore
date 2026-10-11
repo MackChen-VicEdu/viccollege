@@ -23,6 +23,7 @@ check_bjo.py
 
 # Database Backups & Temporary WAL
 data/backups/
+data/.last_deploy_completed
 *.db-wal
 *.db-shm
 *.db-journal

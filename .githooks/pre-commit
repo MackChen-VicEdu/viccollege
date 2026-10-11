@@ -1,0 +1,14 @@
+#!/bin/sh
+# Victoria College Auto-Snapshot Pre-Commit Hook
+# Automatically refreshes sanitized golden master seeds whenever database changes are committed
+
+# Check if data/victoria.db is modified or staged
+if git diff --cached --name-only | grep -E "^data/victoria\.db$" > /dev/null 2>&1 || git diff --name-only | grep -E "^data/victoria\.db$" > /dev/null 2>&1; then
+    echo "[GIT-HOOK] Detected local database changes in data/victoria.db"
+    echo "[GIT-HOOK] Automatically refreshing sanitized golden master snapshot and SQL dump..."
+    python manage_db.py auto-snapshot
+    git add data/seeds/victoria_golden_master.db data/seeds/victoria_schema_and_data_latest.sql
+    echo "[GIT-HOOK] Golden master seeds staged for commit."
+fi
+
+exit 0

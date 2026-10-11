@@ -1830,6 +1830,12 @@ ul {
   transform: scale(1.08);
 }
 
+.chat-hdr-btn.js-voice-toggle.active {
+  background: #C5A880;
+  color: #111111;
+  box-shadow: 0 0 10px rgba(197, 168, 128, 0.7);
+}
+
 /* In-Chat Grant Banner */
 .vic-chat-banner {
   background: #FFF9F0;
@@ -1966,6 +1972,69 @@ ul {
   text-align: right;
 }
 
+/* Bot Message Footer & Text-To-Speech Button */
+.vic-chat-msg-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #F1F5F9;
+  gap: 8px;
+}
+
+.vic-chat-msg-footer .vic-chat-time {
+  margin-top: 0;
+}
+
+.vic-chat-tts-btn {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #64748b;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.vic-chat-tts-btn:hover {
+  background: #FFF1F2;
+  color: var(--vic-red);
+  border-color: #FECDD3;
+  transform: translateY(-1px);
+}
+
+.vic-chat-tts-btn.speaking {
+  background: #EF4444;
+  color: #FFFFFF;
+  border-color: #EF4444;
+  animation: vicSpeakingPulse 1.2s infinite ease-in-out;
+}
+
+.vic-chat-tts-btn.speaking .vic-tts-label {
+  color: #FFFFFF;
+}
+
+.vic-tts-label {
+  font-size: 11px;
+  letter-spacing: 0.2px;
+}
+
+@keyframes vicSpeakingPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+}
+
 /* Deep Action Buttons */
 .vic-chat-actions-group {
   display: flex;
@@ -2066,6 +2135,66 @@ ul {
   border-color: var(--vic-red);
 }
 
+/* Listening Feedback Banner */
+.vic-chat-listening-status {
+  padding: 8px 14px;
+  background: #FEF2F2;
+  border-top: 1px solid #FEE2E2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #DC2626;
+  font-weight: 600;
+  flex-shrink: 0;
+  animation: vicSlideDown 0.2s ease;
+}
+
+.listening-status-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.listening-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5px;
+  height: 14px;
+}
+
+.listening-wave span {
+  width: 2.5px;
+  background: #DC2626;
+  border-radius: 2px;
+  animation: vicWaveAnim 1s infinite ease-in-out;
+}
+
+.listening-wave span:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.listening-wave span:nth-child(2) { height: 14px; animation-delay: 0.25s; }
+.listening-wave span:nth-child(3) { height: 10px; animation-delay: 0.4s; }
+.listening-wave span:nth-child(4) { height: 16px; animation-delay: 0.15s; }
+
+@keyframes vicWaveAnim {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+.listening-cancel-btn {
+  background: transparent;
+  border: none;
+  color: #991B1B;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 13px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.listening-cancel-btn:hover {
+  background: rgba(220, 38, 38, 0.15);
+}
+
 /* Input Area Form */
 .vic-chat-input-area {
   padding: 10px 14px;
@@ -2077,11 +2206,18 @@ ul {
   flex-shrink: 0;
 }
 
-.vic-chat-input {
+.vic-chat-input-wrap {
   flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.vic-chat-input-wrap .vic-chat-input {
+  width: 100%;
   border: 1px solid #DFDFDF;
   border-radius: 24px;
-  padding: 9px 16px;
+  padding: 9px 38px 9px 16px;
   font-size: 13px;
   font-family: inherit;
   outline: none;
@@ -2089,9 +2225,61 @@ ul {
   background-color: #FAFAFA;
 }
 
-.vic-chat-input:focus {
+.vic-chat-input-wrap .vic-chat-input:focus {
   border-color: var(--vic-red);
   background-color: #FFFFFF;
+}
+
+.vic-chat-mic-btn {
+  position: absolute;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13.5px;
+  transition: all 0.2s ease;
+  z-index: 2;
+  outline: none;
+}
+
+.vic-chat-mic-btn:hover:not(:disabled) {
+  color: var(--vic-red);
+  background: rgba(183, 36, 37, 0.08);
+  transform: scale(1.08);
+}
+
+.vic-chat-mic-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.vic-chat-mic-btn.listening {
+  color: #FFFFFF !important;
+  background: #EF4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25);
+  animation: vicMicPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes vicMicPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    transform: scale(1.1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    transform: scale(1);
+  }
 }
 
 .vic-chat-send-btn {
@@ -2117,6 +2305,36 @@ ul {
 
 .vic-chat-send-btn:active {
   transform: scale(0.95);
+}
+
+/* In-Chat Feedback Toast */
+.vic-chat-toast {
+  position: absolute;
+  bottom: 64px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(4px);
+  color: #FFFFFF;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 100;
+  text-align: center;
+  max-width: 85%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vic-chat-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Footer branding & AI Disclaimer */

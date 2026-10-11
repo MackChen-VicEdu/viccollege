@@ -174,6 +174,23 @@
   let elements = {};
   let chatHistory = [];
   let isTyping = false;
+  let isListening = false;
+  let recognitionInstance = null;
+  let autoVoiceEnabled = localStorage.getItem('vic_chat_tts_auto') === 'true';
+  let currentPlayingBtn = null;
+  let currentUtterance = null;
+  let speechKeepAliveTimer = null;
+  let availableVoices = [];
+
+  function loadVoices() {
+    if ('speechSynthesis' in window) {
+      availableVoices = window.speechSynthesis.getVoices();
+    }
+  }
+  if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
 
   // Initialize Chatbot
   function init() {
@@ -181,6 +198,7 @@
     bindEvents();
     loadHistory();
     updateAuthUIState();
+    updateAutoVoiceUI();
 
     // Listen to real-time auth changes from VicAuth
     window.addEventListener('vic-auth-changed', () => {
@@ -236,6 +254,9 @@
           </div>
 
           <div class="vic-chat-header-actions">
+            <button type="button" class="chat-hdr-btn js-voice-toggle ${autoVoiceEnabled ? 'active' : ''}" id="vic-chat-voice-toggle" title="${autoVoiceEnabled ? (lang === 'zh' ? '语音播报：开启（点击关闭）' : 'Auto Voice Narration: ON (Click to turn off)') : (lang === 'zh' ? '语音播报：关闭（点击开启）' : 'Auto Voice Narration: OFF (Click to turn on)')}" aria-label="Toggle auto voice narration">
+              <i class="fa-solid ${autoVoiceEnabled ? 'fa-volume-high' : 'fa-volume-xmark'}"></i>
+            </button>
             <button type="button" class="chat-hdr-btn js-clear-chat" title="Clear conversation" aria-label="Clear chat">
               <i class="fa-solid fa-rotate-right"></i>
             </button>
@@ -269,16 +290,34 @@
         <!-- Auth Gate Container (Injected dynamically when unauthenticated) -->
         <div id="vic-chat-auth-slot"></div>
 
+        <!-- Listening Feedback Banner -->
+        <div id="vic-chat-listening-status" class="vic-chat-listening-status" style="display: none;">
+          <div class="listening-status-content">
+            <div class="listening-wave">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <span id="vic-chat-listening-text">${lang === 'zh' ? '正在聆听，请对着麦克风说话...' : 'Listening... Speak clearly into your mic'}</span>
+          </div>
+          <button type="button" class="listening-cancel-btn js-cancel-listen" title="${lang === 'zh' ? '停止录音' : 'Stop listening'}" aria-label="Stop listening">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
         <!-- Input Area -->
         <form class="vic-chat-input-area" id="vic-chat-form">
-          <input 
-            type="text" 
-            id="vic-chat-input" 
-            class="vic-chat-input" 
-            placeholder="${lang === 'zh' ? '输入您的问题（如：PSW就业、政府补助、学费）...' : 'Ask about programs, grants, tuition, admissions...'}" 
-            autocomplete="off"
-            required
-          />
+          <div class="vic-chat-input-wrap">
+            <input 
+              type="text" 
+              id="vic-chat-input" 
+              class="vic-chat-input" 
+              placeholder="${lang === 'zh' ? '输入您的问题（如：PSW就业、政府补助、学费）...' : 'Ask about programs, grants, tuition, admissions...'}" 
+              autocomplete="off"
+              required
+            />
+            <button type="button" id="vic-chat-mic" class="vic-chat-mic-btn" aria-label="Voice input (Speech to text)" title="${lang === 'zh' ? '语音输入（点击说话）' : 'Voice input (Speech to text)'}">
+              <i class="fa-solid fa-microphone"></i>
+            </button>
+          </div>
           <button type="submit" id="vic-chat-send" class="vic-chat-send-btn" aria-label="Send Message">
             <i class="fa-solid fa-paper-plane"></i>
           </button>
@@ -302,6 +341,11 @@
       authSlot: container.querySelector('#vic-chat-auth-slot'),
       form: container.querySelector('#vic-chat-form'),
       input: container.querySelector('#vic-chat-input'),
+      micBtn: container.querySelector('#vic-chat-mic'),
+      voiceToggleBtn: container.querySelector('#vic-chat-voice-toggle'),
+      listeningStatus: container.querySelector('#vic-chat-listening-status'),
+      listeningText: container.querySelector('#vic-chat-listening-text'),
+      listeningCancelBtn: container.querySelector('.js-cancel-listen'),
       closeBtn: container.querySelector('.js-close-chat'),
       minimizeBtn: container.querySelector('.js-minimize-chat'),
       clearBtn: container.querySelector('.js-clear-chat'),
@@ -331,6 +375,11 @@
       if (elements.input) {
         elements.input.disabled = true;
         elements.input.placeholder = lang === 'zh' ? '🔒 请先登录即可开启智能咨询...' : '🔒 Please sign in to chat with AI Advisor...';
+      }
+
+      if (elements.micBtn) {
+        elements.micBtn.disabled = true;
+        elements.micBtn.title = lang === 'zh' ? '请先登录以使用语音输入' : 'Login required for voice input';
       }
 
       if (elements.authSlot) {
@@ -373,6 +422,11 @@
         elements.input.placeholder = lang === 'zh' ? '输入您的问题（如：PSW就业、政府补助、学费）...' : 'Ask about programs, grants, tuition, admissions...';
       }
 
+      if (elements.micBtn) {
+        elements.micBtn.disabled = false;
+        elements.micBtn.title = lang === 'zh' ? '语音输入（点击说话）' : 'Voice input (Speech to text)';
+      }
+
       if (elements.authSlot) {
         elements.authSlot.innerHTML = '';
       }
@@ -391,6 +445,35 @@
       clearHistory();
     });
 
+    if (elements.voiceToggleBtn) {
+      elements.voiceToggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleAutoVoice();
+      });
+    }
+
+    if (elements.micBtn) {
+      elements.micBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!window.VicAuth?.getToken()) {
+          window.VicAuth?.openAuthModal('login');
+          if (window.VicAuth?.showToast) {
+            window.VicAuth.showToast(window.currentLanguage === 'zh' ? '请先登录以使用语音输入' : 'Please sign in to use voice input', 'warning');
+          }
+          return;
+        }
+        toggleListening();
+      });
+    }
+
+    if (elements.listeningCancelBtn) {
+      elements.listeningCancelBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopListening();
+      });
+    }
+
     // If unauthenticated, clicking the form triggers login
     elements.form.addEventListener('click', () => {
       if (!window.VicAuth?.getToken()) {
@@ -404,6 +487,8 @@
         window.VicAuth?.openAuthModal('login');
         return;
       }
+      stopListening();
+      stopSpeaking();
       const text = elements.input.value.trim();
       if (!text || isTyping) return;
       handleUserMessage(text);
@@ -460,6 +545,8 @@
 
   function closeChat() {
     if (!elements.window || !elements.launcher) return;
+    stopSpeaking();
+    stopListening();
     elements.window.classList.remove('active');
     elements.launcher.classList.remove('chat-open');
     elements.window.setAttribute('aria-hidden', 'true');
@@ -495,6 +582,10 @@
   async function handleUserMessage(userText) {
     if (!userText) return;
 
+    // Stop ongoing speech & listening
+    stopSpeaking();
+    stopListening();
+
     // Check authentication
     const token = window.VicAuth?.getToken();
     if (!token) {
@@ -508,7 +599,7 @@
       role: 'user',
       text: userText,
       timestamp: new Date()
-    });
+    }, false);
 
     scrollToBottom();
 
@@ -544,7 +635,7 @@
             { label: '💼 Continue with LinkedIn', action: 'auth_linkedin', param: '' }
           ],
           timestamp: new Date()
-        });
+        }, true);
         scrollToBottom();
         saveHistory();
         return;
@@ -576,7 +667,7 @@
       text: responseText,
       actions: responseActions,
       timestamp: new Date()
-    });
+    }, true);
 
     scrollToBottom();
     saveHistory();
@@ -1032,7 +1123,7 @@
   }
 
   // Append Message to DOM
-  function appendMessage(msg) {
+  function appendMessage(msg, isNew = false) {
     const isUser = msg.role === 'user';
     const msgDiv = document.createElement('div');
     msgDiv.className = `vic-chat-msg vic-chat-msg-${isUser ? 'user' : 'bot'}`;
@@ -1062,13 +1153,48 @@
       html += `</div>`;
     }
 
-    // Time stamp
+    // Time stamp and Audio Controls
     const timeStr = new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    html += `<span class="vic-chat-time">${timeStr}</span>`;
+    const currentLang = (window.currentLanguage || localStorage.getItem('vic_lang') || 'en');
+    const isZh = currentLang === 'zh';
+
+    if (!isUser) {
+      html += `
+        <div class="vic-chat-msg-footer">
+          <button type="button" class="vic-chat-tts-btn js-tts-btn" title="${isZh ? '朗读回复' : 'Read aloud'}" aria-label="Read message aloud">
+            <i class="fa-solid fa-volume-high"></i>
+            <span class="vic-tts-label">${isZh ? '朗读' : 'Listen'}</span>
+          </button>
+          <span class="vic-chat-time">${timeStr}</span>
+        </div>
+      `;
+    } else {
+      html += `<span class="vic-chat-time">${timeStr}</span>`;
+    }
     html += `</div>`;
 
     msgDiv.innerHTML = html;
     elements.messages.appendChild(msgDiv);
+
+    // Bind Voice Read Aloud button for bot message
+    if (!isUser) {
+      const ttsBtn = msgDiv.querySelector('.js-tts-btn');
+      if (ttsBtn) {
+        ttsBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          speakMessage(msg.text, ttsBtn);
+        });
+
+        // If Auto Voice narration is enabled and message is newly arrived, auto-speak
+        if (isNew && autoVoiceEnabled) {
+          setTimeout(() => {
+            if (autoVoiceEnabled) {
+              speakMessage(msg.text, ttsBtn);
+            }
+          }, 350);
+        }
+      }
+    }
 
     chatHistory.push(msg);
   }
@@ -1108,6 +1234,284 @@
       }
     } else if (action === 'call') {
       window.location.href = `tel:${param}`;
+    }
+  }
+
+  // Speech-to-Text (Voice to Text) Implementation
+  function toggleListening() {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  }
+
+  function startListening() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const lang = (window.currentLanguage || localStorage.getItem('vic_lang') || 'en');
+
+    if (!SpeechRecognition) {
+      showSpeechToast(
+        lang === 'zh'
+          ? '当前浏览器不支持语音识别功能，推荐使用 Chrome 或 Edge 浏览器。'
+          : 'Voice recognition is not supported in this browser. Please use Chrome or Edge.'
+      );
+      return;
+    }
+
+    // Stop ongoing speech playback so microphone doesn't pick it up
+    stopSpeaking();
+
+    try {
+      recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = true;
+      recognitionInstance.maxAlternatives = 1;
+      recognitionInstance.lang = lang === 'zh' ? 'zh-CN' : 'en-US';
+
+      const existingText = elements.input ? elements.input.value.trim() : '';
+
+      recognitionInstance.onstart = () => {
+        isListening = true;
+        if (elements.micBtn) {
+          elements.micBtn.classList.add('listening');
+          elements.micBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
+          elements.micBtn.title = lang === 'zh' ? '正在聆听... 点击停止' : 'Listening... Click to stop';
+        }
+        if (elements.input) {
+          elements.input.placeholder = lang === 'zh' ? '🎙️ 正在聆听，请对着麦克风说话...' : '🎙️ Listening... Speak now...';
+        }
+        showListeningBar(true);
+      };
+
+      recognitionInstance.onresult = (e) => {
+        let interim = '';
+        let final = '';
+        for (let i = e.resultIndex; i < e.results.length; ++i) {
+          if (e.results[i].isFinal) {
+            final += e.results[i][0].transcript;
+          } else {
+            interim += e.results[i][0].transcript;
+          }
+        }
+        const spoken = final || interim;
+        if (elements.input && spoken) {
+          elements.input.value = existingText ? `${existingText} ${spoken}` : spoken;
+        }
+      };
+
+      recognitionInstance.onerror = (e) => {
+        console.warn('Speech recognition error:', e.error);
+        if (e.error === 'not-allowed') {
+          showSpeechToast(
+            lang === 'zh'
+              ? '麦克风权限被拒绝，请在浏览器地址栏允许麦克风访问。'
+              : 'Microphone permission denied. Please allow microphone access in your browser settings.'
+          );
+        }
+        stopListening();
+      };
+
+      recognitionInstance.onend = () => {
+        stopListening();
+      };
+
+      recognitionInstance.start();
+    } catch (err) {
+      console.error('Failed to start speech recognition:', err);
+      stopListening();
+    }
+  }
+
+  function stopListening() {
+    isListening = false;
+    if (recognitionInstance) {
+      try {
+        recognitionInstance.abort();
+      } catch (e) {}
+      recognitionInstance = null;
+    }
+
+    const lang = (window.currentLanguage || localStorage.getItem('vic_lang') || 'en');
+    if (elements.micBtn) {
+      elements.micBtn.classList.remove('listening');
+      elements.micBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+      elements.micBtn.title = lang === 'zh' ? '语音输入（点击说话）' : 'Voice input (Speech to text)';
+    }
+    if (elements.input) {
+      elements.input.placeholder = lang === 'zh' ? '输入您的问题（如：PSW就业、政府补助、学费）...' : 'Ask about programs, grants, tuition, admissions...';
+      elements.input.focus();
+    }
+    showListeningBar(false);
+  }
+
+  function showListeningBar(show) {
+    if (!elements.listeningStatus) return;
+    const lang = (window.currentLanguage || localStorage.getItem('vic_lang') || 'en');
+    if (show) {
+      elements.listeningStatus.style.display = 'flex';
+      if (elements.listeningText) {
+        elements.listeningText.textContent = lang === 'zh' ? '正在聆听，请对着麦克风说话...' : 'Listening... Speak clearly into your mic';
+      }
+    } else {
+      elements.listeningStatus.style.display = 'none';
+    }
+  }
+
+  function showSpeechToast(message) {
+    if (window.VicAuth?.showToast) {
+      window.VicAuth.showToast(message, 'info');
+      return;
+    }
+    let toast = document.getElementById('vic-chat-toast');
+    if (!toast && elements.window) {
+      toast = document.createElement('div');
+      toast.id = 'vic-chat-toast';
+      toast.className = 'vic-chat-toast';
+      elements.window.appendChild(toast);
+    }
+    if (toast) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3200);
+    }
+  }
+
+  // Text-to-Speech (Text to Voice) Implementation
+  function cleanTextForSpeech(text) {
+    if (!text) return '';
+    let str = text;
+    // Strip markdown links [label](url) -> label
+    str = str.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+    // Strip HTML tags
+    str = str.replace(/<[^>]*>/g, ' ');
+    // Strip code blocks and inline code
+    str = str.replace(/```[\s\S]*?```/g, ' ');
+    str = str.replace(/`([^`]+)`/g, '$1');
+    // Strip markdown headers, bold, italics, dividers
+    str = str.replace(/[*#_~`>]/g, ' ');
+    // Strip emojis and decorative symbols
+    str = str.replace(/[•\-\–\—\➔\👉\👇\📍\📞\✉️\🕒\💡\⚠️\🩺\💻\💰\🔍\📅\🔑\🌐\💼\👋\🎪\📰\🔒\⚖️]/g, ' ');
+    // Collapse excess whitespace
+    str = str.replace(/\s+/g, ' ').trim();
+    return str;
+  }
+
+  function stopSpeaking() {
+    if (speechKeepAliveTimer) {
+      clearInterval(speechKeepAliveTimer);
+      speechKeepAliveTimer = null;
+    }
+    if ('speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {}
+    }
+    if (currentPlayingBtn) {
+      currentPlayingBtn.classList.remove('speaking');
+      const isZh = (window.currentLanguage === 'zh' || localStorage.getItem('vic_lang') === 'zh');
+      currentPlayingBtn.innerHTML = `<i class="fa-solid fa-volume-high"></i><span class="vic-tts-label">${isZh ? '朗读' : 'Listen'}</span>`;
+      currentPlayingBtn.setAttribute('title', isZh ? '朗读回复' : 'Read aloud');
+      currentPlayingBtn = null;
+    }
+    currentUtterance = null;
+  }
+
+  function speakMessage(text, triggerBtn) {
+    if (!('speechSynthesis' in window)) {
+      showSpeechToast(
+        (window.currentLanguage === 'zh' || localStorage.getItem('vic_lang') === 'zh')
+          ? '当前浏览器不支持语音播放功能。'
+          : 'Speech synthesis is not supported in this browser.'
+      );
+      return;
+    }
+
+    // Toggle off if currently playing this exact message
+    if (currentPlayingBtn === triggerBtn && window.speechSynthesis.speaking) {
+      stopSpeaking();
+      return;
+    }
+
+    stopSpeaking();
+
+    const clean = cleanTextForSpeech(text);
+    if (!clean) return;
+
+    const isChinese = /[\u4e00-\u9fa5]/.test(clean);
+    const isZhUI = (window.currentLanguage === 'zh' || localStorage.getItem('vic_lang') === 'zh');
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.lang = isChinese ? 'zh-CN' : 'en-US';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+
+    // Select suitable voice if available
+    const voices = availableVoices.length > 0 ? availableVoices : window.speechSynthesis.getVoices();
+    if (voices && voices.length > 0) {
+      const targetPrefix = isChinese ? 'zh' : 'en';
+      const matchedVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(targetPrefix)) ||
+                           voices.find(v => v.lang && v.lang.toLowerCase().includes(targetPrefix));
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
+      }
+    }
+
+    if (triggerBtn) {
+      currentPlayingBtn = triggerBtn;
+      triggerBtn.classList.add('speaking');
+      triggerBtn.innerHTML = `<i class="fa-solid fa-stop"></i><span class="vic-tts-label">${isZhUI ? '停止' : 'Stop'}</span>`;
+      triggerBtn.setAttribute('title', isZhUI ? '点击停止朗读' : 'Click to stop reading');
+    }
+
+    utterance.onend = () => {
+      stopSpeaking();
+    };
+
+    utterance.onerror = (e) => {
+      console.warn('Speech synthesis error:', e);
+      stopSpeaking();
+    };
+
+    // Chromium keep-alive interval to prevent 15s pause timeout
+    speechKeepAliveTimer = setInterval(() => {
+      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    }, 8000);
+
+    window.speechSynthesis.speak(utterance);
+    currentUtterance = utterance;
+  }
+
+  function toggleAutoVoice() {
+    autoVoiceEnabled = !autoVoiceEnabled;
+    localStorage.setItem('vic_chat_tts_auto', String(autoVoiceEnabled));
+    updateAutoVoiceUI();
+    if (!autoVoiceEnabled) {
+      stopSpeaking();
+    } else {
+      showSpeechToast(
+        (window.currentLanguage === 'zh' || localStorage.getItem('vic_lang') === 'zh')
+          ? 'AI 语音自动播报已开启'
+          : 'Auto voice narration enabled'
+      );
+    }
+  }
+
+  function updateAutoVoiceUI() {
+    if (!elements.voiceToggleBtn) return;
+    const lang = (window.currentLanguage || localStorage.getItem('vic_lang') || 'en');
+    if (autoVoiceEnabled) {
+      elements.voiceToggleBtn.classList.add('active');
+      elements.voiceToggleBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+      elements.voiceToggleBtn.title = lang === 'zh' ? '语音自动播报：开启（点击关闭）' : 'Auto Voice Narration: ON (Click to turn off)';
+    } else {
+      elements.voiceToggleBtn.classList.remove('active');
+      elements.voiceToggleBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+      elements.voiceToggleBtn.title = lang === 'zh' ? '语音自动播报：关闭（点击开启）' : 'Auto Voice Narration: OFF (Click to turn on)';
     }
   }
 
@@ -1158,7 +1562,7 @@
         if (Array.isArray(parsed) && parsed.length > 0) {
           chatHistory = [];
           elements.messages.innerHTML = '';
-          parsed.forEach(msg => appendMessage(msg));
+          parsed.forEach(msg => appendMessage(msg, false));
           scrollToBottom();
           return;
         }
@@ -1189,7 +1593,7 @@
             { label: '💼 使用 LinkedIn 账号登录', action: 'auth_linkedin', param: '' }
           ],
           timestamp: new Date()
-        });
+        }, false);
       } else {
         appendMessage({
           role: 'bot',
@@ -1200,7 +1604,7 @@
             { label: '💼 Continue with LinkedIn', action: 'auth_linkedin', param: '' }
           ],
           timestamp: new Date()
-        });
+        }, false);
       }
     } else {
       const userName = user?.name ? user.name.split(' ')[0] : 'there';
@@ -1214,7 +1618,7 @@
             { label: '💻 了解 Full Stack 全栈 IT', action: 'open_modal', param: 'tech' }
           ],
           timestamp: new Date()
-        });
+        }, false);
       } else {
         appendMessage({
           role: 'bot',
@@ -1225,7 +1629,7 @@
             { label: '💻 Explore Full Stack Web', action: 'open_modal', param: 'tech' }
           ],
           timestamp: new Date()
-        });
+        }, false);
       }
     }
 
@@ -1233,6 +1637,8 @@
   }
 
   function clearHistory() {
+    stopSpeaking();
+    stopListening();
     localStorage.removeItem('vic_chat_history');
     renderInitialWelcome();
   }
@@ -1257,6 +1663,29 @@
     }
     if (elements.input) {
       elements.input.placeholder = lang === 'zh' ? '输入您的问题（如：PSW就业、政府补助、学费）...' : 'Ask about programs, grants, tuition, admissions...';
+    }
+    if (elements.micBtn && !elements.micBtn.classList.contains('listening')) {
+      elements.micBtn.title = lang === 'zh' ? '语音输入（点击说话）' : 'Voice input (Speech to text)';
+    }
+    if (elements.listeningText) {
+      elements.listeningText.textContent = lang === 'zh' ? '正在聆听，请对着麦克风说话...' : 'Listening... Speak clearly into your mic';
+    }
+    updateAutoVoiceUI();
+
+    // Update existing message TTS button labels
+    if (elements.messages) {
+      const allTtsBtns = elements.messages.querySelectorAll('.js-tts-btn');
+      allTtsBtns.forEach(btn => {
+        const lbl = btn.querySelector('.vic-tts-label');
+        if (lbl) {
+          lbl.textContent = btn.classList.contains('speaking')
+            ? (lang === 'zh' ? '停止' : 'Stop')
+            : (lang === 'zh' ? '朗读' : 'Listen');
+        }
+        btn.title = btn.classList.contains('speaking')
+          ? (lang === 'zh' ? '点击停止朗读' : 'Click to stop reading')
+          : (lang === 'zh' ? '朗读回复' : 'Read aloud');
+      });
     }
 
     renderSuggestions();
