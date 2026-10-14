@@ -84,6 +84,7 @@
           this.loadSEOArticles();
           this.loadLeads();
           this.loadAISettings();
+          this.loadDatabaseStatus();
           this.loadChatLogs();
 
           // Check URL query parameters or hash to jump straight to a tab
@@ -125,7 +126,10 @@
       if (tabId === 'job-fair') this.loadJobFairs();
       if (tabId === 'seo-articles') this.loadSEOArticles();
       if (tabId === 'leads') this.loadLeads();
-      if (tabId === 'ai-settings' || tabId === 'email-settings') this.loadAISettings();
+      if (tabId === 'ai-settings' || tabId === 'email-settings') {
+        this.loadAISettings();
+        this.loadDatabaseStatus();
+      }
       if (tabId === 'chat-logs') this.loadChatLogs();
     },
 
@@ -1173,6 +1177,141 @@
         });
       }
 
+      // 5e. Database Persistence & Safeguard Actions
+      const refreshDbBtn = document.getElementById('btn-refresh-db-status');
+      if (refreshDbBtn) {
+        refreshDbBtn.onclick = () => {
+          this.loadDatabaseStatus();
+          this.showToast('Database status refreshed.', 'info');
+        };
+      }
+
+      const downloadDbBtn = document.getElementById('btn-download-prod-db');
+      if (downloadDbBtn) {
+        downloadDbBtn.onclick = async () => {
+          const token = window.VicAuth?.getToken();
+          this.showToast('Generating hot database snapshot for download...', 'info');
+          try {
+            const res = await fetchApi('/api/admin/db/download', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+              const blob = await res.blob();
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `victoria_prod_backup_${new Date().toISOString().slice(0, 10)}.db`;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              window.URL.revokeObjectURL(url);
+              this.showToast('Production database downloaded successfully!', 'success');
+            } else {
+              this.showToast('Failed to download database.', 'error');
+            }
+          } catch (e) {
+            this.showToast('Download error: ' + e.message, 'error');
+          }
+        };
+      }
+
+      const hotBackupBtn = document.getElementById('btn-trigger-hot-backup');
+      if (hotBackupBtn) {
+        hotBackupBtn.onclick = async () => {
+          const token = window.VicAuth?.getToken();
+          try {
+            const res = await fetchApi('/api/admin/db/backup', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await this.safeJson(res);
+            if (data.success) {
+              this.showToast('Hot backup created: ' + data.backup_file, 'success');
+              this.loadDatabaseStatus();
+            } else {
+              this.showToast('Failed to create backup: ' + (data.error || 'Unknown error'), 'error');
+            }
+          } catch (e) {
+            this.showToast('Backup error: ' + e.message, 'error');
+          }
+        };
+      }
+
+      const syncSeedsBtn = document.getElementById('btn-sync-dev-seeds');
+      if (syncSeedsBtn) {
+        syncSeedsBtn.onclick = async () => {
+          if (!confirm("Sync missing schema and master catalog items into production? Live user inquiries and production edits will remain untouched.")) return;
+          const token = window.VicAuth?.getToken();
+          try {
+            const res = await fetchApi('/api/admin/db/sync-seeds', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await this.safeJson(res);
+            if (data.success) {
+              this.showToast('Seeds synchronized successfully! Live data preserved.', 'success');
+              this.loadDatabaseStatus();
+            } else {
+              this.showToast('Sync error: ' + (data.error || 'Failed to sync seeds'), 'error');
+            }
+          } catch (e) {
+            this.showToast('Sync error: ' + e.message, 'error');
+          }
+        };
+      }
+
+      const uploadRestoreForm = document.getElementById('form-upload-restore-db');
+      if (uploadRestoreForm) {
+        uploadRestoreForm.onsubmit = async (e) => {
+          e.preventDefault();
+          const fileInput = document.getElementById('input-restore-db-file');
+          const feedback = document.getElementById('db-restore-feedback');
+          if (!fileInput || !fileInput.files || fileInput.files.length === 0) return;
+
+          if (!confirm("CAUTION: Restoring will overwrite the current active database with this file. (A safety backup will be created first). Proceed?")) return;
+
+          const formData = new FormData();
+          formData.append('db_file', fileInput.files[0]);
+
+          if (feedback) {
+            feedback.style.display = 'block';
+            feedback.className = 'test-feedback-box';
+            feedback.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading and verifying database snapshot...';
+          }
+
+          try {
+            const token = window.VicAuth?.getToken();
+            const res = await fetchApi('/api/admin/db/restore-upload', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` },
+              body: formData
+            });
+            const data = await this.safeJson(res);
+            if (data.success) {
+              if (feedback) {
+                feedback.className = 'test-feedback-box success';
+                feedback.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + data.message;
+              }
+              this.showToast('Database restored successfully!', 'success');
+              uploadRestoreForm.reset();
+              this.loadDatabaseStatus();
+              this.loadStats();
+            } else {
+              if (feedback) {
+                feedback.className = 'test-feedback-box error';
+                feedback.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + (data.error || 'Restore failed.');
+              }
+              this.showToast(data.error || 'Restore failed.', 'error');
+            }
+          } catch (err) {
+            if (feedback) {
+              feedback.className = 'test-feedback-box error';
+              feedback.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Network error: ' + err.message;
+            }
+          }
+        };
+      }
+
       // 6. Clear Logs Button
       const clearLogsBtn = document.querySelector('.js-clear-logs');
       if (clearLogsBtn) {
@@ -1746,6 +1885,50 @@
         }
       } catch (e) {
         console.warn('Failed to load settings:', e);
+      }
+    },
+
+    async loadDatabaseStatus() {
+      const badge = document.getElementById('db-status-badge');
+      const sizeInfo = document.getElementById('db-size-info');
+      const activePath = document.getElementById('db-active-path');
+      const backupsCount = document.getElementById('db-backups-count');
+      const notice = document.getElementById('db-persistence-notice');
+
+      if (!badge || !activePath) return;
+
+      try {
+        const token = window.VicAuth?.getToken();
+        const res = await fetchApi('/api/admin/db/status', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await this.safeJson(res);
+
+        if (data.success) {
+          activePath.textContent = data.db_path || 'Unknown';
+          if (sizeInfo) sizeInfo.textContent = `${data.size_kb} KB`;
+          if (backupsCount) backupsCount.textContent = data.backups_count || 0;
+
+          if (data.is_persistent) {
+            badge.style.background = '#dcfce7';
+            badge.style.color = '#15803d';
+            badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Persistent Disk Attached (/var/data)';
+            if (notice) {
+              notice.style.display = 'block';
+              notice.innerHTML = '<span style="color: #16a34a; font-weight: 600;"><i class="fa-solid fa-shield-halved"></i> Production Protected:</span> Database resides on a persistent disk volume and is 100% reserved across all deployments and server rebuilds.';
+            }
+          } else {
+            badge.style.background = '#fef3c7';
+            badge.style.color = '#b45309';
+            badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Ephemeral Container Storage';
+            if (notice) {
+              notice.style.display = 'block';
+              notice.innerHTML = '<span style="color: #b45309; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Cloud Persistence Notice:</span> Database is currently running in temporary container storage. Any edits will reset on the next build unless a Render Persistent Disk is attached.<br><small style="color: #64748b;">To persist across builds: In Render Dashboard &rarr; Service &rarr; Disks &rarr; Add Disk: <code>/var/data</code> (1 GB).</small>';
+            }
+          }
+        }
+      } catch (err) {
+        if (badge) badge.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Status Check Failed';
       }
     },
 

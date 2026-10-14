@@ -22,9 +22,20 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 os.makedirs(DATA_DIR, exist_ok=True)
 
 def get_safe_db_path(candidate_path=None):
-    """Resolves database path, safely falling back to data/victoria.db if permissions fail (e.g. /var/data on non-disk containers)."""
+    """
+    Resolves database path, safely prioritizing persistent disk storage:
+    1. Checks VIC_DB_PATH or DB_PATH environment variable if explicitly specified.
+    2. Auto-detects Render persistent disk mounted at /var/data if writable.
+    3. Falls back safely to local project database data/victoria.db with clear diagnostics.
+    """
     if not candidate_path:
-        candidate_path = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH') or os.path.join(DATA_DIR, 'victoria.db')
+        env_path = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH')
+        if env_path:
+            candidate_path = env_path
+        elif os.path.exists('/var/data') and os.access('/var/data', os.W_OK):
+            candidate_path = '/var/data/victoria.db'
+        else:
+            candidate_path = os.path.join(DATA_DIR, 'victoria.db')
     
     if not os.path.isabs(candidate_path):
         candidate_path = os.path.join(BASE_DIR, candidate_path)
@@ -40,11 +51,18 @@ def get_safe_db_path(candidate_path=None):
         os.remove(test_file)
         return candidate_path
     except (PermissionError, OSError) as e:
-        print(f"[WARNING] Database path '{candidate_path}' is not writable ({e}).")
-        print(f"          Falling back safely to local project database: '{fallback_path}'")
+        print(f"\n{'='*70}")
+        print(f"[PERSISTENCE ALERT] Location '{candidate_path}' is not writable ({e}).")
+        print(f"Falling back safely to local project database: '{fallback_path}'")
+        if os.environ.get('RENDER') or 'render' in BASE_DIR.lower():
+            print(f"--> NOTICE: Service is running on Render without an active Persistent Disk!")
+            print(f"--> Production changes in this container will NOT persist across new builds.")
+            print(f"--> ACTION: In Render Dashboard, attach a Disk at mount path '/var/data'.")
+        print(f"{'='*70}\n")
         return fallback_path
 
 DB_PATH = get_safe_db_path()
+
 
 app = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
 
@@ -5787,6 +5805,137 @@ def admin_trigger_backup():
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/db/status', methods=['GET'])
+def admin_get_db_status():
+    """Super Admin API: Returns live database storage and persistence diagnostic metrics."""
+    err = require_admin()
+    if err: return err
+
+    is_persistent = DB_PATH.startswith('/var/data')
+    parent_dir = os.path.dirname(os.path.abspath(DB_PATH))
+    is_writable = os.access(parent_dir, os.W_OK)
+    db_exists = os.path.exists(DB_PATH)
+    size_kb = round(os.path.getsize(DB_PATH) / 1024, 2) if db_exists else 0
+
+    backups_dir = os.path.join(DATA_DIR, 'backups')
+    backups_count = len([f for f in os.listdir(backups_dir) if f.endswith('.db')]) if os.path.exists(backups_dir) else 0
+
+    counts = {}
+    if db_exists:
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            for t in ['consultations', 'users', 'job_fairs', 'programs', 'articles', 'knowledge_base']:
+                try:
+                    c.execute(f"SELECT COUNT(*) FROM {t}")
+                    counts[t] = c.fetchone()[0]
+                except Exception:
+                    counts[t] = 0
+            conn.close()
+        except Exception:
+            pass
+
+    return jsonify({
+        'success': True,
+        'db_path': DB_PATH,
+        'is_persistent': is_persistent,
+        'is_writable': is_writable,
+        'size_kb': size_kb,
+        'backups_count': backups_count,
+        'counts': counts,
+        'storage_type': 'Render Persistent Disk (/var/data)' if is_persistent else 'Ephemeral Container Storage'
+    })
+
+@app.route('/api/admin/db/download', methods=['GET'])
+def admin_download_db():
+    """Super Admin API: Download a hot, lock-safe binary copy of the production database."""
+    err = require_admin()
+    if err: return err
+
+    if not os.path.exists(DB_PATH):
+        return jsonify({'error': 'Database file not found.'}), 404
+
+    import tempfile
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    filename = f"victoria_prod_backup_{timestamp}.db"
+
+    temp_dir = tempfile.gettempdir()
+    temp_file = os.path.join(temp_dir, filename)
+
+    try:
+        src = sqlite3.connect(DB_PATH)
+        dst = sqlite3.connect(temp_file)
+        with dst:
+            src.backup(dst)
+        dst.close()
+        src.close()
+        return send_from_directory(temp_dir, filename, as_attachment=True, download_name=filename)
+    except Exception as e:
+        return jsonify({'error': f'Failed to create download snapshot: {str(e)}'}), 500
+
+@app.route('/api/admin/db/restore-upload', methods=['POST'])
+def admin_restore_upload():
+    """Super Admin API: Upload and safely restore a SQLite database snapshot."""
+    err = require_admin()
+    if err: return err
+
+    if 'db_file' not in request.files:
+        return jsonify({'error': 'No database file uploaded.'}), 400
+
+    uploaded = request.files['db_file']
+    if not uploaded or not uploaded.filename:
+        return jsonify({'error': 'No file selected.'}), 400
+
+    if not (uploaded.filename.endswith('.db') or uploaded.filename.endswith('.sqlite')):
+        return jsonify({'error': 'Uploaded file must be a SQLite .db file.'}), 400
+
+    import tempfile
+    temp_dir = tempfile.gettempdir()
+    temp_upload = os.path.join(temp_dir, f"upload_{secrets.token_hex(8)}.db")
+    uploaded.save(temp_upload)
+
+    # Validate valid SQLite file
+    try:
+        test_conn = sqlite3.connect(temp_upload)
+        test_c = test_conn.cursor()
+        test_c.execute("SELECT count(*) FROM sqlite_master WHERE type='table'")
+        tbl_count = test_c.fetchone()[0]
+        test_conn.close()
+        if tbl_count == 0:
+            if os.path.exists(temp_upload): os.remove(temp_upload)
+            return jsonify({'error': 'Uploaded file has no tables and is not a valid Victoria College database.'}), 400
+    except Exception as e:
+        if os.path.exists(temp_upload): os.remove(temp_upload)
+        return jsonify({'error': f'Corrupted or invalid database file: {str(e)}'}), 400
+
+    try:
+        # Mandatory safety backup before overwriting
+        import manage_db
+        manage_db.create_timestamped_backup(DB_PATH)
+
+        src = sqlite3.connect(temp_upload)
+        dst = sqlite3.connect(DB_PATH)
+        with dst:
+            src.backup(dst)
+        dst.close()
+        src.close()
+        if os.path.exists(temp_upload):
+            os.remove(temp_upload)
+
+        try:
+            build_sitemap_xml()
+        except Exception:
+            pass
+
+        return jsonify({
+            'success': True,
+            'message': 'Database restored successfully! All tables and live records have been refreshed.'
+        })
+    except Exception as e:
+        if os.path.exists(temp_upload): os.remove(temp_upload)
+        return jsonify({'error': f'Failed to restore database: {str(e)}'}), 500
+
 
 
 

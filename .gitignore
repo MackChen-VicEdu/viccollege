@@ -21,10 +21,12 @@ Thumbs.db
 scratch/
 check_bjo.py
 
-# Database Backups & Temporary WAL
+# Active SQLite Database (Preserved on server; golden master seeds in data/seeds/)
+data/victoria.db
 data/backups/
 data/.last_deploy_completed
 *.db-wal
 *.db-shm
 *.db-journal
+
 

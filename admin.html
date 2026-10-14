@@ -956,7 +956,75 @@
             </div>
           </form>
         </div>
+
+        <!-- Database Persistence & Storage Safeguards Box -->
+        <div class="admin-box" style="margin-top: 24px;">
+          <div class="admin-box-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h3><i class="fa-solid fa-database"></i> Database Persistence &amp; Disaster Recovery</h3>
+              <p>Monitor SQLite persistent storage health, download live production snapshots, and safeguard college records across deployments.</p>
+            </div>
+            <button type="button" class="btn-admin-secondary" id="btn-refresh-db-status" style="font-size: 12px; padding: 6px 12px;">
+              <i class="fa-solid fa-rotate"></i> Refresh Status
+            </button>
+          </div>
+
+          <div class="admin-box-body">
+            <!-- Persistence Health Card -->
+            <div id="db-persistence-card" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span id="db-status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #e2e8f0; color: #475569;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Checking Storage Status...
+                  </span>
+                  <span id="db-size-info" style="font-size: 13px; color: #64748b;">-- KB</span>
+                </div>
+                <div style="font-size: 12px; color: #64748b;">
+                  Hot Backups Stored: <strong id="db-backups-count" style="color: #1e293b;">0</strong> (Auto-rotated)
+                </div>
+              </div>
+              <div style="font-size: 12.5px; color: #475569; line-height: 1.6;">
+                <strong>Active Database Path:</strong> <code id="db-active-path" style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-size: 12px;">--</code>
+              </div>
+              <div id="db-persistence-notice" style="margin-top: 10px; font-size: 12.5px; line-height: 1.5; display: none;"></div>
+            </div>
+
+            <!-- Action Buttons Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 24px;">
+              <button type="button" class="btn-admin-secondary" id="btn-download-prod-db" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px;">
+                <i class="fa-solid fa-cloud-arrow-down" style="color: #0284c7; font-size: 16px;"></i>
+                <span><strong>Download Live DB</strong> (.db file)</span>
+              </button>
+              <button type="button" class="btn-admin-secondary" id="btn-trigger-hot-backup" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px;">
+                <i class="fa-solid fa-clock-rotate-left" style="color: #16a34a; font-size: 16px;"></i>
+                <span><strong>Create Hot Backup</strong></span>
+              </button>
+              <button type="button" class="btn-admin-secondary" id="btn-sync-dev-seeds" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px;">
+                <i class="fa-solid fa-code-merge" style="color: #8B0000; font-size: 16px;"></i>
+                <span><strong>Sync Missing Catalog Seeds</strong></span>
+              </button>
+            </div>
+
+            <!-- Upload & Restore Section -->
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 18px;">
+              <h4 style="font-size: 13.5px; margin: 0 0 6px; color: #1e293b;">
+                <i class="fa-solid fa-upload"></i> Restore Database from Local File
+              </h4>
+              <p style="font-size: 12px; color: #64748b; margin: 0 0 12px;">
+                Upload a <code>.db</code> SQLite file to restore production. A safety backup of the current database is automatically created prior to restoring.
+              </p>
+              <form id="form-upload-restore-db" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <input type="file" id="input-restore-db-file" accept=".db,.sqlite" required style="font-size: 12.5px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 10px; flex: 1; min-width: 200px; background: #fff;">
+                <button type="submit" class="btn-admin-primary" id="btn-submit-restore-db" style="white-space: nowrap;">
+                  <i class="fa-solid fa-rotate-left"></i> Restore Database
+                </button>
+              </form>
+              <div id="db-restore-feedback" class="test-feedback-box" style="display: none; margin-top: 12px;"></div>
+            </div>
+          </div>
+        </div>
       </section>
+
 
       <!-- Tab: Email & SMTP Notification Settings -->
       <section id="tab-email-settings" class="admin-tab-content">

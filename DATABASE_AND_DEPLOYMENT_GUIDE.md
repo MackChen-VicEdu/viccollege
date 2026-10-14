@@ -134,6 +134,7 @@ services:
   - type: web
     name: viccollege-platform
     runtime: python
+    plan: starter
     buildCommand: pip install -r requirements.txt
     startCommand: python manage_db.py deploy && gunicorn server:app --bind 0.0.0.0:$PORT
     envVars:
@@ -147,9 +148,25 @@ services:
       sizeGB: 1
 ```
 
-### Self-Healing Database Path Resolution
-- **With Persistent Disk**: If a persistent disk is mounted at `/var/data`, the database resides in `/var/data/victoria.db` and persists across redeployments.
-- **Without Persistent Disk / Free Tier**: If `/var/data` is not writable, the system automatically detects this and falls back to `data/victoria.db` without crashing or throwing `PermissionError: [Errno 13]`.
+### Why a Persistent Disk is Required for Production Data Reservation
+In cloud platforms like Render, web services run inside Docker containers with **ephemeral filesystems**.
+- **Without a Persistent Disk**: Every time Render builds or deploys a new commit, the old container is deleted, and a fresh container is created. Any SQLite file stored inside the container will be wiped out!
+- **With a Persistent Disk**: The volume `/var/data` is mounted independently of the container image. It persists across all deployments, Git pushes, and restarts.
+- **Git Untracking**: `data/victoria.db` is strictly ignored in `.gitignore` so that local developer databases are never committed or pushed over production!
+
+### Step-by-Step: Attaching Persistent Disk in Render Dashboard
+If your service was created directly from the Render Dashboard (rather than Blueprint):
+1. Log in to [dashboard.render.com](https://dashboard.render.com).
+2. Select your **`viccollege`** Web Service.
+3. In the left navigation menu, click **Disks**.
+4. Click **Add Disk**:
+   - **Name**: `viccollege-data`
+   - **Mount Path**: `/var/data`
+   - **Size**: `1 GB` (or more)
+5. Click **Environment**:
+   - Verify `VIC_DB_PATH` is set to `/var/data/victoria.db`.
+6. Click **Save Changes** and trigger a deploy.
+
 
 ---
 

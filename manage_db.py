@@ -19,9 +19,20 @@ SEEDS_DIR = os.path.join(DATA_DIR, 'seeds')
 DEPLOY_MARK_FILE = os.path.join(DATA_DIR, '.last_deploy_completed')
 
 def get_safe_db_path(candidate_path=None):
-    """Resolves database path, safely falling back to data/victoria.db if permissions fail (e.g. /var/data on non-disk containers)."""
+    """
+    Resolves database path, safely prioritizing persistent disk storage:
+    1. Checks VIC_DB_PATH or DB_PATH environment variable if explicitly specified.
+    2. Auto-detects Render persistent disk mounted at /var/data if writable.
+    3. Falls back safely to local project database data/victoria.db with clear diagnostics.
+    """
     if not candidate_path:
-        candidate_path = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH') or os.path.join(DATA_DIR, 'victoria.db')
+        env_path = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH')
+        if env_path:
+            candidate_path = env_path
+        elif os.path.exists('/var/data') and os.access('/var/data', os.W_OK):
+            candidate_path = '/var/data/victoria.db'
+        else:
+            candidate_path = os.path.join(DATA_DIR, 'victoria.db')
     
     if not os.path.isabs(candidate_path):
         candidate_path = os.path.join(BASE_DIR, candidate_path)
@@ -37,11 +48,18 @@ def get_safe_db_path(candidate_path=None):
         os.remove(test_file)
         return candidate_path
     except (PermissionError, OSError) as e:
-        print(f"[WARNING] Location '{candidate_path}' is not writable ({e}).")
-        print(f"          Falling back safely to local project database: '{fallback_path}'")
+        print(f"\n{'='*70}")
+        print(f"[PERSISTENCE ALERT] Location '{candidate_path}' is not writable ({e}).")
+        print(f"Falling back safely to local project database: '{fallback_path}'")
+        if os.environ.get('RENDER') or 'render' in BASE_DIR.lower():
+            print(f"--> NOTICE: Service is running on Render without an active Persistent Disk!")
+            print(f"--> Production changes in this container will NOT persist across new builds.")
+            print(f"--> ACTION: In Render Dashboard, attach a Disk at mount path '/var/data'.")
+        print(f"{'='*70}\n")
         return fallback_path
 
 DB_PATH = get_safe_db_path()
+
 
 def prune_backups(max_keep=30, backups_dir=None):
     """
@@ -498,7 +516,11 @@ def auto_snapshot_if_needed():
     """
     If local data/victoria.db is newer than seeds/victoria_golden_master.db,
     automatically regenerate the golden master and SQL dump before sync/deployment.
+    ONLY runs in local development, never in production cloud environments.
     """
+    if os.environ.get('RENDER') or os.environ.get('VIC_DB_PATH') == '/var/data/victoria.db':
+        return False
+
     local_db = os.path.join(DATA_DIR, 'victoria.db')
     golden_db = os.path.join(SEEDS_DIR, 'victoria_golden_master.db')
     if os.path.exists(local_db):
