@@ -9,6 +9,7 @@ import sys
 import re
 import math
 import json
+import shutil
 import sqlite3
 import hashlib
 import secrets
@@ -20,6 +21,8 @@ from flask import Flask, request, jsonify, send_from_directory, g, Response
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 os.makedirs(DATA_DIR, exist_ok=True)
+SEEDS_DIR = os.path.join(DATA_DIR, 'seeds')
+
 
 def get_safe_db_path(candidate_path=None):
     """
@@ -1875,6 +1878,18 @@ def seed_default_job_fairs(cursor, now_str):
 
 def init_database():
     """Create database tables and seed default administrator if not exists."""
+    # 0. If DB_PATH does not exist, initialize immediately from golden master seed
+    if not os.path.exists(DB_PATH):
+        golden_master = os.path.join(SEEDS_DIR, 'victoria_golden_master.db')
+        if os.path.exists(golden_master):
+            parent_dir = os.path.dirname(os.path.abspath(DB_PATH))
+            try:
+                os.makedirs(parent_dir, exist_ok=True)
+                shutil.copyfile(golden_master, DB_PATH)
+                print(f">> Initialized production database from golden master: {DB_PATH}")
+            except Exception as e:
+                print(f">> [WARNING] Could not copy golden master ({e}), creating empty DB.")
+
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -1946,12 +1961,156 @@ def init_database():
     )
     ''')
 
+    # 6. SEO & GEO Articles Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS articles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        slug TEXT UNIQUE NOT NULL,
+        summary TEXT,
+        content TEXT NOT NULL,
+        category TEXT DEFAULT 'programs',
+        keywords TEXT NOT NULL,
+        geo_target TEXT DEFAULT 'Toronto & GTA, Ontario',
+        geo_lat REAL DEFAULT 43.7758,
+        geo_lng REAL DEFAULT -79.3458,
+        cover_image TEXT,
+        status TEXT DEFAULT 'hidden',   -- 'hidden' or 'active'
+        is_active INTEGER DEFAULT 0,    -- 0 for hidden (draft), 1 for active (live on site)
+        author TEXT DEFAULT 'Victoria College Editorial',
+        meta_title TEXT,
+        meta_description TEXT,
+        views INTEGER DEFAULT 0,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        published_at TEXT
+    )
+    ''')
+
+    # 7. Site Bilingual Translations Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS site_translations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        key TEXT UNIQUE NOT NULL,
+        category TEXT DEFAULT 'general',
+        text_en TEXT NOT NULL,
+        text_zh TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    )
+    ''')
+
+    # 8. Dynamic Academic Programs Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS programs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slug TEXT UNIQUE NOT NULL,
+        category TEXT DEFAULT 'general',
+        image_url TEXT,
+        badge_en TEXT,
+        badge_zh TEXT,
+        title_en TEXT NOT NULL,
+        title_zh TEXT NOT NULL,
+        desc_en TEXT,
+        desc_zh TEXT,
+        bullets_en TEXT,
+        bullets_zh TEXT,
+        duration_en TEXT,
+        duration_zh TEXT,
+        credential_en TEXT,
+        credential_zh TEXT,
+        overview_en TEXT,
+        overview_zh TEXT,
+        modules_en TEXT,
+        modules_zh TEXT,
+        careers_en TEXT,
+        careers_zh TEXT,
+        outcomes_en TEXT,
+        outcomes_zh TEXT,
+        detail_json_en TEXT,
+        detail_json_zh TEXT,
+        display_order INTEGER DEFAULT 0,
+        is_active INTEGER DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    )
+    ''')
+
+    # 9. Dynamic Job Fair & Events Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS job_fairs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tag_en TEXT DEFAULT 'Upcoming Event',
+        tag_zh TEXT DEFAULT '近期重磅活动',
+        title_en TEXT NOT NULL,
+        title_zh TEXT NOT NULL,
+        subtitle_en TEXT,
+        subtitle_zh TEXT,
+        date_en TEXT,
+        date_zh TEXT,
+        location_en TEXT,
+        location_zh TEXT,
+        btn_text_en TEXT DEFAULT 'Secure Your Spot',
+        btn_text_zh TEXT DEFAULT '立即免费抢占席位',
+        btn_link TEXT DEFAULT '#consultation',
+        bg_image_url TEXT DEFAULT 'images/job-fair.png',
+        is_active INTEGER DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    )
+    ''')
+
+    # 10. Student Inquiries & Consultations Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS consultations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT,
+        phone TEXT,
+        program TEXT,
+        campus TEXT,
+        interest TEXT,
+        interested_in_grant INTEGER DEFAULT 0,
+        source_page TEXT,
+        notes TEXT,
+        status TEXT DEFAULT 'new',
+        created_at TEXT NOT NULL
+    )
+    ''')
+
+    # Schema Column Migrations (Safe Alterations)
+    try:
+        cursor.execute("PRAGMA table_info(programs)")
+        prog_cols = [c['name'] for c in cursor.fetchall()]
+        if 'detail_json_en' not in prog_cols:
+            cursor.execute("ALTER TABLE programs ADD COLUMN detail_json_en TEXT")
+        if 'detail_json_zh' not in prog_cols:
+            cursor.execute("ALTER TABLE programs ADD COLUMN detail_json_zh TEXT")
+    except Exception:
+        pass
+
+    try:
+        cursor.execute("ALTER TABLE consultations ADD COLUMN campus TEXT")
+    except Exception:
+        pass
+    try:
+        cursor.execute("ALTER TABLE consultations ADD COLUMN interest TEXT")
+    except Exception:
+        pass
+    try:
+        cursor.execute("PRAGMA table_info(knowledge_base)")
+        kb_cols = [c['name'] for c in cursor.fetchall()]
+        if 'is_active' not in kb_cols:
+            cursor.execute("ALTER TABLE knowledge_base ADD COLUMN is_active INTEGER DEFAULT 1")
+    except Exception:
+        pass
+
+    now_str = datetime.utcnow().isoformat()
+
     # Seed Knowledge Base Articles if empty
     cursor.execute("SELECT COUNT(*) as cnt FROM knowledge_base")
     kb_row = cursor.fetchone()
     kb_count = kb_row['cnt'] if kb_row else 0
     if kb_count == 0:
-        now_str = datetime.utcnow().isoformat()
         initial_kb = [
             (
                 'financial_aid',
@@ -2037,38 +2196,11 @@ def init_database():
         ''', initial_kb)
         print(f">> Seeded {len(initial_kb)} Knowledge Base articles into SQLite DB.")
 
-    # 6. SEO & GEO Articles Table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS articles (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        slug TEXT UNIQUE NOT NULL,
-        summary TEXT,
-        content TEXT NOT NULL,
-        category TEXT DEFAULT 'programs',
-        keywords TEXT NOT NULL,
-        geo_target TEXT DEFAULT 'Toronto & GTA, Ontario',
-        geo_lat REAL DEFAULT 43.7758,
-        geo_lng REAL DEFAULT -79.3458,
-        cover_image TEXT,
-        status TEXT DEFAULT 'hidden',   -- 'hidden' or 'active'
-        is_active INTEGER DEFAULT 0,    -- 0 for hidden (draft), 1 for active (live on site)
-        author TEXT DEFAULT 'Victoria College Editorial',
-        meta_title TEXT,
-        meta_description TEXT,
-        views INTEGER DEFAULT 0,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
-        published_at TEXT
-    )
-    ''')
-
     # Seed initial SEO & GEO articles if empty
     cursor.execute("SELECT COUNT(*) as cnt FROM articles")
     art_row = cursor.fetchone()
     art_count = art_row['cnt'] if art_row else 0
     if art_count == 0:
-        now_str = datetime.utcnow().isoformat()
         initial_articles = [
             (
                 "2026 Ontario PSW Job Demand & $28,000 Free Training Grants Guide (Toronto & Markham)",
@@ -2214,7 +2346,6 @@ def init_database():
         print(f">> Seeded {len(initial_articles)} SEO & GEO articles (including hidden draft) into SQLite DB.")
 
     # Ensure Super Administrator Accounts Exist in DB
-    now_str = datetime.utcnow().isoformat()
     init_pass_env = os.environ.get('ADMIN_INITIAL_PASSWORD')
     default_admin_pass = init_pass_env if init_pass_env else 'admin123'
     default_admin_hash = hash_password(default_admin_pass)
@@ -2298,170 +2429,18 @@ Key College Knowledge:
 
     cursor.execute("UPDATE settings SET value = 'true' WHERE key = 'require_login'")
 
-    # Ensure system_prompt accurately reflects 23 weeks for PSW, Markham Main Campus only, and AI disclaimer
-    cursor.execute("SELECT value FROM settings WHERE key = 'system_prompt'")
-    curr_sp_row = cursor.fetchone()
-    if curr_sp_row:
-        sp_val = curr_sp_row['value']
-        needs_sp_update = False
-        if 'PSW DE 2022): 30 weeks' in sp_val:
-            sp_val = sp_val.replace('PSW DE 2022): 30 weeks', 'PSW DE 2022): 23 weeks')
-            needs_sp_update = True
-        if 'Early Childcare Assistant (ECA): 28 weeks' in sp_val:
-            sp_val = sp_val.replace('Early Childcare Assistant (ECA): 28 weeks', 'Early Childcare Assistant (ECA): 22 weeks')
-            needs_sp_update = True
-        if 'North York' in sp_val:
-            lines = [l for l in sp_val.split('\n') if 'North York' not in l]
-            sp_val = '\n'.join(lines).replace('3. Campuses:', '3. Campus:').replace('Markham Campus:', 'Markham Main Campus:')
-            needs_sp_update = True
-        if '5. Remind users that you are an AI assistant' not in sp_val:
-            sp_val = sp_val.rstrip() + "\n5. Remind users that you are an AI assistant and answers are for informational guidance. Direct users to contact Victoria College at 416-665-6668 or info@viccollege.com for official answers and personalized assessment."
-            needs_sp_update = True
-        if needs_sp_update:
-            cursor.execute("UPDATE settings SET value = ?, updated_at = ? WHERE key = 'system_prompt'", (sp_val, now_str))
-
-    # Auto-migration: Clean up North York from knowledge_base
-    cursor.execute("SELECT id, content FROM knowledge_base WHERE category = 'campuses'")
-    for kb_r in cursor.fetchall():
-        if 'North York' in kb_r['content']:
-            new_kb_content = (
-                "Victoria International College Markham Main Campus:\n"
-                "Address: 7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8\n"
-                "Phone: 416-665-6668 | Email: info@viccollege.com\n"
-                "Opening Hours: Monday – Saturday: 9:00 AM – 6:00 PM."
-            )
-            cursor.execute("UPDATE knowledge_base SET title = 'Victoria International College Markham Main Campus, Address & Contact Info', keywords = 'address, location, campus, phone, contact, email, markham, hours, opening hours, directions, where are you located', content = ?, updated_at = ? WHERE id = ?", (new_kb_content, now_str, kb_r['id']))
-
-    # Auto-migration: Clean up North York from job_fairs
-    cursor.execute("SELECT id, location_zh FROM job_fairs WHERE location_zh LIKE '%North York%' OR location_zh LIKE '%Consumers%'")
-    for jf_r in cursor.fetchall():
-        cursor.execute("UPDATE job_fairs SET location_zh = '7050 Woodbine Ave., Markham', location_en = '7050 Woodbine Ave., Markham', updated_at = ? WHERE id = ?", (now_str, jf_r['id']))
-
-    # Auto-migration: Clean up programs detail_json
-    cursor.execute("SELECT id, detail_json_en, detail_json_zh FROM programs")
-    for prog_r in cursor.fetchall():
-        d_en_str = prog_r['detail_json_en']
-        d_zh_str = prog_r['detail_json_zh']
-        updated_en = False
-        updated_zh = False
-        if d_en_str and ('North York' in d_en_str or 'Markham / North York' in d_en_str):
-            try:
-                d_en = json.loads(d_en_str)
-                if 'snapshot' in d_en and 'locations' in d_en['snapshot']:
-                    d_en['snapshot']['locations'] = 'Markham Main Campus / Live Online'
-                if 'why_choose' in d_en and 'pillars' in d_en['why_choose']:
-                    for p in d_en['why_choose']['pillars']:
-                        if 'desc' in p and 'Markham & North York' in p['desc']:
-                            p['desc'] = p['desc'].replace('Markham & North York', 'Markham Campus')
-                d_en_str = json.dumps(d_en, ensure_ascii=False)
-                updated_en = True
-            except Exception:
-                pass
-        if d_zh_str and ('北约克' in d_zh_str or 'North York' in d_zh_str):
-            try:
-                d_zh = json.loads(d_zh_str)
-                if 'snapshot' in d_zh and 'locations' in d_zh['snapshot']:
-                    d_zh['snapshot']['locations'] = '万锦主校区 / 在线名师直播'
-                if 'why_choose' in d_zh and 'pillars' in d_zh['why_choose']:
-                    for p in d_zh['why_choose']['pillars']:
-                        if 'desc' in p and '万锦与北约克校区' in p['desc']:
-                            p['desc'] = p['desc'].replace('万锦与北约克校区', '万锦主校区')
-                d_zh_str = json.dumps(d_zh, ensure_ascii=False)
-                updated_zh = True
-            except Exception:
-                pass
-        if updated_en or updated_zh:
-            cursor.execute("UPDATE programs SET detail_json_en = ?, detail_json_zh = ?, updated_at = ? WHERE id = ?", (d_en_str, d_zh_str, now_str, prog_r['id']))
-
-    # Auto-migration: Update ECA program duration and detail to 22 weeks
-    cursor.execute("SELECT id, detail_json_en, detail_json_zh FROM programs WHERE slug = 'eca'")
-    eca_prog_row = cursor.fetchone()
-    if eca_prog_row:
-        eca_d_en = eca_prog_row['detail_json_en'] or ''
-        eca_d_zh = eca_prog_row['detail_json_zh'] or ''
-        if '28-Week' in eca_d_en or '28 Weeks' in eca_d_en or '28 weeks' in eca_d_en:
-            eca_d_en = eca_d_en.replace('28-Week', '22-Week').replace('28 Weeks', '22 Weeks').replace('28 weeks', '22 weeks')
-        if '28 周' in eca_d_zh or '28周' in eca_d_zh:
-            eca_d_zh = eca_d_zh.replace('28 周', '22 周').replace('28周', '22周')
-        cursor.execute("""
-            UPDATE programs SET 
-                duration_en = '22 Weeks (Classroom Theory + Daycare Placement)',
-                duration_zh = '22 周（理论课 + 正规持牌日托中心跟岗实习）',
-                detail_json_en = ?,
-                detail_json_zh = ?,
-                updated_at = ?
-            WHERE slug = 'eca'
-        """, (eca_d_en, eca_d_zh, now_str))
-
-    # Drop legacy homepage_sections table if exists
-    cursor.execute("DROP TABLE IF EXISTS homepage_sections")
-
-    # 7. Site Bilingual Translations Table (English & Chinese text stored in DB)
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS site_translations (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        key TEXT UNIQUE NOT NULL,
-        category TEXT DEFAULT 'general',
-        text_en TEXT NOT NULL,
-        text_zh TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-    )
-    ''')
-
+    # Seed site_translations if empty
     cursor.execute("SELECT COUNT(*) as cnt FROM site_translations")
     st_row = cursor.fetchone()
     st_count = st_row['cnt'] if st_row else 0
     if st_count == 0:
         try:
             import seed_translations
-            seed_translations.seed_database()
+            seed_translations.seed_database(DB_PATH)
         except Exception as se:
             print(">> Note: Could not auto-run seed_translations:", se)
 
-    # 8. Dynamic Academic Programs Table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS programs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        slug TEXT UNIQUE NOT NULL,
-        category TEXT DEFAULT 'general',
-        image_url TEXT,
-        badge_en TEXT,
-        badge_zh TEXT,
-        title_en TEXT NOT NULL,
-        title_zh TEXT NOT NULL,
-        desc_en TEXT,
-        desc_zh TEXT,
-        bullets_en TEXT,
-        bullets_zh TEXT,
-        duration_en TEXT,
-        duration_zh TEXT,
-        credential_en TEXT,
-        credential_zh TEXT,
-        overview_en TEXT,
-        overview_zh TEXT,
-        modules_en TEXT,
-        modules_zh TEXT,
-        careers_en TEXT,
-        careers_zh TEXT,
-        outcomes_en TEXT,
-        outcomes_zh TEXT,
-        detail_json_en TEXT,
-        detail_json_zh TEXT,
-        display_order INTEGER DEFAULT 0,
-        is_active INTEGER DEFAULT 1,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-    )
-    ''')
-
-    # Auto-migration for detail_json_en and detail_json_zh
-    cursor.execute("PRAGMA table_info(programs)")
-    prog_cols = [c['name'] for c in cursor.fetchall()]
-    if 'detail_json_en' not in prog_cols:
-        cursor.execute("ALTER TABLE programs ADD COLUMN detail_json_en TEXT")
-    if 'detail_json_zh' not in prog_cols:
-        cursor.execute("ALTER TABLE programs ADD COLUMN detail_json_zh TEXT")
-
+    # Seed programs if empty
     cursor.execute("SELECT COUNT(*) as cnt FROM programs")
     prog_row = cursor.fetchone()
     prog_cnt = prog_row['cnt'] if prog_row else 0
@@ -2487,68 +2466,122 @@ Key College Knowledge:
             )
         seed_default_programs(cursor, now_str)
 
-    # 9. Dynamic Job Fair & Events Table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS job_fairs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        tag_en TEXT DEFAULT 'Upcoming Event',
-        tag_zh TEXT DEFAULT '近期重磅活动',
-        title_en TEXT NOT NULL,
-        title_zh TEXT NOT NULL,
-        subtitle_en TEXT,
-        subtitle_zh TEXT,
-        date_en TEXT,
-        date_zh TEXT,
-        location_en TEXT,
-        location_zh TEXT,
-        btn_text_en TEXT DEFAULT 'Secure Your Spot',
-        btn_text_zh TEXT DEFAULT '立即免费抢占席位',
-        btn_link TEXT DEFAULT '#consultation',
-        bg_image_url TEXT DEFAULT 'images/job-fair.png',
-        is_active INTEGER DEFAULT 1,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-    )
-    ''')
-
+    # Seed job_fairs if empty
     cursor.execute("SELECT COUNT(*) as cnt FROM job_fairs")
     jf_row = cursor.fetchone()
     jf_cnt = jf_row['cnt'] if jf_row else 0
     if jf_cnt == 0:
         seed_default_job_fairs(cursor, now_str)
 
-    # 10. Student Inquiries & Consultations Table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS consultations (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT,
-        phone TEXT,
-        program TEXT,
-        campus TEXT,
-        interest TEXT,
-        interested_in_grant INTEGER DEFAULT 0,
-        source_page TEXT,
-        notes TEXT,
-        status TEXT DEFAULT 'new',
-        created_at TEXT NOT NULL
-    )
-    ''')
+    # Data Cleanups and Minor Migrations (Safely wrapped so nothing can halt startup)
+    try:
+        cursor.execute("SELECT value FROM settings WHERE key = 'system_prompt'")
+        curr_sp_row = cursor.fetchone()
+        if curr_sp_row:
+            sp_val = curr_sp_row['value']
+            needs_sp_update = False
+            if 'PSW DE 2022): 30 weeks' in sp_val:
+                sp_val = sp_val.replace('PSW DE 2022): 30 weeks', 'PSW DE 2022): 23 weeks')
+                needs_sp_update = True
+            if 'Early Childcare Assistant (ECA): 28 weeks' in sp_val:
+                sp_val = sp_val.replace('Early Childcare Assistant (ECA): 28 weeks', 'Early Childcare Assistant (ECA): 22 weeks')
+                needs_sp_update = True
+            if 'North York' in sp_val:
+                lines = [l for l in sp_val.split('\n') if 'North York' not in l]
+                sp_val = '\n'.join(lines).replace('3. Campuses:', '3. Campus:').replace('Markham Campus:', 'Markham Main Campus:')
+                needs_sp_update = True
+            if '5. Remind users that you are an AI assistant' not in sp_val:
+                sp_val = sp_val.rstrip() + "\n5. Remind users that you are an AI assistant and answers are for informational guidance. Direct users to contact Victoria College at 416-665-6668 or info@viccollege.com for official answers and personalized assessment."
+                needs_sp_update = True
+            if needs_sp_update:
+                cursor.execute("UPDATE settings SET value = ?, updated_at = ? WHERE key = 'system_prompt'", (sp_val, now_str))
+    except Exception:
+        pass
 
-    # Ensure schema migrations for newly added columns
     try:
-        cursor.execute("ALTER TABLE consultations ADD COLUMN campus TEXT")
+        cursor.execute("SELECT id, content FROM knowledge_base WHERE category = 'campuses'")
+        for kb_r in cursor.fetchall():
+            if 'North York' in kb_r['content']:
+                new_kb_content = (
+                    "Victoria International College Markham Main Campus:\n"
+                    "Address: 7050 Woodbine Ave., Unit 300, Markham, ON L3R 4G8\n"
+                    "Phone: 416-665-6668 | Email: info@viccollege.com\n"
+                    "Opening Hours: Monday – Saturday: 9:00 AM – 6:00 PM."
+                )
+                cursor.execute("UPDATE knowledge_base SET title = 'Victoria International College Markham Main Campus, Address & Contact Info', keywords = 'address, location, campus, phone, contact, email, markham, hours, opening hours, directions, where are you located', content = ?, updated_at = ? WHERE id = ?", (new_kb_content, now_str, kb_r['id']))
     except Exception:
         pass
+
     try:
-        cursor.execute("ALTER TABLE consultations ADD COLUMN interest TEXT")
+        cursor.execute("SELECT id, location_zh FROM job_fairs WHERE location_zh LIKE '%North York%' OR location_zh LIKE '%Consumers%'")
+        for jf_r in cursor.fetchall():
+            cursor.execute("UPDATE job_fairs SET location_zh = '7050 Woodbine Ave., Markham', location_en = '7050 Woodbine Ave., Markham', updated_at = ? WHERE id = ?", (now_str, jf_r['id']))
     except Exception:
         pass
+
     try:
-        cursor.execute("PRAGMA table_info(knowledge_base)")
-        kb_cols = [c['name'] for c in cursor.fetchall()]
-        if 'is_active' not in kb_cols:
-            cursor.execute("ALTER TABLE knowledge_base ADD COLUMN is_active INTEGER DEFAULT 1")
+        cursor.execute("SELECT id, detail_json_en, detail_json_zh FROM programs")
+        for prog_r in cursor.fetchall():
+            d_en_str = prog_r['detail_json_en']
+            d_zh_str = prog_r['detail_json_zh']
+            updated_en = False
+            updated_zh = False
+            if d_en_str and ('North York' in d_en_str or 'Markham / North York' in d_en_str):
+                try:
+                    d_en = json.loads(d_en_str)
+                    if 'snapshot' in d_en and 'locations' in d_en['snapshot']:
+                        d_en['snapshot']['locations'] = 'Markham Main Campus / Live Online'
+                    if 'why_choose' in d_en and 'pillars' in d_en['why_choose']:
+                        for p in d_en['why_choose']['pillars']:
+                            if 'desc' in p and 'Markham & North York' in p['desc']:
+                                p['desc'] = p['desc'].replace('Markham & North York', 'Markham Campus')
+                    d_en_str = json.dumps(d_en, ensure_ascii=False)
+                    updated_en = True
+                except Exception:
+                    pass
+            if d_zh_str and ('北约克' in d_zh_str or 'North York' in d_zh_str):
+                try:
+                    d_zh = json.loads(d_zh_str)
+                    if 'snapshot' in d_zh and 'locations' in d_zh['snapshot']:
+                        d_zh['snapshot']['locations'] = '万锦主校区 / 在线名师直播'
+                    if 'why_choose' in d_zh and 'pillars' in d_zh['why_choose']:
+                        for p in d_zh['why_choose']['pillars']:
+                            if 'desc' in p and '万锦与北约克校区' in p['desc']:
+                                p['desc'] = p['desc'].replace('万锦与北约克校区', '万锦主校区')
+                    d_zh_str = json.dumps(d_zh, ensure_ascii=False)
+                    updated_zh = True
+                except Exception:
+                    pass
+            if updated_en or updated_zh:
+                cursor.execute("UPDATE programs SET detail_json_en = ?, detail_json_zh = ?, updated_at = ? WHERE id = ?", (d_en_str, d_zh_str, now_str, prog_r['id']))
+    except Exception:
+        pass
+
+    try:
+        cursor.execute("SELECT id, detail_json_en, detail_json_zh FROM programs WHERE slug = 'eca'")
+        eca_prog_row = cursor.fetchone()
+        if eca_prog_row:
+            eca_d_en = eca_prog_row['detail_json_en'] or ''
+            eca_d_zh = eca_prog_row['detail_json_zh'] or ''
+            if '28-Week' in eca_d_en or '28 Weeks' in eca_d_en or '28 weeks' in eca_d_en:
+                eca_d_en = eca_d_en.replace('28-Week', '22-Week').replace('28 Weeks', '22 Weeks').replace('28 weeks', '22 weeks')
+            if '28 周' in eca_d_zh or '28周' in eca_d_zh:
+                eca_d_zh = eca_d_zh.replace('28 周', '22 周').replace('28周', '22周')
+            cursor.execute("""
+                UPDATE programs SET 
+                    duration_en = '22 Weeks (Classroom Theory + Daycare Placement)',
+                    duration_zh = '22 周（理论课 + 正规持牌日托中心跟岗实习）',
+                    detail_json_en = ?,
+                    detail_json_zh = ?,
+                    updated_at = ?
+                WHERE slug = 'eca'
+            """, (eca_d_en, eca_d_zh, now_str))
+    except Exception:
+        pass
+
+    # Drop legacy homepage_sections table if exists
+    try:
+        cursor.execute("DROP TABLE IF EXISTS homepage_sections")
     except Exception:
         pass
 
@@ -2562,6 +2595,7 @@ Key College Knowledge:
         manage_db.auto_deploy_on_startup()
     except Exception as e:
         print(f">> [NOTE] Startup auto-deployment hook: {e}")
+
 
 
 # ==============================================================================

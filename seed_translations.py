@@ -48,9 +48,12 @@ def extract_translations_from_js():
 
     return en_dict, zh_dict
 
-def seed_database():
-    os.makedirs(DATA_DIR, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
+def seed_database(target_db_path=None):
+    if not target_db_path:
+        target_db_path = os.environ.get('VIC_DB_PATH') or os.environ.get('DB_PATH') or DB_PATH
+    parent_dir = os.path.dirname(os.path.abspath(target_db_path))
+    os.makedirs(parent_dir, exist_ok=True)
+    conn = sqlite3.connect(target_db_path)
     cursor = conn.cursor()
 
     cursor.execute('''
