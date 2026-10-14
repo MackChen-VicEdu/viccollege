@@ -167,6 +167,14 @@ If your service was created directly from the Render Dashboard (rather than Blue
    - Verify `VIC_DB_PATH` is set to `/var/data/victoria.db`.
 6. Click **Save Changes** and trigger a deploy.
 
+### Live Persistence Status Badge in Admin Dashboard
+You can monitor whether your production database is running on persistent or temporary container storage directly in the Admin Dashboard:
+1. Open the Admin Dashboard: `https://viccollege.ca/admin.html` (or `http://localhost:5000/admin.html` locally).
+2. In the left navigation sidebar, click **AI & System Settings**.
+3. Scroll down to the **Database Persistence & Disaster Recovery** card.
+4. View the **Live Persistence Status Badge**:
+   - 🟢 **Persistent Disk Attached (`/var/data`)**: Production-safe. Database resides on a persistent disk volume and is 100% reserved across all deployments and rebuilds.
+   - 🟡 **Ephemeral Container Storage**: Temporary container storage. Edits will reset on rebuilds unless a persistent disk is attached in the Render dashboard.
 
 ---
 
